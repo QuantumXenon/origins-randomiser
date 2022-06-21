@@ -19,7 +19,7 @@ public class Randomiser implements ModInitializer {
     private int randomiseOrigin(ServerCommandSource commandSource) {
         if (commandSource.getEntity() instanceof Player sourcePlayer) {
             if (commandSource.getServer() != null) {
-                Text message = Text.of(Formatting.field_1067 + commandSource.getName() + Formatting.field_1070 + " randomised their origin and is now a(n) " + Formatting.field_1067 + StringUtils.capitalize(sourcePlayer.randomOrigin().getIdentifier().toString().split(":")[1]) + Formatting.field_1070 + ".");
+                Text message = Text.of(Formatting.field_1067 + commandSource.getName() + Formatting.field_1070 + " randomised their origin and is now a " + Formatting.field_1067 + StringUtils.capitalize(sourcePlayer.randomOrigin().getIdentifier().toString().split(":")[1].replace("_", " ")) + Formatting.field_1070 + ".");
                 for (ServerPlayerEntity player : commandSource.getServer().getPlayerManager().getPlayerList()) {
                     player.sendMessage(message, false);
                 }

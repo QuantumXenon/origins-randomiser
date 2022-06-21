@@ -2,9 +2,11 @@
   "schemaVersion": 1,
   "id": "origin-randomiser",
   "name": "Origins Randomiser",
-  "version": "1.0",
-  "description": "Randomises your origin upon death.",
-  "authors": ["TheQuantumXenon"],
+  "version": "1.1",
+  "description": "Randomises your origin upon death",
+  "authors": [
+    "TheQuantumXenon"
+  ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
     "issues": "https://github.com/QuantumXenon/origins-randomiser/issues"
@@ -14,17 +16,17 @@
     "main": [
       "com.quantumxenon.randomiser.Randomiser"
     ],
-    "client":[
+    "client": [
       "com.quantumxenon.randomiser.client.Client"
     ]
   },
-  "mixins":[
+  "mixins": [
     "origin-randomiser.mixins.json"
   ],
   "depends": {
     "minecraft": ">=1.19",
     "fabricloader": "*",
     "fabric": "*",
-    "origins": ">=1.6.0"
+    "origins": ">=1.6.1"
   }
 }

@@ -11,9 +11,12 @@ import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,6 +36,13 @@ public abstract class Mixins extends PlayerEntity implements Player {
         List<Identifier> originsList = layer.getRandomOrigins(this);
         Origin chosenOrigin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
         setOrigin(this, chosenOrigin);
+
+        Text message = Text.of(Formatting.field_1067 + this.getName().getString() + Formatting.field_1070 + "died and is now a " + Formatting.field_1067 + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.field_1070 + ".");
+        if (this.getServer() != null) {
+            for (ServerPlayerEntity player : this.getServer().getPlayerManager().getPlayerList()) {
+                player.sendMessage(message, false);
+            }
+        }
         return chosenOrigin;
     }
 
@@ -47,4 +57,3 @@ public abstract class Mixins extends PlayerEntity implements Player {
         this.randomOrigin();
     }
 }
-
