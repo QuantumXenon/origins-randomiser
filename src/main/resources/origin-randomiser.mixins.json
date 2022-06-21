@@ -6,10 +6,8 @@
   "mixins": [
     "Mixins"
   ],
-  "client": [
-  ],
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "randomiser-refmap.json"
+  "refmap": "origin-randomiser-refmap.json"
 }

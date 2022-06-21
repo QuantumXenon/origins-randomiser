@@ -23,27 +23,28 @@ import java.util.List;
 
 @Mixin({ServerPlayerEntity.class})
 public abstract class Mixins extends PlayerEntity implements Player {
-    private Mixins(World world, BlockPos position, float yaw, GameProfile profile) {
-        super(world, position, yaw, profile, null);
+    OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
+
+    private Mixins(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
+        super(world, blockPos, f, gameProfile, null);
     }
 
-    public Origin randomOrigin(boolean deathMessage) {
-        OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
-        List<Identifier> origins = layer.getRandomOrigins(this);
-        Origin origin = OriginRegistry.get(origins.get(this.getRandom().nextInt(origins.size())));
-        setOrigin(this, layer, origin);
-        return origin;
+    public Origin randomOrigin() {
+        List<Identifier> originsList = layer.getRandomOrigins(this);
+        Origin chosenOrigin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
+        setOrigin(this, chosenOrigin);
+        return chosenOrigin;
     }
 
-    private void setOrigin(PlayerEntity player, OriginLayer layer, Origin origin) {
+    private void setOrigin(PlayerEntity player, Origin newOrigin) {
         OriginComponent component = ModComponents.ORIGIN.get(player);
-        component.setOrigin(layer, origin);
+        component.setOrigin(layer, newOrigin);
         OriginComponent.sync(player);
     }
 
     @Inject(at = {@At("TAIL")}, method = {"onDeath"})
-    private void onPlayerDeath(DamageSource source, CallbackInfo info) {
-        this.randomOrigin(false);
+    private void death(DamageSource source, CallbackInfo info) {
+        this.randomOrigin();
     }
 }
 
