@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "randomiser",
+  "version": "1.0",
+  "name": "Origins Randomiser",
+  "description": "Randomises your origin upon death.",
+  "authors": [
+    "TheQuantumXenon"
+  ],
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment":"*",
+  "entrypoints": {
+    "client":[
+      "com.quantumxenon.randomiser.client.Client"
+    ],
+    "main": [
+      "com.quantumxenon.randomiser.Randomiser"
+    ]
+  },
+  "mixins":[
+    "randomiser.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": "1.19",
+    "origins": "1.6.x"
+  }
+}

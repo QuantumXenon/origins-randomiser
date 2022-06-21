@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.quantumxenon.randomiser.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "Mixins"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "randomiser-refmap.json"
+}
