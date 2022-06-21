@@ -9,5 +9,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "origin-randomiser-refmap.json"
+  "refmap": "origins-randomiser-refmap.json"
 }
