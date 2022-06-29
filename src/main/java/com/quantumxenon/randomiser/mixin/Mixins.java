@@ -39,7 +39,7 @@ public abstract class Mixins extends PlayerEntity implements Player {
         Origin chosenOrigin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
         setOrigin(this, chosenOrigin);
 
-        Text message = Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + "died and is now a " + Formatting.BOLD + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.RESET + ".");
+        Text message = Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + " died and is now a " + Formatting.BOLD + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.RESET + ".");
         if(this.getServer().getGameRules().getBoolean(randomiserMessages)) {
             if (this.getServer() != null) {
                 for (ServerPlayerEntity player : this.getServer().getPlayerManager().getPlayerList()) {
