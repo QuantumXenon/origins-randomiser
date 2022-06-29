@@ -24,9 +24,9 @@
     "origins-randomiser.mixins.json"
   ],
   "depends": {
-    "minecraft": ">=1.18.x",
+    "minecraft": "1.18.2",
     "fabricloader": "*",
     "fabric": "*",
-    "origins": ">=1.3.1"
+    "origins": "1.4.1"
   }
 }
