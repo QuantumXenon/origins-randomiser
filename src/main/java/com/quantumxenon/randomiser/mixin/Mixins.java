@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.quantumxenon.randomiser.Randomiser.randomiserMessages;
 
@@ -39,8 +40,8 @@ public abstract class Mixins extends PlayerEntity implements Player {
         Origin chosenOrigin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
         setOrigin(this, chosenOrigin);
 
-        Text message = Text.of(Formatting.field_1067 + this.getName().getString() + Formatting.field_1070 + " died and is now a " + Formatting.field_1067 + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.field_1070 + ".");
-        if(this.getServer().getGameRules().getBoolean(randomiserMessages)) {
+        Text message = Text.of(Formatting.BOLD + this.getName().getString() + Formatting.BOLD + " died and is now a " + Formatting.BOLD + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.RESET + ".");
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiserMessages)) {
             if (this.getServer() != null) {
                 for (ServerPlayerEntity player : this.getServer().getPlayerManager().getPlayerList()) {
                     player.sendMessage(message, false);
