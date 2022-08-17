@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "origins-randomiser",
   "name": "Origins Randomiser",
-  "version": "1.3",
+  "version": "${version}",
   "description": "Assigns you a random origin every time you die",
   "authors": [
     "TheQuantumXenon"
@@ -27,6 +27,6 @@
     "minecraft": ">=1.19",
     "fabricloader": "*",
     "fabric": "*",
-    "origins": ">=1.6.1"
+    "origins": ">=1.6.0"
   }
 }
