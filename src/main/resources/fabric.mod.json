@@ -27,6 +27,6 @@
     "minecraft": ">=1.19",
     "fabricloader": "*",
     "fabric": "*",
-    "origins": ">=1.6.0"
+    "origins": "*"
   }
 }
