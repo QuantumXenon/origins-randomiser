@@ -5,16 +5,11 @@ plugins {
 version = project.mod_version
 
 repositories {
-    maven {
-        url "https://maven.jamieswhiteshirt.com/libs-release"
-        content {
-            includeGroup "com.jamieswhiteshirt"
-        }
-    }
-    maven { url "https://jitpack.io" }
-    maven { url "https://maven.shedaniel.me/" }
-    maven { url "https://maven.terraformersmc.com/" }
-    maven { url = 'https://ladysnake.jfrog.io/artifactory/mods' }
+    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" }
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.shedaniel.me/" }
+    maven { url = "https://maven.terraformersmc.com/" }
+    maven { url = "https://ladysnake.jfrog.io/artifactory/mods" }
 }
 
 dependencies {
