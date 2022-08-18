@@ -24,3 +24,9 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     modImplementation("com.github.apace100:origins-fabric:${project.origins_version}")
 }
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
