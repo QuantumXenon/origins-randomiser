@@ -11,12 +11,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameRules;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 public class Randomiser implements ModInitializer {
     public static final GameRules.Key<GameRules.BooleanRule> randomiserMessages = GameRuleRegistry.register("randomiserMessages", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.BooleanRule> sleepRandomises = GameRuleRegistry.register("sleepRandomises", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(false));
-    public static final GameRules.Key<GameRules.BooleanRule> randomiseOrigins = GameRuleRegistry.register("randomiseOrigins", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(true));
+    public static final GameRules.Key<GameRules.BooleanRule> sleepRandomises = GameRuleRegistry.register("sleepRandomises", GameRules.Category.PLAYER, GameRuleFactory.createBooleanRule(false));
+    public static final GameRules.Key<GameRules.BooleanRule> randomiseOrigins = GameRuleRegistry.register("randomiseOrigins", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
 
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> this.randomiseOrigin(context.getSource()))));
@@ -25,7 +25,7 @@ public class Randomiser implements ModInitializer {
     private int randomiseOrigin(ServerCommandSource commandSource) {
         if (commandSource.getEntity() instanceof Player sourcePlayer) {
             if (commandSource.getServer() != null) {
-                Text message = Text.of(Formatting.BOLD + commandSource.getName() + Formatting.RESET + " randomised their origin and is now a " + Formatting.BOLD + StringUtils.capitalize(sourcePlayer.randomOrigin().getIdentifier().toString().split(":")[1].replace("_", " ")) + Formatting.RESET + ".");
+                Text message = Text.of(Formatting.BOLD + commandSource.getName() + Formatting.RESET + " randomised their origin and is now a " + Formatting.BOLD + WordUtils.capitalize(sourcePlayer.randomOrigin().getIdentifier().toString().split(":")[1].replace("_", " ")) + Formatting.RESET + ".");
                 if (commandSource.getServer().getGameRules().getBoolean(randomiserMessages)) {
                     for (ServerPlayerEntity player : commandSource.getServer().getPlayerManager().getPlayerList()) {
                         player.sendMessage(message, false);
