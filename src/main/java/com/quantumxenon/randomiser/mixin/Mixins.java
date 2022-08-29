@@ -11,6 +11,7 @@ import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -64,10 +65,15 @@ public abstract class Mixins extends PlayerEntity implements Player {
         }
     }
 
-    @Inject(at = {@At("TAIL")}, method = {"sleep"})
+    @Inject(at = {@At("TAIL")}, method = {"wakeUp"})
     private void sleep(CallbackInfo info) {
         if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(sleepRandomises)) {
             this.randomOrigin();
         }
+    }
+
+    @Inject(at = {@At("TAIL")}, method = {"moveToSpawn"})
+    private void spawn(ServerWorld serverWorld, CallbackInfo info) {
+        this.randomOrigin();
     }
 }
