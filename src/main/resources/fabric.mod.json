@@ -1,29 +1,29 @@
 {
-  "schemaVersion": 1,
-  "id": "origins-randomiser",
-  "name": "Origins Randomiser",
-  "version": "${version}",
-  "description": "Assigns you a random origin every time you die",
-  "authors": [
+  "schemaVersion":1,
+  "id":"origins-randomiser",
+  "name":"Origins Randomiser",
+  "version":"${version}",
+  "description":"Assigns you a random origin every time you die",
+  "authors":[
     "TheQuantumXenon"
   ],
-  "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
-    "issues": "https://github.com/QuantumXenon/origins-randomiser/issues"
+  "contact":{
+    "homepage":"https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
+    "issues":"https://github.com/QuantumXenon/origins-randomiser/issues"
   },
-  "icon": "icon.png",
-  "entrypoints": {
-    "main": [
+  "icon":"icon.png",
+  "entrypoints":{
+    "main":[
       "com.quantumxenon.randomiser.Randomiser"
     ]
   },
-  "mixins": [
+  "mixins":[
     "origins-randomiser.mixins.json"
   ],
-  "depends": {
-    "minecraft": "1.19.x",
-    "fabricloader": "*",
-    "fabric": "*",
-    "origins": "*"
+  "depends":{
+    "minecraft":"1.19.x",
+    "fabricloader":"*",
+    "fabric":"*",
+    "origins":"*"
   }
 }
