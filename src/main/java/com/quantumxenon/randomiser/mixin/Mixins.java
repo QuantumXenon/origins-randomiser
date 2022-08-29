@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Objects;
 
-import static com.quantumxenon.randomiser.Randomiser.randomiserMessages;
+import static com.quantumxenon.randomiser.Randomiser.*;
 
 @Mixin({ServerPlayerEntity.class})
 public abstract class Mixins extends PlayerEntity implements Player {
@@ -40,7 +40,7 @@ public abstract class Mixins extends PlayerEntity implements Player {
         Origin chosenOrigin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
         setOrigin(this, chosenOrigin);
 
-        Text message = Text.of(Formatting.BOLD + this.getName().getString() + Formatting.BOLD + " died and is now a " + Formatting.BOLD + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.RESET + ".");
+        Text message = Text.of(Formatting.BOLD + this.getName().getString() + Formatting.BOLD + " is now a " + Formatting.BOLD + StringUtils.capitalize(chosenOrigin.getIdentifier().toString().split(":")[1]).replace("_", " ") + Formatting.RESET + ".");
         if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiserMessages)) {
             if (this.getServer() != null) {
                 for (ServerPlayerEntity player : this.getServer().getPlayerManager().getPlayerList()) {
@@ -59,6 +59,15 @@ public abstract class Mixins extends PlayerEntity implements Player {
 
     @Inject(at = {@At("TAIL")}, method = {"onDeath"})
     private void death(DamageSource source, CallbackInfo info) {
-        this.randomOrigin();
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiseOrigins)) {
+            this.randomOrigin();
+        }
+    }
+
+    @Inject(at = {@At("TAIL")}, method = {"sleep"})
+    private void sleep(CallbackInfo info) {
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(sleepRandomises)) {
+            this.randomOrigin();
+        }
     }
 }

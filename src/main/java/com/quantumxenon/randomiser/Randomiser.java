@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Randomiser implements ModInitializer {
     public static final GameRules.Key<GameRules.BooleanRule> randomiserMessages = GameRuleRegistry.register("randomiserMessages", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(true));
+    public static final GameRules.Key<GameRules.BooleanRule> sleepRandomises = GameRuleRegistry.register("sleepRandomises", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(false));
+    public static final GameRules.Key<GameRules.BooleanRule> randomiseOrigins = GameRuleRegistry.register("randomiseOrigins", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(true));
 
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> this.randomiseOrigin(context.getSource()))));
