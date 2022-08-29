@@ -67,7 +67,7 @@ public abstract class Mixins extends PlayerEntity implements Player {
 
     @Inject(at = {@At("TAIL")}, method = {"wakeUp"})
     private void sleep(CallbackInfo info) {
-        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(sleepRandomises)) {
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(sleepRandomises) && Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiseOrigins)) {
             this.randomOrigin();
         }
     }
