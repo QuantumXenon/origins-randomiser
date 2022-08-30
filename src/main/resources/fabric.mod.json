@@ -15,9 +15,6 @@
   "entrypoints": {
     "main": [
       "com.quantumxenon.randomiser.Randomiser"
-    ],
-    "client": [
-      "com.quantumxenon.randomiser.client.Client"
     ]
   },
   "mixins": [
