@@ -23,11 +23,7 @@ public class Randomiser implements ModInitializer {
     private int randomiseOrigin(ServerCommandSource commandSource) {
         if (commandSource.getEntity() instanceof Player sourcePlayer) {
             if (commandSource.getServer().getGameRules().getBoolean(randomiseCommand)) {
-                if (commandSource.getServer().getGameRules().getBoolean(randomiseOrigins)) {
-                    sourcePlayer.randomOrigin(" randomised their origin and is now a ");
-                } else {
-                    commandSource.getEntity().sendMessage(Text.of("Origin randomising has been disabled."));
-                }
+                sourcePlayer.randomOrigin(" randomised their origin and is now a ");
             } else {
                 commandSource.getEntity().sendMessage(Text.of("Use of the /randomise command has been disabled."));
             }
