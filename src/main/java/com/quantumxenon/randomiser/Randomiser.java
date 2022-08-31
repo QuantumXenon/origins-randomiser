@@ -11,13 +11,10 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 import net.minecraft.world.GameRules;
 
-import java.util.Objects;
-
 public class Randomiser implements ModInitializer {
     public static final GameRules.Key<GameRules.BooleanRule> randomiserMessages = GameRuleRegistry.register("randomiserMessages", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.BooleanRule> randomiseOrigins = GameRuleRegistry.register("randomiseOrigins", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.BooleanRule> randomiseCommand = GameRuleRegistry.register("randomiseCommand", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
-
     public static final GameRules.Key<GameRules.BooleanRule> sleepRandomisesOrigin = GameRuleRegistry.register("sleepRandomisesOrigin", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(false));
 
     public void onInitialize() {
@@ -26,12 +23,8 @@ public class Randomiser implements ModInitializer {
 
     private int randomiseOrigin(ServerCommandSource commandSource) {
         if (commandSource.getEntity() instanceof Player sourcePlayer) {
-            if (commandSource.getServer() != null && (commandSource.getServer()).getGameRules().getBoolean(randomiseCommand)) {
-                if (Objects.requireNonNull(commandSource.getServer()).getGameRules().getBoolean(randomiseOrigins)) {
-                    sourcePlayer.randomOrigin(" randomised their origin and is now a ");
-                } else {
-                    commandSource.getEntity().sendSystemMessage(new LiteralText("Origin randomising has been disabled."), Util.NIL_UUID);
-                }
+            if (commandSource.getServer().getGameRules().getBoolean(randomiseCommand)) {
+                sourcePlayer.randomOrigin(" randomised their origin and is now a ");
             } else {
                 commandSource.getEntity().sendSystemMessage(new LiteralText("Use of the /randomise command has been disabled."), Util.NIL_UUID);
             }
