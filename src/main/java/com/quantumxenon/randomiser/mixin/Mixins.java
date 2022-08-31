@@ -1,6 +1,7 @@
 package com.quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
+import com.quantumxenon.randomiser.Randomiser;
 import com.quantumxenon.randomiser.entity.Player;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
@@ -25,11 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Objects;
 
-import static com.quantumxenon.randomiser.Randomiser.*;
-
-@Mixin({ServerPlayerEntity.class})
+@Mixin(ServerPlayerEntity.class)
 public abstract class Mixins extends PlayerEntity implements Player {
-    OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
+    private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
 
     private Mixins(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
@@ -45,7 +44,7 @@ public abstract class Mixins extends PlayerEntity implements Player {
         }
         Text message = Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + newOrigin + Formatting.RESET);
 
-        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiserMessages)) {
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(Randomiser.randomiserMessages)) {
             if (this.getServer() != null) {
                 for (ServerPlayerEntity player : this.getServer().getPlayerManager().getPlayerList()) {
                     player.sendMessage(message, false);
@@ -55,31 +54,31 @@ public abstract class Mixins extends PlayerEntity implements Player {
         return chosenOrigin;
     }
 
-    private void setOrigin(PlayerEntity player, Origin newOrigin) {
+    private void setOrigin(PlayerEntity player, Origin origin) {
         OriginComponent component = ModComponents.ORIGIN.get(player);
-        component.setOrigin(layer, newOrigin);
+        component.setOrigin(layer, origin);
         OriginComponent.sync(player);
     }
 
-    @Inject(at = {@At("TAIL")}, method = {"onDeath"})
+    @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(DamageSource source, CallbackInfo info) {
-        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiseOrigins)) {
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(Randomiser.randomiseOrigins)) {
             this.randomOrigin(" died and respawned as a ");
         } else {
             this.sendMessage(Text.of("Origin randomising has been disabled."));
         }
     }
 
-    @Inject(at = {@At("TAIL")}, method = {"wakeUp"})
+    @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(sleepRandomisesOrigin) && Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiseOrigins)) {
+        if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(Randomiser.sleepRandomisesOrigin) && Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(Randomiser.randomiseOrigins)) {
             this.randomOrigin(" slept and woke up as a ");
-        } else if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(sleepRandomisesOrigin) && !Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(randomiseOrigins)) {
+        } else if (Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(Randomiser.sleepRandomisesOrigin) && !Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(Randomiser.randomiseOrigins)) {
             this.sendMessage(Text.of("Origin randomising has been disabled."));
         }
     }
 
-    @Inject(at = {@At("TAIL")}, method = {"moveToSpawn"})
+    @Inject(at = @At("TAIL"), method = "moveToSpawn")
     private void spawn(ServerWorld serverWorld, CallbackInfo info) {
         this.randomOrigin(" spawned for the first time as a ");
     }
