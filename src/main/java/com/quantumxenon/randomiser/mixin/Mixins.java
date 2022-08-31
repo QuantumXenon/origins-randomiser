@@ -35,15 +35,23 @@ public abstract class Mixins extends PlayerEntity implements Player {
         super(world, blockPos, f, gameProfile, null);
     }
 
-    public void randomOrigin(String reason) {
-        List<Identifier> originsList = layer.getRandomOrigins(this);
-        Origin origin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
-        setOrigin(this, origin);
+    private boolean gameRule(GameRules.Key<GameRules.BooleanRule> gameRule) {
+        return Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(gameRule);
+    }
 
-        if (gameRule(Randomiser.randomiserMessages)) {
-            for (ServerPlayerEntity player : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
-                player.sendMessage(Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
+    public void randomOrigin(String reason) {
+        if (gameRule(Randomiser.randomiseOrigins)) {
+            List<Identifier> originsList = layer.getRandomOrigins(this);
+            Origin origin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
+            setOrigin(this, origin);
+
+            if (gameRule(Randomiser.randomiserMessages)) {
+                for (ServerPlayerEntity player : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
+                    player.sendMessage(Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
+                }
             }
+        } else {
+            this.sendMessage(Text.of("Origin randomising has been disabled."));
         }
     }
 
@@ -61,25 +69,15 @@ public abstract class Mixins extends PlayerEntity implements Player {
         OriginComponent.sync(player);
     }
 
-    private boolean gameRule(GameRules.Key<GameRules.BooleanRule> gameRule) {
-        return Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(gameRule);
-    }
-
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(DamageSource source, CallbackInfo info) {
-        if (gameRule(Randomiser.randomiseOrigins)) {
-            randomOrigin(" died and respawned as a ");
-        } else {
-            this.sendMessage(Text.of("Origin randomising has been disabled."));
-        }
+        randomOrigin(" died and respawned as a ");
     }
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (gameRule(Randomiser.sleepRandomisesOrigin) && gameRule(Randomiser.randomiseOrigins)) {
+        if (gameRule(Randomiser.sleepRandomisesOrigin)) {
             randomOrigin(" slept and woke up as a ");
-        } else if (gameRule(Randomiser.sleepRandomisesOrigin) && !gameRule(Randomiser.randomiseOrigins)) {
-            this.sendMessage(Text.of("Origin randomising has been disabled."));
         }
     }
 
