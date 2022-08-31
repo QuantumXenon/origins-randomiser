@@ -19,6 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -58,7 +59,7 @@ public abstract class Mixins extends PlayerEntity implements Player {
     private StringBuilder formatOrigin(Origin origin) {
         StringBuilder formattedOrigin = new StringBuilder();
         for (String word : origin.getIdentifier().toString().split(":")[1].replace("_", " ").toLowerCase().split("\\s+")) {
-            formattedOrigin.append(word.replaceFirst(".", word.substring(0, 1).toUpperCase())).append(" ");
+            formattedOrigin.append(StringUtils.capitalize(word)).append(" ");
         }
         return formattedOrigin;
     }
