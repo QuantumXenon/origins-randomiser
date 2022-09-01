@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id("fabric-loom") version ("1.0-SNAPSHOT")
 }
 
 version = project.mod_version
@@ -22,6 +22,6 @@ dependencies {
 
 processResources {
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand("version": project.version)
     }
 }
