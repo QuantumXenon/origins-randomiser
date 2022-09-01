@@ -3,7 +3,7 @@
   "id": "origins-randomiser",
   "name": "Origins Randomiser",
   "version": "${version}",
-  "description": "Assigns you a random origin every time you die",
+  "description": "Assigns you a random origin every time you die.",
   "authors": [
     "TheQuantumXenon"
   ],
@@ -14,7 +14,7 @@
   "icon": "icon.png",
   "entrypoints": {
     "main": [
-      "com.quantumxenon.randomiser.Randomiser"
+      "com.quantumxenon.randomiser.OriginsRandomiser"
     ]
   },
   "mixins": [
