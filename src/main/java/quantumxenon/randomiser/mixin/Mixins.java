@@ -1,8 +1,8 @@
-package com.quantumxenon.randomiser.mixin;
+package quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
-import com.quantumxenon.randomiser.OriginsRandomiser;
-import com.quantumxenon.randomiser.entity.Player;
+import quantumxenon.randomiser.OriginsRandomiser;
+import quantumxenon.randomiser.entity.Player;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;

@@ -1,6 +1,6 @@
-package com.quantumxenon.randomiser;
+package quantumxenon.randomiser;
 
-import com.quantumxenon.randomiser.entity.Player;
+import quantumxenon.randomiser.entity.Player;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;

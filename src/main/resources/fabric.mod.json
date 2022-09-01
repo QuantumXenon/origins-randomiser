@@ -14,7 +14,7 @@
   "icon":"icon.png",
   "entrypoints":{
     "main":[
-      "com.quantumxenon.randomiser.OriginsRandomiser"
+      "quantumxenon.randomiser.OriginsRandomiser"
     ]
   },
   "mixins":[
