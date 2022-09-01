@@ -1,15 +1,15 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id("fabric-loom") version("1.0-SNAPSHOT")
 }
 
 version = project.mod_version
 
 repositories {
-    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" }
-    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.jamieswhiteshirt.com/libs-release/" }
+    maven { url = "https://jitpack.io/" }
     maven { url = "https://maven.shedaniel.me/" }
     maven { url = "https://maven.terraformersmc.com/" }
-    maven { url = "https://ladysnake.jfrog.io/artifactory/mods" }
+    maven { url = "https://ladysnake.jfrog.io/artifactory/mods/" }
 }
 
 dependencies {
@@ -22,6 +22,6 @@ dependencies {
 
 processResources {
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand("version": project.version)
     }
 }
