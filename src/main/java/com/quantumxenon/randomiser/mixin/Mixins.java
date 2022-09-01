@@ -1,7 +1,7 @@
 package com.quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
-import com.quantumxenon.randomiser.Randomiser;
+import com.quantumxenon.randomiser.OriginsRandomiser;
 import com.quantumxenon.randomiser.entity.Player;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
@@ -41,12 +41,12 @@ public abstract class Mixins extends PlayerEntity implements Player {
     }
 
     public void randomOrigin(String reason) {
-        if (gameRule(Randomiser.randomiseOrigins)) {
+        if (gameRule(OriginsRandomiser.randomiseOrigins)) {
             List<Identifier> originsList = layer.getRandomOrigins(this);
             Origin origin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
             setOrigin(this, origin);
 
-            if (gameRule(Randomiser.randomiserMessages)) {
+            if (gameRule(OriginsRandomiser.randomiserMessages)) {
                 for (ServerPlayerEntity player : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
                     player.sendMessage(Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET), false);
                 }
@@ -77,7 +77,7 @@ public abstract class Mixins extends PlayerEntity implements Player {
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (gameRule(Randomiser.sleepRandomisesOrigin)) {
+        if (gameRule(OriginsRandomiser.sleepRandomisesOrigin)) {
             randomOrigin(" slept and woke up as a ");
         }
     }
