@@ -75,15 +75,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         randomOrigin(" died and respawned as a ");
     }
 
+    @Inject(at = @At("TAIL"), method = "moveToSpawn")
+    private void spawn(ServerWorld serverWorld, CallbackInfo info) {
+        randomOrigin(" spawned for the first time as a ");
+    }
+
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (gameRule(OriginsRandomiser.sleepRandomisesOrigin)) {
             randomOrigin(" slept and woke up as a ");
         }
-    }
-
-    @Inject(at = @At("TAIL"), method = "moveToSpawn")
-    private void spawn(ServerWorld serverWorld, CallbackInfo info) {
-        randomOrigin(" spawned for the first time as a ");
     }
 }
