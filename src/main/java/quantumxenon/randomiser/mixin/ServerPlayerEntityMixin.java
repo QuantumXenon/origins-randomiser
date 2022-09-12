@@ -69,7 +69,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
-    private void death(CallbackInfo info) {
+    private void die(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
     }
 
