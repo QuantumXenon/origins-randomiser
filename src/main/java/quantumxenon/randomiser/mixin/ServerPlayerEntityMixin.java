@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class Mixins extends PlayerEntity implements Player {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
 
-    private Mixins(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
+    private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
     }
 
