@@ -1,18 +1,14 @@
 package quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
-import quantumxenon.randomiser.OriginsRandomiser;
-import quantumxenon.randomiser.entity.Player;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
 import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -24,6 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quantumxenon.randomiser.OriginsRandomiser;
+import quantumxenon.randomiser.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,12 +69,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
-    private void death(DamageSource source, CallbackInfo info) {
+    private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
     }
 
     @Inject(at = @At("TAIL"), method = "moveToSpawn")
-    private void spawn(ServerWorld serverWorld, CallbackInfo info) {
+    private void spawn(CallbackInfo info) {
         randomOrigin(" spawned for the first time as a ");
     }
 
