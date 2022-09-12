@@ -63,8 +63,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     private void setOrigin(PlayerEntity player, Origin origin) {
-        OriginComponent component = ModComponents.ORIGIN.get(player);
-        component.setOrigin(layer, origin);
+        ModComponents.ORIGIN.get(player).setOrigin(layer, origin);
         OriginComponent.sync(player);
     }
 
