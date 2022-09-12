@@ -41,10 +41,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     public void randomOrigin(String reason) {
         List<Identifier> originsList = layer.getRandomOrigins(this);
         Origin origin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
-
         if (gameRule(OriginsRandomiser.randomiseOrigins)) {
             setOrigin(this, origin);
-
             if (gameRule(OriginsRandomiser.randomiserMessages)) {
                 for (ServerPlayerEntity player : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
                     player.sendMessage(Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
