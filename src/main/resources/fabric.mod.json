@@ -22,7 +22,6 @@
   ],
   "depends": {
     "minecraft": "1.19.x",
-    "fabricloader": "*",
     "fabric": "*",
     "origins": "*"
   }
