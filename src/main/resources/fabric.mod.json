@@ -22,8 +22,7 @@
   ],
   "depends": {
     "minecraft": "1.18.2",
-    "fabricloader": "*",
-    "fabric": "*",
+    "fabric-api": "*",
     "origins": "*"
   }
 }
