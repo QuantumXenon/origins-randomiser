@@ -34,16 +34,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         super(world, blockPos, f, gameProfile, null);
     }
 
-    private boolean gameRule(GameRules.Key<GameRules.BooleanRule> gameRule) {
+    private boolean getBoolean(GameRules.Key<GameRules.BooleanRule> gameRule) {
         return Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(gameRule);
     }
 
     public void randomOrigin(String reason) {
         List<Identifier> originsList = layer.getRandomOrigins(this);
         Origin origin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
-        if (gameRule(OriginsRandomiser.randomiseOrigins)) {
+        if (getBoolean(OriginsRandomiser.randomiseOrigins)) {
             setOrigin(this, origin);
-            if (gameRule(OriginsRandomiser.randomiserMessages)) {
+            if (getBoolean(OriginsRandomiser.randomiserMessages)) {
                 for (ServerPlayerEntity player : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
                     player.sendMessage(Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
@@ -67,19 +67,23 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
-    private void die(CallbackInfo info) {
+    private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
-    }
-
-    @Inject(at = @At("TAIL"), method = "moveToSpawn")
-    private void spawn(CallbackInfo info) {
-        randomOrigin(" spawned for the first time as a ");
     }
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (gameRule(OriginsRandomiser.sleepRandomisesOrigin)) {
+        if (getBoolean(OriginsRandomiser.sleepRandomisesOrigin)) {
             randomOrigin(" slept and woke up as a ");
+        }
+    }
+
+    @Inject(at = @At("TAIL"), method = "onSpawn")
+    private void spawn(CallbackInfo info) {
+        String tag = "firstJoin";
+        if (!this.getScoreboardTags().contains(tag)) {
+            this.addScoreboardTag(tag);
+            randomOrigin(" spawned for the first time as a ");
         }
     }
 }
