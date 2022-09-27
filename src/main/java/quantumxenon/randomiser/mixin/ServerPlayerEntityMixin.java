@@ -29,8 +29,6 @@ import quantumxenon.randomiser.entity.Player;
 import java.util.List;
 import java.util.Objects;
 
-import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
-
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
@@ -117,7 +115,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (getBoolean(OriginsRandomiser.enableLives)) {
             String objective = "lives";
             if (!scoreboard.containsObjective(objective)) {
-                scoreboard.addObjective(objective, (ScoreboardCriterion) DUMMY, Text.of(objective), INTEGER);
+                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
                 modifyLives(getInt(OriginsRandomiser.defaultLives), this);
                 send("You start with" + getInt(OriginsRandomiser.defaultLives) + "lives.");
             }
