@@ -28,7 +28,7 @@ public class OriginsRandomiser implements ModInitializer {
 
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomiseOrigin(context.getSource()))));
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes((context) -> setLives(context, IntegerArgumentType.getInteger(context, "number")))))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives)))));
     }
 
     private int randomiseOrigin(ServerCommandSource source) {
@@ -42,18 +42,20 @@ public class OriginsRandomiser implements ModInitializer {
         return 1;
     }
 
-    private int setLives(CommandContext<ServerCommandSource> context, int number) throws CommandSyntaxException {
-        if (context.getSource().getServer().getGameRules().getBoolean(enableLives) && context.getSource().hasPermissionLevel(2)) {
-            Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "player");
-            if (context.getSource() instanceof Player player) {
+    private int setLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "player");
+        int number = IntegerArgumentType.getInteger(context, "number");
+        ServerCommandSource source = context.getSource();
+        if (source.getServer().getGameRules().getBoolean(enableLives) && source.hasPermissionLevel(2)) {
+            if (source instanceof Player player) {
                 for (ServerPlayerEntity target : targets) {
                     player.modifyLives(0, target);
                     player.modifyLives(number, target);
-                    Objects.requireNonNull(context.getSource().getEntity()).sendMessage(Text.of("Set " + target.getName().getString() + "'s lives to " + number + "."));
+                    Objects.requireNonNull(source.getEntity()).sendMessage(Text.of("Set " + target.getName().getString() + "'s lives to " + number + "."));
                 }
             }
         } else {
-            Objects.requireNonNull(context.getSource().getEntity()).sendMessage(Text.of("Lives are disabled. Use the 'enableLives' gamerule to toggle them."));
+            Objects.requireNonNull(source.getEntity()).sendMessage(Text.of("Lives are disabled. Use the 'enableLives' game-rule to toggle them."));
         }
         return 1;
     }
