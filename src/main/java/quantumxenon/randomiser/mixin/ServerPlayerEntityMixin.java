@@ -56,7 +56,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     public void modifyLives(int number, PlayerEntity target) {
-        target.getScoreboard().updatePlayerScore(String.valueOf(number), target.getScoreboard().getObjective("lives"));
+        // Modify target's lives by number
     }
 
     public void randomOrigin(String reason) {
@@ -65,7 +65,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (getBoolean(OriginsRandomiser.randomiseOrigins)) {
             setOrigin(this, origin);
             if (getBoolean(OriginsRandomiser.randomiserMessages)) {
-                for (ServerPlayerEntity entity : Objects.requireNonNull(server).getPlayerManager().getPlayerList()) {
+                for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
                     entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
             }
@@ -87,19 +87,19 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         OriginComponent.sync(player);
     }
 
+    @Inject(at = @At("TAIL"), method = "wakeUp")
+    private void sleep(CallbackInfo info) {
+        if (getBoolean(OriginsRandomiser.sleepRandomisesOrigin)) {
+            randomOrigin(" slept and woke up as a ");
+        }
+    }
+
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
         if (getBoolean(OriginsRandomiser.enableLives)) {
             send("You now have " + getLives() + " lives remaining");
             modifyLives(-1, this);
-        }
-    }
-
-    @Inject(at = @At("TAIL"), method = "wakeUp")
-    private void sleep(CallbackInfo info) {
-        if (getBoolean(OriginsRandomiser.sleepRandomisesOrigin)) {
-            randomOrigin(" slept and woke up as a ");
         }
     }
 
