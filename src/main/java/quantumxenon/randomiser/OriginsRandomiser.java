@@ -46,8 +46,8 @@ public class OriginsRandomiser implements ModInitializer {
         Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "player");
         int number = IntegerArgumentType.getInteger(context, "number");
         ServerCommandSource source = context.getSource();
-        if (source.getServer().getGameRules().getBoolean(enableLives) && source.hasPermissionLevel(2)) {
-            if (source instanceof Player player) {
+        if (source.getServer().getGameRules().getBoolean(enableLives)) {
+            if (source instanceof Player player && source.hasPermissionLevel(2)) {
                 for (ServerPlayerEntity target : targets) {
                     player.modifyLives(0, target);
                     player.modifyLives(number, target);

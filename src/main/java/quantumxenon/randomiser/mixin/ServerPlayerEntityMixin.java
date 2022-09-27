@@ -99,7 +99,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
         if (getBoolean(OriginsRandomiser.enableLives)) {
-            send("You now have " + getLives() + " lives remaining");
+            send("You now have " + Formatting.BOLD + getLives() + Formatting.RESET + " lives remaining.");
             modifyLives(-1, this);
         }
     }
@@ -117,7 +117,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (!scoreboard.containsObjective(objective)) {
                 scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
                 modifyLives(getInt(OriginsRandomiser.defaultLives), this);
-                send("You start with" + getInt(OriginsRandomiser.defaultLives) + "lives.");
+                send("You start with " + getInt(OriginsRandomiser.defaultLives) + " lives.");
             }
         }
     }
