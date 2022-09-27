@@ -8,6 +8,8 @@ import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -29,33 +31,52 @@ import java.util.Objects;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
+    private final String player = this.getName().getString();
+    private final MinecraftServer server = Objects.requireNonNull(this.getServer());
+    private final Scoreboard scoreboard = this.getScoreboard();
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
     }
 
     private boolean getBoolean(GameRules.Key<GameRules.BooleanRule> gameRule) {
-        return Objects.requireNonNull(this.getServer()).getGameRules().getBoolean(gameRule);
+        return server.getGameRules().getBoolean(gameRule);
+    }
+
+    private int getInt(GameRules.Key<GameRules.IntRule> gameRule) {
+        return server.getGameRules().getInt(gameRule);
+    }
+
+    private int getLives() {
+        return (scoreboard.getPlayerScore(player, scoreboard.getObjective("lives")).getScore());
+    }
+
+    private void send(String message) {
+        this.sendMessage(Text.of(message));
+    }
+
+    public void modifyLives(int number, PlayerEntity target) {
+        target.getScoreboard().updatePlayerScore(String.valueOf(number), target.getScoreboard().getObjective("lives"));
     }
 
     public void randomOrigin(String reason) {
-        List<Identifier> originsList = layer.getRandomOrigins(this);
-        Origin origin = OriginRegistry.get(originsList.get(this.getRandom().nextInt(originsList.size())));
+        List<Identifier> originList = layer.getRandomOrigins(this);
+        Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
         if (getBoolean(OriginsRandomiser.randomiseOrigins)) {
             setOrigin(this, origin);
             if (getBoolean(OriginsRandomiser.randomiserMessages)) {
-                for (ServerPlayerEntity player : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
-                    player.sendMessage(Text.of(Formatting.BOLD + this.getName().getString() + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
+                for (ServerPlayerEntity entity : Objects.requireNonNull(server).getPlayerManager().getPlayerList()) {
+                    entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
             }
         } else {
-            this.sendMessage(Text.of("Origin randomising has been disabled."));
+            send("Origin randomising has been disabled.");
         }
     }
 
     private StringBuilder formatOrigin(Origin origin) {
         StringBuilder formattedOrigin = new StringBuilder();
-        for (String word : origin.getIdentifier().toString().split(":")[1].replace("_", " ").toLowerCase().split("\\s+")) {
+        for (String word : origin.getIdentifier().toString().split(":")[1].replace("_", " ").split("\\s+")) {
             formattedOrigin.append(StringUtils.capitalize(word)).append(" ");
         }
         return formattedOrigin;
@@ -69,6 +90,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
+        if (getBoolean(OriginsRandomiser.enableLives)) {
+            send("You now have " + getLives() + " lives remaining");
+            modifyLives(-1, this);
+        }
     }
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
@@ -84,6 +109,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (!this.getScoreboardTags().contains(tag)) {
             this.addScoreboardTag(tag);
             randomOrigin(" spawned for the first time as a ");
+        }
+
+        if (getBoolean(OriginsRandomiser.enableLives)) {
+            String objective = "lives";
+            if (!scoreboard.containsObjective(objective)) {
+                scoreboard.addObjective(objective, null, Text.of(objective), null);
+                modifyLives(getInt(OriginsRandomiser.defaultLives), this);
+            }
         }
     }
 }
