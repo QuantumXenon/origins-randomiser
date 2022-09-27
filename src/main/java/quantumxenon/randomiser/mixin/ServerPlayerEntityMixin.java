@@ -56,7 +56,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     public void modifyLives(int number, PlayerEntity target) {
-        // Increase target's scoreboard objective 'lives' by number
+        target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).incrementScore(number);
     }
 
     public void randomOrigin(String reason) {
