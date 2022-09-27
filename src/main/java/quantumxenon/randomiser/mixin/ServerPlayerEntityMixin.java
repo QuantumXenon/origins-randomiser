@@ -9,6 +9,7 @@ import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -27,6 +28,8 @@ import quantumxenon.randomiser.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
@@ -114,8 +117,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (getBoolean(OriginsRandomiser.enableLives)) {
             String objective = "lives";
             if (!scoreboard.containsObjective(objective)) {
-                scoreboard.addObjective(objective, null, Text.of(objective), null);
+                scoreboard.addObjective(objective, (ScoreboardCriterion) DUMMY, Text.of(objective), INTEGER);
                 modifyLives(getInt(OriginsRandomiser.defaultLives), this);
+                send("You start with" + getInt(OriginsRandomiser.defaultLives) + "lives.");
             }
         }
     }
