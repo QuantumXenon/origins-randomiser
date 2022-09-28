@@ -16,18 +16,18 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quantumxenon.randomiser.OriginsRandomiser;
 import quantumxenon.randomiser.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
+
+import static quantumxenon.randomiser.OriginsRandomiser.CONFIG;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
@@ -38,14 +38,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
-    }
-
-    private boolean getBoolean(GameRules.Key<GameRules.BooleanRule> gameRule) {
-        return server.getGameRules().getBoolean(gameRule);
-    }
-
-    private int getInt(GameRules.Key<GameRules.IntRule> gameRule) {
-        return server.getGameRules().getInt(gameRule);
     }
 
     private int getLives() {
@@ -63,9 +55,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     public void randomOrigin(String reason) {
         List<Identifier> originList = layer.getRandomOrigins(this);
         Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
-        if (getBoolean(OriginsRandomiser.randomiseOrigins)) {
+        if (CONFIG.randomiseOrigins()) {
             setOrigin(this, origin);
-            if (getBoolean(OriginsRandomiser.randomiserMessages)) {
+            if (CONFIG.randomiserMessages()) {
                 for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
                     entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
@@ -90,7 +82,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (getBoolean(OriginsRandomiser.sleepRandomisesOrigin)) {
+        if (CONFIG.sleepRandomisesOrigin()) {
             randomOrigin(" slept and woke up as a ");
         }
     }
@@ -98,7 +90,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
-        if (getBoolean(OriginsRandomiser.enableLives)) {
+        if (CONFIG.enableLives()) {
             send("You now have " + Formatting.BOLD + getLives() + Formatting.RESET + " lives remaining.");
             modifyLives(-1, this);
         }
@@ -112,12 +104,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             randomOrigin(" spawned for the first time as a ");
         }
 
-        if (getBoolean(OriginsRandomiser.enableLives)) {
+        if (CONFIG.enableLives()) {
             String objective = "lives";
             if (!scoreboard.containsObjective(objective)) {
                 scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
-                modifyLives(getInt(OriginsRandomiser.defaultLives), this);
-                send("You start with " + getInt(OriginsRandomiser.defaultLives) + " lives.");
+                modifyLives(CONFIG.defaultLives(), this);
+                send("You start with " + CONFIG.defaultLives() + " lives.");
             }
         }
     }
