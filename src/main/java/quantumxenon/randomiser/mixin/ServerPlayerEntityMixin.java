@@ -108,8 +108,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             String objective = "lives";
             if (!scoreboard.containsObjective(objective)) {
                 scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
-                modifyLives(CONFIG.defaultLives(), this);
-                send("You start with " + CONFIG.defaultLives() + " lives.");
+                modifyLives(CONFIG.startingLives(), this);
+                send("You start with " + CONFIG.startingLives() + " lives.");
             }
         }
     }
