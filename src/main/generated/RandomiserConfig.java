@@ -14,7 +14,7 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
     private final Option<java.lang.Boolean> randomiseCommand = this.optionForKey(new Option.Key("randomiseCommand"));
     private final Option<java.lang.Boolean> randomiserMessages = this.optionForKey(new Option.Key("randomiserMessages"));
     private final Option<java.lang.Boolean> enableLives = this.optionForKey(new Option.Key("enableLives"));
-    private final Option<java.lang.Integer> defaultLives = this.optionForKey(new Option.Key("defaultLives"));
+    private final Option<java.lang.Integer> startingLives = this.optionForKey(new Option.Key("startingLives"));
     private final Option<java.lang.Boolean> sleepRandomisesOrigin = this.optionForKey(new Option.Key("sleepRandomisesOrigin"));
 
     private RandomiserConfig() {
@@ -63,13 +63,13 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
         enableLives.synchronizeWithBackingField();
     }
 
-    public int defaultLives() {
-        return defaultLives.value();
+    public int startingLives() {
+        return startingLives.value();
     }
 
-    public void defaultLives(int value) {
-        instance.defaultLives = value;
-        defaultLives.synchronizeWithBackingField();
+    public void startingLives(int value) {
+        instance.startingLives = value;
+        startingLives.synchronizeWithBackingField();
     }
 
     public boolean sleepRandomisesOrigin() {
@@ -80,9 +80,4 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
         instance.sleepRandomisesOrigin = value;
         sleepRandomisesOrigin.synchronizeWithBackingField();
     }
-
-
-
-
 }
-
