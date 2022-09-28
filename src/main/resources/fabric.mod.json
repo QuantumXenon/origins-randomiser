@@ -11,7 +11,7 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
     "issues": "https://github.com/QuantumXenon/origins-randomiser/issues"
   },
-  "icon": "icon.png",
+  "icon": "assets/icon.png",
   "entrypoints": {
     "main": [
       "quantumxenon.randomiser.OriginsRandomiser"
@@ -24,5 +24,8 @@
     "minecraft": "1.19.x",
     "fabric": "*",
     "origins": "*"
+  },
+  "recommends": {
+    "owo-lib": "*"
   }
 }
