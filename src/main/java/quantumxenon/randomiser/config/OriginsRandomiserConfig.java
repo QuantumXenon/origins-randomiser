@@ -14,7 +14,7 @@ public class OriginsRandomiserConfig {
 
     @SectionHeader("Lives")
     public boolean enableLives = false;
-    public int defaultLives = 10;
+    public int startingLives = 10;
 
     @SectionHeader("Other")
     public boolean sleepRandomisesOrigin = false;
