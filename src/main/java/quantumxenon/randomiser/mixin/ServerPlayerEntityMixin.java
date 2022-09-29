@@ -29,6 +29,7 @@ import quantumxenon.randomiser.entity.Player;
 import java.util.List;
 import java.util.Objects;
 
+import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 import static quantumxenon.randomiser.OriginsRandomiser.CONFIG;
 
 @Mixin(ServerPlayerEntity.class)
@@ -53,11 +54,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         return (scoreboard.getPlayerScore(player, scoreboard.getObjective(objective)).getScore());
     }
 
-    public void modifyValue(int number, PlayerEntity target, String objective) {
+    public void modifyValue(String objective, int number, PlayerEntity target) {
         target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective(objective)).incrementScore(number);
     }
 
-    public void setValue(int number, PlayerEntity target, String objective) {
+    public void setValue(String objective, int number, PlayerEntity target) {
         target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective(objective)).setScore(number);
     }
 
@@ -66,11 +67,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (CONFIG.randomiseOrigins()) {
                 List<Identifier> originList = layer.getRandomOrigins(this);
                 Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
-                setValue(CONFIG.livesBetweenRandomises(), this, "livesUntilRandomise");
+                setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
                 setOrigin(this, origin);
                 if (CONFIG.randomiserMessages()) {
                     for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
-                        send(String.valueOf(Text.of(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET)), serverPlayer);
+                        send(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET, serverPlayer);
                     }
                 }
             } else {
@@ -102,10 +103,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
-        modifyValue(-1, this, "livesUntilRandomise");
+        modifyValue("livesUntilRandomise", -1, this);
         if (CONFIG.enableLives()) {
             send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
-            modifyValue(-1, this, "lives");
+            modifyValue("lives", -1, this);
         }
     }
 
@@ -117,11 +118,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             randomOrigin(" spawned for the first time as a ");
         }
 
+        String objective = "livesUntilRandomise";
+        if (!scoreboard.containsObjective(objective)) {
+            scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
+            setValue(objective, CONFIG.livesBetweenRandomises(), this);
+            if (CONFIG.livesBetweenRandomises() > 1) {
+                send("You will receive a random origin after every " + CONFIG.livesBetweenRandomises() + " lives.", this);
+            }
+        }
+
         if (CONFIG.enableLives()) {
-            String objective = "lives";
+            objective = "lives";
             if (!scoreboard.containsObjective(objective)) {
-                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
-                setValue(CONFIG.startingLives(), this, objective);
+                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
+                setValue(objective, CONFIG.startingLives(), this);
                 send("Lives have been enabled. You start with " + CONFIG.startingLives() + " lives.", this);
             }
             if (getValue(objective) == 0) {
@@ -130,10 +140,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
 
         if (CONFIG.limitCommandUses()) {
-            String objective = "uses";
+            objective = "uses";
             if (!scoreboard.containsObjective(objective)) {
-                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
-                modifyValue(CONFIG.randomiseCommandUses(), this, objective);
+                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
+                setValue(objective, CONFIG.randomiseCommandUses(), this);
                 send("Use of the /randomise command has been limited. You start with " + CONFIG.randomiseCommandUses() + " randomises.", this);
             }
         }
