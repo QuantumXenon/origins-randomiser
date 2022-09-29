@@ -3,7 +3,7 @@
   "id": "origins-randomiser",
   "name": "Origins Randomiser",
   "version": "${version}",
-  "description": "Assigns you a random origin every time you die.",
+  "description": "Assigns you a random origin every time you die. Highly configurable in the config.",
   "authors": [
     "TheQuantumXenon"
   ],
