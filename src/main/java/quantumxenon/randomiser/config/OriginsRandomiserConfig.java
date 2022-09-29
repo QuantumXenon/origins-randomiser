@@ -9,12 +9,17 @@ import io.wispforest.owo.config.annotation.SectionHeader;
 public class OriginsRandomiserConfig {
     @SectionHeader("General")
     public boolean randomiseOrigins = true;
-    public boolean randomiseCommand = true;
     public boolean randomiserMessages = true;
+
+    @SectionHeader("Command")
+    public boolean randomiseCommand = true;
+    public boolean limitCommandUses = false;
+    public int randomiseCommandUses = 3;
 
     @SectionHeader("Lives")
     public boolean enableLives = false;
     public int startingLives = 10;
+    public int livesBetweenRandomises = 1;
 
     @SectionHeader("Other")
     public boolean sleepRandomisesOrigin = false;

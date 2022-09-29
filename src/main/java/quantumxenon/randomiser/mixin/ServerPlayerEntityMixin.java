@@ -16,9 +16,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,16 +42,19 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         super(world, blockPos, f, gameProfile, null);
     }
 
-    private int getLives() {
-        return (scoreboard.getPlayerScore(player, scoreboard.getObjective("lives")).getScore());
+    @Shadow
+    public abstract boolean changeGameMode(GameMode gameMode);
+
+    private void send(String message, PlayerEntity player) {
+        player.sendMessage(Text.of(message));
     }
 
-    private void send(String message) {
-        this.sendMessage(Text.of(message));
+    private int getValue(String objective) {
+        return (scoreboard.getPlayerScore(player, scoreboard.getObjective(objective)).getScore());
     }
 
-    public void modifyLives(int number, PlayerEntity target) {
-        target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).incrementScore(number);
+    public void modifyValue(int number, PlayerEntity target, String objective) {
+        target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective(objective)).incrementScore(number);
     }
 
     public void randomOrigin(String reason) {
@@ -58,12 +63,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (CONFIG.randomiseOrigins()) {
             setOrigin(this, origin);
             if (CONFIG.randomiserMessages()) {
-                for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
-                    entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
+                for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
+                    send(String.valueOf(Text.of(Formatting.BOLD + player + Formatting.RESET + reason + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET)), serverPlayer);
                 }
             }
         } else {
-            send("Origin randomising has been disabled.");
+            send("Origin randomising has been disabled.", this);
         }
     }
 
@@ -91,8 +96,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
         if (CONFIG.enableLives()) {
-            send("You now have " + Formatting.BOLD + getLives() + Formatting.RESET + " lives remaining.");
-            modifyLives(-1, this);
+            send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
+            modifyValue(-1, this, "lives");
         }
     }
 
@@ -108,8 +113,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             String objective = "lives";
             if (!scoreboard.containsObjective(objective)) {
                 scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
-                modifyLives(CONFIG.startingLives(), this);
-                send("You start with " + CONFIG.startingLives() + " lives.");
+                modifyValue(CONFIG.startingLives(), this, objective);
+                send("Lives have been enabled. You start with " + CONFIG.startingLives() + " lives.", this);
+            }
+            if (getValue(objective) == 0) {
+                this.changeGameMode(GameMode.SPECTATOR);
+            }
+        }
+
+        if (CONFIG.limitCommandUses()) {
+            String objective = "uses";
+            if (!scoreboard.containsObjective(objective)) {
+                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), ScoreboardCriterion.RenderType.INTEGER);
+                modifyValue(CONFIG.randomiseCommandUses(), this, objective);
+                send("Use of the /randomise command has been limited. You start with " + CONFIG.randomiseCommandUses() + " randomises.", this);
             }
         }
     }
