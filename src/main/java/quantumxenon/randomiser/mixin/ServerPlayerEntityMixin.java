@@ -63,7 +63,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     public void randomOrigin(String reason) {
-        if ((getValue("livesUntilRandomise") <= 0)) {
+        if ((getValue("livesUntilRandomise") <= 0) || reason.equals(" randomised their origin and is now a ")) {
             if (CONFIG.randomiseOrigins()) {
                 setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
                 List<Identifier> originList = layer.getRandomOrigins(this);
@@ -79,7 +79,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             }
         }
         else{
-            send("You have" + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + "more lives until your origin is randomised.", this);
+            send("You have " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " more lives until your origin is randomised.", this);
         }
     }
 

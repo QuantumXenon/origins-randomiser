@@ -10,6 +10,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import quantumxenon.randomiser.config.RandomiserConfig;
 import quantumxenon.randomiser.entity.Player;
 
@@ -20,24 +21,22 @@ public class OriginsRandomiser implements ModInitializer {
     public static final RandomiserConfig CONFIG = RandomiserConfig.createAndLoad();
 
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(this::randomiseOrigin)));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomise(context.getSource()))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setLives").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives))))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses))))));
     }
 
-    private int randomiseOrigin(CommandContext<ServerCommandSource> context) {
-        ServerCommandSource source = context.getSource();
+    private int randomise(ServerCommandSource source) {
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(" randomised their origin and is now a ");
                 if (CONFIG.limitCommandUses()) {
                     Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
+                    source.sendMessage(Text.of("You now have " + Formatting.BOLD + (source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + " uses of the /randomise command left."));
                 }
             } else {
                 source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
             }
-        } else {
-            source.sendMessage(Text.of("ERROR"));
         }
         return 1;
     }
