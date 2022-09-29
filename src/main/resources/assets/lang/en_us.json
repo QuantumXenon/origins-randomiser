@@ -1,13 +1,17 @@
 {
-	"text.config.origins-randomiser.title":"Origins Randomizer",
-	"text.config.origins-randomiser.section.General":"General",
-	"text.config.origins-randomiser.section.Lives":"Lives",
-	"text.config.origins-randomiser.section.Other":"Other",
-	
-	"text.config.origins-randomiser.option.randomiseOrigins":"randomizeOrigins",
-	"text.config.origins-randomiser.option.randomiseCommand":"randomizeCommand",
-	"text.config.origins-randomiser.option.randomiserMessages":"randomizerMessages",
-	"text.config.origins-randomiser.option.enableLives":"enableLives",
-	"text.config.origins-randomiser.option.startingLives":"startingLives",
-	"text.config.origins-randomiser.option.sleepRandomisesOrigin":"sleepRandomizesOrigin"
+  "text.config.origins-randomiser.title": "Origins Randomizer",
+  "text.config.origins-randomiser.section.General": "General",
+  "text.config.origins-randomiser.section.Command": "Command",
+  "text.config.origins-randomiser.section.Lives": "Lives",
+  "text.config.origins-randomiser.section.Other": "Other",
+
+  "text.config.origins-randomiser.option.randomiseOrigins": "randomizeOrigins",
+  "text.config.origins-randomiser.option.randomiserMessages": "randomizerMessages",
+  "text.config.origins-randomiser.option.randomiseCommand": "randomizeCommand",
+  "text.config.origins-randomiser.option.limitCommandUses": "limitCommandUses",
+  "text.config.origins-randomiser.option.randomiseCommandUses": "randomizeCommandUses",
+  "text.config.origins-randomiser.option.enableLives": "enableLives",
+  "text.config.origins-randomiser.option.startingLives": "startingLives",
+  "text.config.origins-randomiser.option.livesBetweenRandomises": "livesBetweenRandomizes",
+  "text.config.origins-randomiser.option.sleepRandomisesOrigin": "sleepRandomizesOrigin"
 }
