@@ -112,7 +112,5 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
     }
 
 
-
-
 }
 
