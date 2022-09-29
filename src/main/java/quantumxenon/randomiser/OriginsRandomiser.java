@@ -29,10 +29,10 @@ public class OriginsRandomiser implements ModInitializer {
     private int randomise(ServerCommandSource source) {
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
-                player.randomOrigin(" randomised their origin and is now a ");
+                player.randomOrigin(" randomised their origin and is now a ",true);
                 if (CONFIG.limitCommandUses()) {
-                    Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
-                    source.sendMessage(Text.of("You now have " + Formatting.BOLD + (source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + " uses of the /randomise command left."));
+                    Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
+                    source.sendMessage(Text.of("You now have " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + " uses of the /randomise command left."));
                 }
             } else {
                 source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
@@ -63,7 +63,7 @@ public class OriginsRandomiser implements ModInitializer {
         ServerCommandSource source = context.getSource();
         if (CONFIG.limitCommandUses()) {
             for (ServerPlayerEntity target : targets) {
-                target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("commandUses")).setScore(number);
+                target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("uses")).setScore(number);
                 source.sendMessage(Text.of("Set " + target.getName().getString() + "'s /randomise uses to " + number + "."));
             }
         } else {

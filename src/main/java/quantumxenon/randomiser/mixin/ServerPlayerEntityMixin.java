@@ -62,8 +62,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective(objective)).setScore(number);
     }
 
-    public void randomOrigin(String reason) {
-        if ((getValue("livesUntilRandomise") <= 0) || reason.equals(" randomised their origin and is now a ")) {
+    public void randomOrigin(String reason, boolean bypass) {
+        if ((getValue("livesUntilRandomise") <= 0) || bypass) {
             if (CONFIG.randomiseOrigins()) {
                 setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
                 List<Identifier> originList = layer.getRandomOrigins(this);
@@ -99,14 +99,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
-            randomOrigin(" slept and woke up as a ");
+            randomOrigin(" slept and woke up as a ",true);
         }
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         modifyValue("livesUntilRandomise", -1, this);
-        randomOrigin(" died and respawned as a ");
+        randomOrigin(" died and respawned as a ",false);
         if (CONFIG.enableLives()) {
             modifyValue("lives", -1, this);
             send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
@@ -118,7 +118,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         String tag = "firstJoin";
         if (!this.getScoreboardTags().contains(tag)) {
             this.addScoreboardTag(tag);
-            randomOrigin(" spawned for the first time as a ");
+            randomOrigin(" spawned for the first time as a ",true);
         }
 
         String objective = "livesUntilRandomise";
@@ -131,23 +131,23 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
 
         if (CONFIG.enableLives()) {
-            objective = "lives";
-            if (!scoreboard.containsObjective(objective)) {
-                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
-                setValue(objective, CONFIG.startingLives(), this);
+            String objective1 = "lives";
+            if (!scoreboard.containsObjective(objective1)) {
+                scoreboard.addObjective(objective1, ScoreboardCriterion.DUMMY, Text.of(objective1), INTEGER);
+                setValue(objective1, CONFIG.startingLives(), this);
                 send("Lives have been enabled. You start with " + CONFIG.startingLives() + " lives.", this);
             }
-            if (getValue(objective) == 0) {
+            if (getValue(objective1) == 0) {
                 this.changeGameMode(GameMode.SPECTATOR);
                 send("You ran out of lives!",this);
             }
         }
 
         if (CONFIG.limitCommandUses()) {
-            objective = "uses";
-            if (!scoreboard.containsObjective(objective)) {
-                scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
-                setValue(objective, CONFIG.randomiseCommandUses(), this);
+            String objective2 = "uses";
+            if (!scoreboard.containsObjective(objective2)) {
+                scoreboard.addObjective(objective2, ScoreboardCriterion.DUMMY, Text.of(objective2), INTEGER);
+                setValue(objective2, CONFIG.randomiseCommandUses(), this);
                 send("Use of the /randomise command has been limited. You start with " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " uses.", this);
             }
         }
