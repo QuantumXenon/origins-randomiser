@@ -30,14 +30,13 @@ public class OriginsRandomiser implements ModInitializer {
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(" randomised their origin and is now a ");
-                if(CONFIG.limitCommandUses()) {
+                if (CONFIG.limitCommandUses()) {
                     Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
                 }
             } else {
                 source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
             }
-        }
-        else{
+        } else {
             source.sendMessage(Text.of("ERROR"));
         }
         return 1;
@@ -54,7 +53,7 @@ public class OriginsRandomiser implements ModInitializer {
             }
 
         } else {
-            source.sendMessage(Text.of("Lives are disabled. Toggle this with 'enableLives'."));
+            source.sendMessage(Text.of("Lives are disabled. Toggle them with 'enableLives'."));
         }
         return 1;
     }
