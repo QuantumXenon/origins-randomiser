@@ -26,6 +26,6 @@
     "origins": "*"
   },
   "recommends": {
-    "owo-lib": "*"
+    "owo": "*"
   }
 }
