@@ -6,7 +6,7 @@
   "text.config.origins-randomiser.section.Other": "Other",
 
   "text.config.origins-randomiser.option.randomiseOrigins": "randomiseOrigins",
-  "text.config.origins-randomiser.option.randomiseOrigins.tooltip": "Master toggle for origin randomisation (except for first spawn).",
+  "text.config.origins-randomiser.option.randomiseOrigins.tooltip": "Master toggle for origin randomisation (except for first spawn)",
   "text.config.origins-randomiser.option.randomiserMessages": "randomiserMessages",
   "text.config.origins-randomiser.option.randomiserMessages.tooltip": "Toggle global messages about a player's new origin",
 
