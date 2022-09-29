@@ -1,17 +1,29 @@
 {
   "text.config.origins-randomiser.title": "Origins Randomizer Config",
   "text.config.origins-randomiser.section.General": "General",
-  "text.config.origins-randomiser.section.Command": "/randomize Command",
+  "text.config.origins-randomiser.section.Command": "/randomise Command",
   "text.config.origins-randomiser.section.Lives": "Lives",
   "text.config.origins-randomiser.section.Other": "Other",
 
   "text.config.origins-randomiser.option.randomiseOrigins": "randomizeOrigins",
+  "text.config.origins-randomiser.option.randomiseOrigins.tooltip": "Master toggle for origin randomization (except for first spawn).",
   "text.config.origins-randomiser.option.randomiserMessages": "randomizerMessages",
+  "text.config.origins-randomiser.option.randomiserMessages.tooltip": "Toggle global messages about a player's new origin",
+
   "text.config.origins-randomiser.option.randomiseCommand": "randomizeCommand",
+  "text.config.origins-randomiser.option.randomiseCommand.tooltip": "Toggle availability of the /randomise command",
   "text.config.origins-randomiser.option.limitCommandUses": "limitCommandUses",
+  "text.config.origins-randomiser.option.limitCommandUses.tooltip": "Toggle whether the use of /randomise is limited to a set number of times",
   "text.config.origins-randomiser.option.randomiseCommandUses": "randomizeCommandUses",
+  "text.config.origins-randomiser.option.randomiseCommandUses.tooltip": "Set the number of times /randomise can be used",
+
   "text.config.origins-randomiser.option.enableLives": "enableLives",
+  "text.config.origins-randomiser.option.enableLives.tooltip": "Toggle if players have a set number of lives before they are put in spectator mode",
   "text.config.origins-randomiser.option.startingLives": "startingLives",
+  "text.config.origins-randomiser.option.startingLives.tooltip": "Set the number of lives players start with",
   "text.config.origins-randomiser.option.livesBetweenRandomises": "livesBetweenRandomizes",
-  "text.config.origins-randomiser.option.sleepRandomisesOrigin": "sleepRandomizesOrigin"
+  "text.config.origins-randomiser.option.livesBetweenRandomises.tooltip": "Set the number lives between origin randomisation. ",
+
+  "text.config.origins-randomiser.option.sleepRandomisesOrigin": "sleepRandomizesOrigin",
+  "text.config.origins-randomiser.option.sleepRandomisesOrigin.tooltip": "Toggle whether sleeping randomizes origin"
 }
