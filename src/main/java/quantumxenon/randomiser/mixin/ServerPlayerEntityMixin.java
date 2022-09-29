@@ -63,9 +63,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     public void randomOrigin(String reason) {
         if ((getValue("livesUntilRandomise") == 0)) {
-            List<Identifier> originList = layer.getRandomOrigins(this);
-            Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
             if (CONFIG.randomiseOrigins()) {
+                List<Identifier> originList = layer.getRandomOrigins(this);
+                Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
+                setValue(CONFIG.livesBetweenRandomises(), this, "livesUntilRandomise");
                 setOrigin(this, origin);
                 if (CONFIG.randomiserMessages()) {
                     for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
@@ -75,16 +76,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             } else {
                 send("Origin randomising has been disabled.", this);
             }
-            setValue(CONFIG.livesBetweenRandomises(), this, "livesUntilRandomise");
         }
     }
 
     private StringBuilder formatOrigin(Origin origin) {
-        StringBuilder formattedOrigin = new StringBuilder();
+        StringBuilder originName = new StringBuilder();
         for (String word : origin.getIdentifier().toString().split(":")[1].replace("_", " ").split("\\s+")) {
-            formattedOrigin.append(StringUtils.capitalize(word)).append(" ");
+            originName.append(StringUtils.capitalize(word)).append(" ");
         }
-        return formattedOrigin;
+        return originName;
     }
 
     private void setOrigin(PlayerEntity player, Origin origin) {
@@ -102,7 +102,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         randomOrigin(" died and respawned as a ");
-        modifyValue(-1,this,"livesUntilRandomise");
+        modifyValue(-1, this, "livesUntilRandomise");
         if (CONFIG.enableLives()) {
             send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
             modifyValue(-1, this, "lives");
