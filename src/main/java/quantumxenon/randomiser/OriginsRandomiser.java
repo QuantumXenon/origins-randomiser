@@ -14,7 +14,6 @@ import quantumxenon.randomiser.config.RandomiserConfig;
 import quantumxenon.randomiser.entity.Player;
 
 import java.util.Collection;
-import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
     public static final RandomiserConfig CONFIG = RandomiserConfig.createAndLoad();
@@ -29,7 +28,7 @@ public class OriginsRandomiser implements ModInitializer {
         if (source.getPlayer() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(" randomised their origin and is now a ");
-                Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
+                source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
             } else {
                 source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
             }
