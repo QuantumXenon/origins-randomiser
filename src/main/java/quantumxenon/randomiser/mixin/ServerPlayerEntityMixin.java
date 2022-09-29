@@ -63,11 +63,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     public void randomOrigin(String reason) {
-        if ((getValue("livesUntilRandomise") == 0)) {
+        if ((getValue("livesUntilRandomise") <= 0)) {
             if (CONFIG.randomiseOrigins()) {
+                setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
                 List<Identifier> originList = layer.getRandomOrigins(this);
                 Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
-                setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
                 setOrigin(this, origin);
                 if (CONFIG.randomiserMessages()) {
                     for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
@@ -77,6 +77,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             } else {
                 send("Origin randomising has been disabled.", this);
             }
+        }
+        else{
+            send("You have" + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + "more lives until your origin is randomised.", this);
         }
     }
 
@@ -102,11 +105,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        randomOrigin(" died and respawned as a ");
         modifyValue("livesUntilRandomise", -1, this);
+        randomOrigin(" died and respawned as a ");
         if (CONFIG.enableLives()) {
-            send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
             modifyValue("lives", -1, this);
+            send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
         }
     }
 
@@ -123,7 +126,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
             setValue(objective, CONFIG.livesBetweenRandomises(), this);
             if (CONFIG.livesBetweenRandomises() > 1) {
-                send("You will receive a random origin after every " + CONFIG.livesBetweenRandomises() + " lives.", this);
+                send("You will receive a random origin after every " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " lives.", this);
             }
         }
 
@@ -136,6 +139,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             }
             if (getValue(objective) == 0) {
                 this.changeGameMode(GameMode.SPECTATOR);
+                send("You ran out of lives!",this);
             }
         }
 
@@ -144,7 +148,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (!scoreboard.containsObjective(objective)) {
                 scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
                 setValue(objective, CONFIG.randomiseCommandUses(), this);
-                send("Use of the /randomise command has been limited. You start with " + CONFIG.randomiseCommandUses() + " randomises.", this);
+                send("Use of the /randomise command has been limited. You start with " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " uses.", this);
             }
         }
     }
