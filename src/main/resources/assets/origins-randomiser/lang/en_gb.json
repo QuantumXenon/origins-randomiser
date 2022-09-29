@@ -1,11 +1,12 @@
 {
-  "text.config.origins-randomiser.title": "Origins Randomiser",
+  "text.config.origins-randomiser.title": "Origins Randomiser Config",
   "text.config.origins-randomiser.section.General": "General",
-  "text.config.origins-randomiser.section.Command": "Command",
+  "text.config.origins-randomiser.section.Command": "/randomise Command",
   "text.config.origins-randomiser.section.Lives": "Lives",
   "text.config.origins-randomiser.section.Other": "Other",
 
   "text.config.origins-randomiser.option.randomiseOrigins": "randomiseOrigins",
+  "text.config.origins-randomiser.option.randomiseOrigins.tooltip": "This is the master toggle for origin randomisation.",
   "text.config.origins-randomiser.option.randomiserMessages": "randomiserMessages",
   "text.config.origins-randomiser.option.randomiseCommand": "randomiseCommand",
   "text.config.origins-randomiser.option.limitCommandUses": "limitCommandUses",

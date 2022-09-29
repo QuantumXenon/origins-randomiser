@@ -1,7 +1,7 @@
 {
-  "text.config.origins-randomiser.title": "Origins Randomizer",
+  "text.config.origins-randomiser.title": "Origins Randomizer Config",
   "text.config.origins-randomiser.section.General": "General",
-  "text.config.origins-randomiser.section.Command": "Command",
+  "text.config.origins-randomiser.section.Command": "/randomize Command",
   "text.config.origins-randomiser.section.Lives": "Lives",
   "text.config.origins-randomiser.section.Other": "Other",
 
