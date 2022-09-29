@@ -5,7 +5,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -15,8 +14,7 @@ import quantumxenon.randomiser.config.RandomiserConfig;
 import quantumxenon.randomiser.entity.Player;
 
 import java.util.Collection;
-
-import static net.fabricmc.fabric.impl.transfer.TransferApiImpl.LOGGER;
+import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
     public static final RandomiserConfig CONFIG = RandomiserConfig.createAndLoad();
@@ -25,16 +23,13 @@ public class OriginsRandomiser implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomiseOrigin(context.getSource()))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives)))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setCommandUses").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses)))));
-
-        if (FabricLoader.getInstance().getModContainer("owo").isEmpty()) {
-            LOGGER.info("To change the config for Origins Randomiser, install owo-lib.");
-        }
     }
 
     private int randomiseOrigin(ServerCommandSource source) {
-        if (source instanceof Player player && CONFIG.randomiseCommand()) {
+        if (source.getPlayer() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(" randomised their origin and is now a ");
+                Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
             } else {
                 source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
             }
