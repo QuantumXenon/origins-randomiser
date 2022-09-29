@@ -20,8 +20,8 @@ public class OriginsRandomiser implements ModInitializer {
 
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomiseOrigin(context.getSource()))));
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives)))));
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setCommandUses").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses)))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives).requires((permissions) -> permissions.hasPermissionLevel(2))))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setCommandUses").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses).requires((permissions) -> permissions.hasPermissionLevel(2))))));
     }
 
     private int randomiseOrigin(ServerCommandSource source) {
@@ -41,12 +41,11 @@ public class OriginsRandomiser implements ModInitializer {
         int number = IntegerArgumentType.getInteger(context, "number");
         ServerCommandSource source = context.getSource();
         if (CONFIG.enableLives()) {
-            if (source.hasPermissionLevel(2)) {
-                for (ServerPlayerEntity target : targets) {
-                    target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).setScore(number);
-                    source.sendMessage(Text.of("Set " + target.getName().getString() + "'s lives to " + number + "."));
-                }
+            for (ServerPlayerEntity target : targets) {
+                target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).setScore(number);
+                source.sendMessage(Text.of("Set " + target.getName().getString() + "'s lives to " + number + "."));
             }
+
         } else {
             source.sendMessage(Text.of("Lives are disabled. Toggle this with 'enableLives'."));
         }
@@ -58,11 +57,9 @@ public class OriginsRandomiser implements ModInitializer {
         int number = IntegerArgumentType.getInteger(context, "number");
         ServerCommandSource source = context.getSource();
         if (CONFIG.limitCommandUses()) {
-            if (source.hasPermissionLevel(2)) {
-                for (ServerPlayerEntity target : targets) {
-                    target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("commandUses")).setScore(number);
-                    source.sendMessage(Text.of("Set " + target.getName().getString() + "'s /randomise uses to " + number + "."));
-                }
+            for (ServerPlayerEntity target : targets) {
+                target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("commandUses")).setScore(number);
+                source.sendMessage(Text.of("Set " + target.getName().getString() + "'s /randomise uses to " + number + "."));
             }
         } else {
             source.sendMessage(Text.of("Use of the /randomise command is unlimited. Toggle this with 'limitCommandUses'."));
