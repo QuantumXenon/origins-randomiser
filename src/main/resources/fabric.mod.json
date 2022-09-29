@@ -23,9 +23,7 @@
   "depends": {
     "minecraft": "1.19.x",
     "fabric": "*",
-    "origins": "*"
-  },
-  "recommends": {
+    "origins": "*",
     "owo": "*"
   }
 }
