@@ -14,21 +14,25 @@ import quantumxenon.randomiser.config.RandomiserConfig;
 import quantumxenon.randomiser.entity.Player;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
     public static final RandomiserConfig CONFIG = RandomiserConfig.createAndLoad();
 
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomiseOrigin(context.getSource()))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(this::randomiseOrigin)));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives).requires((permissions) -> permissions.hasPermissionLevel(2))))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setCommandUses").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses).requires((permissions) -> permissions.hasPermissionLevel(2))))));
     }
 
-    private int randomiseOrigin(ServerCommandSource source) {
-        if (source.getPlayer() instanceof Player player) {
+    private int randomiseOrigin(CommandContext<ServerCommandSource> context) {
+        ServerCommandSource source = context.getSource();
+        if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(" randomised their origin and is now a ");
-                source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
+                if(CONFIG.limitCommandUses()) {
+                    Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")).incrementScore(-1);
+                }
             } else {
                 source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
             }
