@@ -16,9 +16,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,7 +33,6 @@ import static quantumxenon.randomiser.OriginsRandomiser.CONFIG;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
-
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final String player = this.getName().getString();
     private final MinecraftServer server = Objects.requireNonNull(this.getServer());
@@ -40,6 +41,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
     }
+
+    @Shadow
+    public abstract boolean changeGameMode(GameMode gameMode);
 
     private void send(String message, PlayerEntity player) {
         player.sendMessage(Text.of(message));
@@ -113,7 +117,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 send("Lives have been enabled. You start with " + CONFIG.startingLives() + " lives.", this);
             }
             if (getValue(objective) == 0) {
-                //Set gamemode
+                this.changeGameMode(GameMode.SPECTATOR);
             }
         }
 
