@@ -26,7 +26,7 @@ public class OriginsRandomiser implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setLives").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives)))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("setCommandUses").then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses)))));
 
-        if(FabricLoader.getInstance().getModContainer("owo").isEmpty()){
+        if (FabricLoader.getInstance().getModContainer("owo").isEmpty()) {
             LOGGER.info("To change the config for Origins Randomiser, install owo-lib.");
         }
     }
