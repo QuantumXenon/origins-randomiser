@@ -22,7 +22,7 @@
   "text.config.origins-randomiser.option.startingLives": "startingLives",
   "text.config.origins-randomiser.option.startingLives.tooltip": "Set the number of lives players start with",
   "text.config.origins-randomiser.option.livesBetweenRandomises": "livesBetweenRandomizes",
-  "text.config.origins-randomiser.option.livesBetweenRandomises.tooltip": "Set the number lives between origin randomisation. ",
+  "text.config.origins-randomiser.option.livesBetweenRandomises.tooltip": "Set the number lives between origin randomisation",
 
   "text.config.origins-randomiser.option.sleepRandomisesOrigin": "sleepRandomizesOrigin",
   "text.config.origins-randomiser.option.sleepRandomisesOrigin.tooltip": "Toggle whether sleeping randomizes origin"
