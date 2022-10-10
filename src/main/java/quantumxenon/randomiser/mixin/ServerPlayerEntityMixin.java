@@ -130,6 +130,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             }
         }
 
+        if (CONFIG.limitCommandUses()) {
+            String uses = "uses";
+            if (!scoreboard.containsObjective(uses)) {
+                scoreboard.addObjective(uses, ScoreboardCriterion.DUMMY, Text.of(uses), INTEGER);
+                setValue(uses, CONFIG.randomiseCommandUses(), this);
+                send("Use of the /randomise command has been limited. You start with " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " uses.", this);
+            }
+        }
+
         if (CONFIG.enableLives()) {
             String lives = "lives";
             if (!scoreboard.containsObjective(lives)) {
@@ -140,15 +149,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (getValue(lives) == 0) {
                 this.changeGameMode(GameMode.SPECTATOR);
                 send("You ran out of lives!",this);
-            }
-        }
-
-        if (CONFIG.limitCommandUses()) {
-            String uses = "uses";
-            if (!scoreboard.containsObjective(uses)) {
-                scoreboard.addObjective(uses, ScoreboardCriterion.DUMMY, Text.of(uses), INTEGER);
-                setValue(uses, CONFIG.randomiseCommandUses(), this);
-                send("Use of the /randomise command has been limited. You start with " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " uses.", this);
             }
         }
     }
