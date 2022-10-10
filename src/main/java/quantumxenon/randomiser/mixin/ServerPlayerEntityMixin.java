@@ -131,23 +131,23 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
 
         if (CONFIG.enableLives()) {
-            String objective1 = "lives";
-            if (!scoreboard.containsObjective(objective1)) {
-                scoreboard.addObjective(objective1, ScoreboardCriterion.DUMMY, Text.of(objective1), INTEGER);
-                setValue(objective1, CONFIG.startingLives(), this);
+            String lives = "lives";
+            if (!scoreboard.containsObjective(lives)) {
+                scoreboard.addObjective(lives, ScoreboardCriterion.DUMMY, Text.of(lives), INTEGER);
+                setValue(lives, CONFIG.startingLives(), this);
                 send("Lives have been enabled. You start with " + CONFIG.startingLives() + " lives.", this);
             }
-            if (getValue(objective1) == 0) {
+            if (getValue(lives) == 0) {
                 this.changeGameMode(GameMode.SPECTATOR);
                 send("You ran out of lives!",this);
             }
         }
 
         if (CONFIG.limitCommandUses()) {
-            String objective2 = "uses";
-            if (!scoreboard.containsObjective(objective2)) {
-                scoreboard.addObjective(objective2, ScoreboardCriterion.DUMMY, Text.of(objective2), INTEGER);
-                setValue(objective2, CONFIG.randomiseCommandUses(), this);
+            String uses = "uses";
+            if (!scoreboard.containsObjective(uses)) {
+                scoreboard.addObjective(uses, ScoreboardCriterion.DUMMY, Text.of(uses), INTEGER);
+                setValue(uses, CONFIG.randomiseCommandUses(), this);
                 send("Use of the /randomise command has been limited. You start with " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " uses.", this);
             }
         }
