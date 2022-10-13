@@ -79,7 +79,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             }
         }
         else{
-            send("You have " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " more lives until your origin is randomised.", this);
+            send("You now have " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " more lives until your origin is randomised.", this);
         }
     }
 
