@@ -50,6 +50,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         player.sendMessage(Text.of(message));
     }
 
+    private String translate(String key){
+        return Text.translatable(key).toString();
+    }
+
     private int getValue(String objective) {
         return (scoreboard.getPlayerScore(player, scoreboard.getObjective(objective)).getScore());
     }
@@ -75,11 +79,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                     }
                 }
             } else {
-                send("Origin randomising has been disabled.", this);
+                send(translate("origins-randomiser.origin.disabled"), this);
             }
         }
         else{
-            send("You now have " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " more lives until your origin is randomised.", this);
+            send(translate("origins-randomiser.message.nowHave") + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + translate("origins-randomiser.message.livesUntilRandomise"), this);
         }
     }
 
@@ -99,17 +103,17 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
-            randomOrigin(" slept and woke up as a ",true);
+            randomOrigin(translate("origins-randomiser.reason.sleep"),true);
         }
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         modifyValue("livesUntilRandomise", -1, this);
-        randomOrigin(" died and respawned as a ",false);
+        randomOrigin(translate("origins-randomiser.reason.death"),false);
         if (CONFIG.enableLives()) {
             modifyValue("lives", -1, this);
-            send("You now have " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " lives remaining.", this);
+            send(translate("origins-randomiser.message.nowHave") + Formatting.BOLD + getValue("lives") + Formatting.RESET + translate("origins-randomiser.message.livesRemaining"), this);
         }
     }
 
@@ -118,7 +122,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         String tag = "firstJoin";
         if (!this.getScoreboardTags().contains(tag)) {
             this.addScoreboardTag(tag);
-            randomOrigin(" spawned for the first time as a ",true);
+            randomOrigin(translate("origins-randomiser.reason.firstJoin"),true);
         }
 
         String objective = "livesUntilRandomise";
@@ -126,7 +130,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
             setValue(objective, CONFIG.livesBetweenRandomises(), this);
             if (CONFIG.livesBetweenRandomises() > 1) {
-                send("You will receive a random origin after every " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " lives.", this);
+                send("You will receive a random origin after every " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + translate("origins-randomiser.message.lives"), this);
             }
         }
 
@@ -135,7 +139,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (!scoreboard.containsObjective(uses)) {
                 scoreboard.addObjective(uses, ScoreboardCriterion.DUMMY, Text.of(uses), INTEGER);
                 setValue(uses, CONFIG.randomiseCommandUses(), this);
-                send("Use of the /randomise command has been limited. You start with " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " uses.", this);
+                send(translate("origins-randomiser.message.commandLimited") + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + translate("origins-randomiser.message.uses"), this);
             }
         }
 
@@ -144,11 +148,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (!scoreboard.containsObjective(lives)) {
                 scoreboard.addObjective(lives, ScoreboardCriterion.DUMMY, Text.of(lives), INTEGER);
                 setValue(lives, CONFIG.startingLives(), this);
-                send("Lives have been enabled. You start with " + CONFIG.startingLives() + " lives.", this);
+                send(translate("origins-randomiser.message.livesEnabled") + CONFIG.startingLives() + translate("origins-randomiser.message.lives"), this);
             }
             if (getValue(lives) == 0) {
                 this.changeGameMode(GameMode.SPECTATOR);
-                send("You ran out of lives!",this);
+                send(translate("origins-randomiser.message.outOfLives"),this);
             }
         }
     }

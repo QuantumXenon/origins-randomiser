@@ -26,16 +26,20 @@ public class OriginsRandomiser implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses))))));
     }
 
+    private String translate(String key){
+        return Text.translatable(key).toString();
+    }
+
     private int randomise(ServerCommandSource source) {
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
-                player.randomOrigin(" randomised their origin and is now a ",true);
+                player.randomOrigin(translate("origins-randomiser.command.randomiseCommandMessage"),true);
                 if (CONFIG.limitCommandUses()) {
                     Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
-                    source.sendMessage(Text.of("You now have " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + " uses of the /randomise command left."));
+                    source.sendMessage(Text.of( translate("origins-randomiser.message.nowHave") + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
                 }
             } else {
-                source.sendMessage(Text.of("Use of the /randomise command has been disabled."));
+                source.sendMessage(Text.translatable("origins-randomiser.command.disabled"));
             }
         }
         return 1;
@@ -48,11 +52,11 @@ public class OriginsRandomiser implements ModInitializer {
         if (CONFIG.enableLives()) {
             for (ServerPlayerEntity target : targets) {
                 target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).setScore(number);
-                source.sendMessage(Text.of("Set " + target.getName().getString() + "'s lives to " + number + "."));
+                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + target.getName().getString() + translate("origins-randomiser.command.lives") + number + "."));
             }
 
         } else {
-            source.sendMessage(Text.of("Lives are disabled. Toggle them with 'enableLives'."));
+            source.sendMessage(Text.translatable("origins-randomiser.lives.disabled"));
         }
         return 1;
     }
@@ -64,10 +68,10 @@ public class OriginsRandomiser implements ModInitializer {
         if (CONFIG.limitCommandUses()) {
             for (ServerPlayerEntity target : targets) {
                 target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("uses")).setScore(number);
-                source.sendMessage(Text.of("Set " + target.getName().getString() + "'s /randomise uses to " + number + "."));
+                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + target.getName().getString() + translate("origins-randomiser.command.randomiseUses") + number + "."));
             }
         } else {
-            source.sendMessage(Text.of("Use of the /randomise command is unlimited. Toggle this with 'limitCommandUses'."));
+            source.sendMessage(Text.translatable("origins-randomiser.command.unlimited"));
         }
         return 1;
     }
