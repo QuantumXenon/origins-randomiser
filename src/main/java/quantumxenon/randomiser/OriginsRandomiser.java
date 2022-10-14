@@ -35,8 +35,8 @@ public class OriginsRandomiser implements ModInitializer {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(translate("origins-randomiser.reason.command"), true);
                 if (CONFIG.limitCommandUses()) {
-                    Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
-                    source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
+                    Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
+                    source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).getScore() + " " + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
                 }
             } else {
                 source.sendMessage(Text.translatable("origins-randomiser.command.disabled"));
