@@ -51,7 +51,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     private String translate(String key){
-        return Text.translatable(key).toString();
+        return Text.translatable(key).getString();
     }
 
     private int getValue(String objective) {
