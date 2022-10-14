@@ -26,17 +26,17 @@ public class OriginsRandomiser implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses))))));
     }
 
-    private String translate(String key){
-        return Text.translatable(key).toString();
+    private String translate(String key) {
+        return Text.translatable(key).getString();
     }
 
     private int randomise(ServerCommandSource source) {
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
-                player.randomOrigin(translate("origins-randomiser.command.randomiseCommandMessage"),true);
+                player.randomOrigin(translate("origins-randomiser.reason.command"), true);
                 if (CONFIG.limitCommandUses()) {
                     Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
-                    source.sendMessage(Text.of( translate("origins-randomiser.message.nowHave") + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
+                    source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getPlayer().getName().getString(), source.getPlayer().getScoreboard().getObjective("commandUses")) + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
                 }
             } else {
                 source.sendMessage(Text.translatable("origins-randomiser.command.disabled"));
@@ -52,7 +52,7 @@ public class OriginsRandomiser implements ModInitializer {
         if (CONFIG.enableLives()) {
             for (ServerPlayerEntity target : targets) {
                 target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).setScore(number);
-                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + " " + translate("origins-randomiser.command.lives") + " " + number + "."));
+                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.lives") + " " + number + "."));
             }
 
         } else {
@@ -68,7 +68,7 @@ public class OriginsRandomiser implements ModInitializer {
         if (CONFIG.limitCommandUses()) {
             for (ServerPlayerEntity target : targets) {
                 target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("uses")).setScore(number);
-                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + " " + translate("origins-randomiser.command.randomiseUses") + " " + number + "."));
+                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.randomiseUses") + " " + number + "."));
             }
         } else {
             source.sendMessage(Text.translatable("origins-randomiser.command.unlimited"));
