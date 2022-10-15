@@ -71,13 +71,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if ((getValue("livesUntilRandomise") <= 0) || (getValue("sleepsUntilRandomise") <= 0) || bypass) {
                 if (getValue("livesUntilRandomise") <= 0) {
                     setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
-                } else {
-                    send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"), this);
                 }
                 if (getValue("sleepsUntilRandomise") <= 0) {
                     setValue("sleepsUntilRandomise", CONFIG.sleepsBetweenRandomises(), this);
-                } else {
-                    send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"), this);
                 }
                 List<Identifier> originList = layer.getRandomOrigins(this);
                 Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
@@ -88,10 +84,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                     }
                 }
             }
-            if((getValue("livesUntilRandomise") > 0)){
+            if ((getValue("livesUntilRandomise") > 0) && (!reason.equals(translate("origins-randomiser.reason.sleep"))) && (CONFIG.livesBetweenRandomises() > 1)) {
                 send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"), this);
             }
-            if((getValue("sleepsUntilRandomise") > 0)){
+            if ((getValue("sleepsUntilRandomise") > 0) && (!reason.equals(translate("origins-randomiser.reason.death"))) && (CONFIG.sleepsBetweenRandomises() > 1)) {
                 send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"), this);
             }
         } else {
