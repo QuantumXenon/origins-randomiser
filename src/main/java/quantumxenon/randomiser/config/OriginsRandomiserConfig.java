@@ -23,4 +23,5 @@ public class OriginsRandomiserConfig {
 
     @SectionHeader("Other")
     public boolean sleepRandomisesOrigin = false;
+    public int sleepsBetweenRandomises = 1;
 }

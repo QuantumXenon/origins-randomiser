@@ -67,9 +67,18 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     public void randomOrigin(String reason, boolean bypass) {
-        if ((getValue("livesUntilRandomise") <= 0) || bypass) {
-            if (CONFIG.randomiseOrigins()) {
-                setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
+        if (CONFIG.randomiseOrigins()) {
+            if ((getValue("livesUntilRandomise") <= 0) || (getValue("sleepsUntilRandomise") <= 0) || bypass) {
+                if (getValue("livesUntilRandomise") <= 0) {
+                    setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises(), this);
+                } else {
+                    send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"), this);
+                }
+                if (getValue("sleepsUntilRandomise") <= 0) {
+                    setValue("sleepsUntilRandomise", CONFIG.sleepsBetweenRandomises(), this);
+                } else {
+                    send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"), this);
+                }
                 List<Identifier> originList = layer.getRandomOrigins(this);
                 Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
                 setOrigin(this, origin);
@@ -78,11 +87,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                         send(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET, serverPlayer);
                     }
                 }
-            } else {
-                send(translate("origins-randomiser.origin.disabled"), this);
+            }
+            if((getValue("livesUntilRandomise") > 0)){
+                send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"), this);
+            }
+            if((getValue("sleepsUntilRandomise") > 0)){
+                send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"), this);
             }
         } else {
-            send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"), this);
+            send(translate("origins-randomiser.origin.disabled"), this);
         }
     }
 
@@ -102,7 +115,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
-            randomOrigin(translate("origins-randomiser.reason.sleep"), true);
+            modifyValue("sleepsUntilRandomise", -1, this);
+            randomOrigin(translate("origins-randomiser.reason.sleep"), false);
         }
     }
 
@@ -129,7 +143,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             scoreboard.addObjective(objective, ScoreboardCriterion.DUMMY, Text.of(objective), INTEGER);
             setValue(objective, CONFIG.livesBetweenRandomises(), this);
             if (CONFIG.livesBetweenRandomises() > 1) {
-                send(translate("origins-randomiser.message.livesBetweenRandomise") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"), this);
+                send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"), this);
+            }
+        }
+
+        String sleeps = "sleepsUntilRandomise";
+        if (!scoreboard.containsObjective(sleeps)) {
+            scoreboard.addObjective(sleeps, ScoreboardCriterion.DUMMY, Text.of(sleeps), INTEGER);
+            setValue(sleeps, CONFIG.sleepsBetweenRandomises(), this);
+            if (CONFIG.sleepsBetweenRandomises() > 1) {
+                send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.sleepsBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"), this);
             }
         }
 

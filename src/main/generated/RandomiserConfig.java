@@ -19,6 +19,7 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
     private final Option<java.lang.Integer> startingLives = this.optionForKey(new Option.Key("startingLives"));
     private final Option<java.lang.Integer> livesBetweenRandomises = this.optionForKey(new Option.Key("livesBetweenRandomises"));
     private final Option<java.lang.Boolean> sleepRandomisesOrigin = this.optionForKey(new Option.Key("sleepRandomisesOrigin"));
+    private final Option<java.lang.Integer> sleepsBetweenRandomises = this.optionForKey(new Option.Key("sleepsBetweenRandomises"));
 
     private RandomiserConfig() {
         super(quantumxenon.randomiser.config.OriginsRandomiserConfig.class);
@@ -111,6 +112,13 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
         sleepRandomisesOrigin.synchronizeWithBackingField();
     }
 
+    public int sleepsBetweenRandomises() {
+        return sleepsBetweenRandomises.value();
+    }
 
+    public void sleepsBetweenRandomises(int value) {
+        instance.sleepsBetweenRandomises = value;
+        sleepsBetweenRandomises.synchronizeWithBackingField();
+	}
 }
 
