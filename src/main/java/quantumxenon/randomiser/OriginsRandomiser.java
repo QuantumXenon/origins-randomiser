@@ -33,7 +33,7 @@ public class OriginsRandomiser implements ModInitializer {
     private int randomise(ServerCommandSource source) {
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
-                player.randomOrigin(translate("origins-randomiser.reason.command"), true);
+                player.randomOrigin(translate("origins-randomiser.reason.command"));
                 if (CONFIG.limitCommandUses()) {
                     Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
                     source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).getScore() + " " + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
