@@ -4,6 +4,7 @@
   "name": "Origins Randomiser",
   "version": "${version}",
   "description": "Highly configurable mod that assigns you a random origin every time you die.",
+  "license": "MIT",
   "authors": [
     "TheQuantumXenon"
   ],
