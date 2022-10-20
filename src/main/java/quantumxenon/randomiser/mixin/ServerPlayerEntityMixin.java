@@ -122,13 +122,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 randomOrigin(translate("origins-randomiser.reason.sleep"));
             }
         }
-
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         modifyValue("livesUntilRandomise", -1);
-        if(CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") > 0){
+        if (CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") > 0) {
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
         }
         if (getValue("livesUntilRandomise") <= 0) {
