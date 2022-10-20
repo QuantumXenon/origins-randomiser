@@ -79,7 +79,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     private StringBuilder formatOrigin(Origin origin) {
         StringBuilder originName = new StringBuilder();
-        for (String word : origin.getIdentifier().toString().split(":")[1].replace("_", " ").split("\\s+")) {
+        for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
             originName.append(StringUtils.capitalize(word)).append(" ");
         }
         return originName;
@@ -92,27 +92,19 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     public void randomOrigin(String reason) {
         if (CONFIG.randomiseOrigins()) {
-            if ((getValue("livesUntilRandomise") <= 0) || (getValue("sleepsUntilRandomise") <= 0) || reason.equals(translate("origins-randomiser.reason.firstJoin")) || reason.equals(translate("origins-randomiser.reason.command"))) {
-                if (getValue("livesUntilRandomise") <= 0) {
-                    setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises());
-                }
-                if (getValue("sleepsUntilRandomise") <= 0) {
-                    setValue("sleepsUntilRandomise", CONFIG.sleepsBetweenRandomises());
-                }
-                List<Identifier> originList = layer.getRandomOrigins(this);
-                Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
-                setOrigin(origin);
-                if (CONFIG.randomiserMessages()) {
-                    for (ServerPlayerEntity user : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
-                        user.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
-                    }
-                }
+            if (getValue("livesUntilRandomise") <= 0) {
+                setValue("livesUntilRandomise", CONFIG.livesBetweenRandomises());
             }
-            if ((getValue("livesUntilRandomise") > 0) && (!reason.equals(translate("origins-randomiser.reason.sleep"))) && (CONFIG.livesBetweenRandomises() > 1)) {
-                send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
+            if (getValue("sleepsUntilRandomise") <= 0) {
+                setValue("sleepsUntilRandomise", CONFIG.sleepsBetweenRandomises());
             }
-            if ((getValue("sleepsUntilRandomise") > 0) && (!reason.equals(translate("origins-randomiser.reason.death"))) && (CONFIG.sleepsBetweenRandomises() > 1)) {
-                send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"));
+            List<Identifier> originList = layer.getRandomOrigins(this);
+            Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
+            setOrigin(origin);
+            if (CONFIG.randomiserMessages()) {
+                for (ServerPlayerEntity entity : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
+                    entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
+                }
             }
         } else {
             send(translate("origins-randomiser.origin.disabled"));
@@ -122,15 +114,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
-            modifyValue("sleepsUntilRandomise" ,-1);
-            randomOrigin(translate("origins-randomiser.reason.sleep"));
+            modifyValue("sleepsUntilRandomise", -1);
+            if (CONFIG.sleepsBetweenRandomises() > 1 && getValue("sleepsUntilRandomise") >= 0) {
+                send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"));
+            }
+            if (getValue("sleepsUntilRandomise") <= 0) {
+                randomOrigin(translate("origins-randomiser.reason.sleep"));
+            }
         }
+
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         modifyValue("livesUntilRandomise", -1);
-        randomOrigin(translate("origins-randomiser.reason.death"));
+        if(CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") >= 0){
+            send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
+        }
+        if (getValue("livesUntilRandomise") <= 0) {
+            randomOrigin(translate("origins-randomiser.reason.death"));
+        }
         if (CONFIG.enableLives()) {
             modifyValue("lives", -1);
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " " + translate("origins-randomiser.message.livesRemaining"));
@@ -142,12 +145,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (!this.getScoreboardTags().contains("firstJoin")) {
             this.addScoreboardTag("firstJoin");
             randomOrigin(translate("origins-randomiser.reason.firstJoin"));
-        }
-        if (CONFIG.livesBetweenRandomises() > 1) {
-            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
-        }
-        if (CONFIG.sleepsBetweenRandomises() > 1) {
-            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.sleepsBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"));
         }
     }
 
@@ -164,6 +161,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 this.changeGameMode(GameMode.SPECTATOR);
                 send(translate("origins-randomiser.message.outOfLives"));
             }
+        }
+        if (CONFIG.livesBetweenRandomises() > 1 && !this.getScoreboardTags().contains("livesMessage")) {
+            this.addScoreboardTag("livesMessage");
+            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
+        }
+        if (CONFIG.sleepsBetweenRandomises() > 1 && !this.getScoreboardTags().contains("sleepsMessage")) {
+            this.addScoreboardTag("sleepsMessage");
+            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.sleepsBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"));
         }
     }
 }
