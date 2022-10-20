@@ -56,11 +56,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         return (scoreboard.getPlayerScore(player, scoreboard.getObjective(objective)).getScore());
     }
 
-    public void modifyValue(String objective, int value) {
-        this.getScoreboard().getPlayerScore(player, this.getScoreboard().getObjective(objective)).incrementScore(value);
+    private void modifyValue(String objective) {
+        this.getScoreboard().getPlayerScore(player, this.getScoreboard().getObjective(objective)).incrementScore(-1);
     }
 
-    public void setValue(String objective, int value) {
+    private void setValue(String objective, int value) {
         this.getScoreboard().getPlayerScore(player, this.getScoreboard().getObjective(objective)).setScore(value);
     }
 
@@ -114,7 +114,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
-            modifyValue("sleepsUntilRandomise", -1);
+            modifyValue("sleepsUntilRandomise");
             if (CONFIG.sleepsBetweenRandomises() > 1 && getValue("sleepsUntilRandomise") > 0) {
                 send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"));
             }
@@ -126,7 +126,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        modifyValue("livesUntilRandomise", -1);
+        modifyValue("livesUntilRandomise");
         if (CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") > 0) {
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
         }
@@ -134,7 +134,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             randomOrigin(translate("origins-randomiser.reason.death"));
         }
         if (CONFIG.enableLives()) {
-            modifyValue("lives", -1);
+            modifyValue("lives");
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " " + translate("origins-randomiser.message.livesRemaining"));
         }
     }
