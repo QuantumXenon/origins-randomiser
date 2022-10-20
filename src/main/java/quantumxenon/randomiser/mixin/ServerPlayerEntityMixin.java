@@ -115,7 +115,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
             modifyValue("sleepsUntilRandomise", -1);
-            if (CONFIG.sleepsBetweenRandomises() > 1 && getValue("sleepsUntilRandomise") >= 0) {
+            if (CONFIG.sleepsBetweenRandomises() > 1 && getValue("sleepsUntilRandomise") > 0) {
                 send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"));
             }
             if (getValue("sleepsUntilRandomise") <= 0) {
@@ -128,7 +128,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
         modifyValue("livesUntilRandomise", -1);
-        if(CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") >= 0){
+        if(CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") > 0){
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
         }
         if (getValue("livesUntilRandomise") <= 0) {
