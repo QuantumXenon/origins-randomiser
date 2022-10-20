@@ -15,11 +15,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,24 +26,22 @@ import quantumxenon.randomiser.entity.Player;
 import java.util.List;
 import java.util.Objects;
 
-import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 import static quantumxenon.randomiser.OriginsRandomiser.CONFIG;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
-    private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
-    private final String player = this.getName().getString();
-    private final Scoreboard scoreboard = this.getScoreboard();
+    private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
+    private final String player = getName().getString();
+    private final Scoreboard scoreboard = getScoreboard();
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
     }
 
-    @Shadow
-    public abstract boolean changeGameMode(GameMode gameMode);
+    abstract void changeGameMode();
 
     private void send(String message) {
-        this.sendMessage(Text.of(message));
+        sendMessage(Text.of(message));
     }
 
     private String translate(String key) {
@@ -57,16 +53,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     private void modifyValue(String objective) {
-        this.getScoreboard().getPlayerScore(player, this.getScoreboard().getObjective(objective)).incrementScore(-1);
+        getScoreboard().getPlayerScore(player, getScoreboard().getObjective(objective)).incrementScore(-1);
     }
 
     private void setValue(String objective, int value) {
-        this.getScoreboard().getPlayerScore(player, this.getScoreboard().getObjective(objective)).setScore(value);
+        getScoreboard().getPlayerScore(player, getScoreboard().getObjective(objective)).setScore(value);
     }
 
     private void createObjective(String name, int number) {
         if (!scoreboard.containsObjective(name)) {
-            scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
+            scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), ScoreboardCriterion.RenderType.INTEGER);
             setValue(name, number);
             if (name.equals("uses")) {
                 send(translate("origins-randomiser.message.commandLimited") + " " + Formatting.BOLD + CONFIG.randomiseCommandUses() + Formatting.RESET + " " + translate("origins-randomiser.message.uses"));
@@ -99,10 +95,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 setValue("sleepsUntilRandomise", CONFIG.sleepsBetweenRandomises());
             }
             List<Identifier> originList = layer.getRandomOrigins(this);
-            Origin origin = OriginRegistry.get(originList.get(this.getRandom().nextInt(originList.size())));
+            Origin origin = OriginRegistry.get(originList.get(getRandom().nextInt(originList.size())));
             setOrigin(origin);
             if (CONFIG.randomiserMessages()) {
-                for (ServerPlayerEntity entity : Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayerList()) {
+                for (ServerPlayerEntity entity : Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList()) {
                     entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
             }
@@ -141,8 +137,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
     private void spawn(CallbackInfo info) {
-        if (!this.getScoreboardTags().contains("firstJoin")) {
-            this.addScoreboardTag("firstJoin");
+        if (!getScoreboardTags().contains("firstJoin")) {
+            addScoreboardTag("firstJoin");
             randomOrigin(translate("origins-randomiser.reason.firstJoin"));
         }
     }
@@ -157,16 +153,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (CONFIG.enableLives()) {
             createObjective("lives", CONFIG.startingLives());
             if (getValue("lives") == 0) {
-                this.changeGameMode(GameMode.SPECTATOR);
+                changeGameMode();
                 send(translate("origins-randomiser.message.outOfLives"));
             }
         }
-        if (CONFIG.livesBetweenRandomises() > 1 && !this.getScoreboardTags().contains("livesMessage")) {
-            this.addScoreboardTag("livesMessage");
+        if (CONFIG.livesBetweenRandomises() > 1 && !getScoreboardTags().contains("livesMessage")) {
+            addScoreboardTag("livesMessage");
             send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
         }
-        if (CONFIG.sleepsBetweenRandomises() > 1 && !this.getScoreboardTags().contains("sleepsMessage")) {
-            this.addScoreboardTag("sleepsMessage");
+        if (CONFIG.sleepsBetweenRandomises() > 1 && !getScoreboardTags().contains("sleepsMessage")) {
+            addScoreboardTag("sleepsMessage");
             send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.sleepsBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"));
         }
     }
