@@ -36,7 +36,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final String player = getName().getString();
     private final Scoreboard scoreboard = getScoreboard();
-    private final MinecraftServer server = Objects.requireNonNull(this.getServer());
+    private final MinecraftServer server = Objects.requireNonNull(getServer());
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
