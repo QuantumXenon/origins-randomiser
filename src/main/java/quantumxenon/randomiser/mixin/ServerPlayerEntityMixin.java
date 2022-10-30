@@ -15,9 +15,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -30,7 +32,7 @@ import static quantumxenon.randomiser.OriginsRandomiser.CONFIG;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
-    private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
+    private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final String player = getName().getString();
     private final Scoreboard scoreboard = getScoreboard();
 
@@ -38,7 +40,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         super(world, blockPos, f, gameProfile, null);
     }
 
-    abstract void changeGameMode();
+    @Shadow public abstract boolean changeGameMode(GameMode gameMode);
 
     private void send(String message) {
         sendMessage(Text.of(message));
@@ -153,7 +155,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (CONFIG.enableLives()) {
             createObjective("lives", CONFIG.startingLives());
             if (getValue("lives") == 0) {
-                changeGameMode();
+                changeGameMode(GameMode.SPECTATOR);
                 send(translate("origins-randomiser.message.outOfLives"));
             }
         }
