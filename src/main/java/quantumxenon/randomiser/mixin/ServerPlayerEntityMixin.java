@@ -10,6 +10,7 @@ import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -35,6 +36,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final String player = getName().getString();
     private final Scoreboard scoreboard = getScoreboard();
+    private final MinecraftServer server = Objects.requireNonNull(this.getServer());
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
@@ -100,7 +102,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             Origin origin = OriginRegistry.get(originList.get(getRandom().nextInt(originList.size())));
             setOrigin(origin);
             if (CONFIG.randomiserMessages()) {
-                for (ServerPlayerEntity entity : Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList()) {
+                for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
                     entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
             }
