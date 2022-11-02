@@ -39,7 +39,7 @@ public class OriginsRandomiser implements ModInitializer {
         return Objects.requireNonNull(commandSource.getPlayer()).getScoreboard().getPlayerScore(commandSource.getName(), commandSource.getPlayer().getScoreboard().getObjective("uses")).getScore();
     }
 
-    private void modifyUses() {
+    private void decrementUses() {
         Objects.requireNonNull(commandSource.getPlayer()).getScoreboard().getPlayerScore(commandSource.getName(), commandSource.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
     }
 
@@ -53,7 +53,7 @@ public class OriginsRandomiser implements ModInitializer {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(translate("origins-randomiser.reason.command"));
                 if (CONFIG.limitCommandUses()) {
-                    modifyUses();
+                    decrementUses();
                     send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getUses() + " " + Formatting.RESET + translate("origins-randomiser.command.usesRemaining"));
                 }
             } else {
