@@ -10,6 +10,7 @@ public class OriginsRandomiserConfig {
     @SectionHeader("General")
     public boolean randomiseOrigins = true;
     public boolean randomiserMessages = true;
+    public boolean dropExtraInventory = true;
 
     @SectionHeader("Command")
     public boolean randomiseCommand = true;

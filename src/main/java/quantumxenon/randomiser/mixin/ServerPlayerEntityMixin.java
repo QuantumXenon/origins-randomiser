@@ -1,6 +1,8 @@
 package quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
+import io.github.apace100.apoli.component.PowerHolderComponent;
+import io.github.apace100.apoli.power.InventoryPower;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
@@ -8,6 +10,7 @@ import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -129,6 +132,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
         }
         if (getValue("livesUntilRandomise") <= 0) {
+            if (CONFIG.dropExtraInventory()) {
+                PowerHolderComponent.getPowers(this, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
+            }
             randomOrigin(translate("origins-randomiser.reason.death"));
         }
         if (CONFIG.enableLives()) {

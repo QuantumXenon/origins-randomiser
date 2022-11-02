@@ -2,22 +2,27 @@ package quantumxenon.randomiser.config;
 
 import io.wispforest.owo.config.ConfigWrapper;
 import io.wispforest.owo.config.Option;
+import io.wispforest.owo.util.Observable;
 
-public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
-    private final Option<Boolean> randomiseOrigins = this.optionForKey(new Option.Key("randomiseOrigins"));
-    private final Option<Boolean> randomiserMessages = this.optionForKey(new Option.Key("randomiserMessages"));
-    private final Option<Boolean> randomiseCommand = this.optionForKey(new Option.Key("randomiseCommand"));
-    private final Option<Boolean> limitCommandUses = this.optionForKey(new Option.Key("limitCommandUses"));
-    private final Option<Integer> randomiseCommandUses = this.optionForKey(new Option.Key("randomiseCommandUses"));
-    private final Option<Boolean> enableLives = this.optionForKey(new Option.Key("enableLives"));
-    private final Option<Integer> startingLives = this.optionForKey(new Option.Key("startingLives"));
-    private final Option<Integer> livesBetweenRandomises = this.optionForKey(new Option.Key("livesBetweenRandomises"));
-    private final Option<Boolean> sleepRandomisesOrigin = this.optionForKey(new Option.Key("sleepRandomisesOrigin"));
-    private final Option<Integer> sleepsBetweenRandomises = this.optionForKey(new Option.Key("sleepsBetweenRandomises"));
+public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.config.OriginsRandomiserConfig> {
+
+    private final Option<java.lang.Boolean> randomiseOrigins = this.optionForKey(new Option.Key("randomiseOrigins"));
+    private final Option<java.lang.Boolean> randomiserMessages = this.optionForKey(new Option.Key("randomiserMessages"));
+    private final Option<java.lang.Boolean> randomiseCommand = this.optionForKey(new Option.Key("randomiseCommand"));
+    private final Option<java.lang.Boolean> limitCommandUses = this.optionForKey(new Option.Key("limitCommandUses"));
+    private final Option<java.lang.Integer> randomiseCommandUses = this.optionForKey(new Option.Key("randomiseCommandUses"));
+    private final Option<java.lang.Boolean> enableLives = this.optionForKey(new Option.Key("enableLives"));
+    private final Option<java.lang.Integer> startingLives = this.optionForKey(new Option.Key("startingLives"));
+    private final Option<java.lang.Integer> livesBetweenRandomises = this.optionForKey(new Option.Key("livesBetweenRandomises"));
+    private final Option<java.lang.Boolean> sleepRandomisesOrigin = this.optionForKey(new Option.Key("sleepRandomisesOrigin"));
+    private final Option<java.lang.Integer> sleepsBetweenRandomises = this.optionForKey(new Option.Key("sleepsBetweenRandomises"));
 
     private RandomiserConfig() {
-        super(OriginsRandomiserConfig.class);
+        super(quantumxenon.randomiser.config.OriginsRandomiserConfig.class);
     }
 
     public static RandomiserConfig createAndLoad() {
@@ -31,8 +36,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void randomiseOrigins(boolean value) {
-        instance.randomiseOrigins = value;
-        randomiseOrigins.synchronizeWithBackingField();
+        randomiseOrigins.set(value);
     }
 
     public boolean randomiserMessages() {
@@ -40,8 +44,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void randomiserMessages(boolean value) {
-        instance.randomiserMessages = value;
-        randomiserMessages.synchronizeWithBackingField();
+        randomiserMessages.set(value);
     }
 
     public boolean randomiseCommand() {
@@ -49,8 +52,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void randomiseCommand(boolean value) {
-        instance.randomiseCommand = value;
-        randomiseCommand.synchronizeWithBackingField();
+        randomiseCommand.set(value);
     }
 
     public boolean limitCommandUses() {
@@ -58,8 +60,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void limitCommandUses(boolean value) {
-        instance.limitCommandUses = value;
-        limitCommandUses.synchronizeWithBackingField();
+        limitCommandUses.set(value);
     }
 
     public int randomiseCommandUses() {
@@ -67,8 +68,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void randomiseCommandUses(int value) {
-        instance.randomiseCommandUses = value;
-        randomiseCommandUses.synchronizeWithBackingField();
+        randomiseCommandUses.set(value);
     }
 
     public boolean enableLives() {
@@ -76,8 +76,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void enableLives(boolean value) {
-        instance.enableLives = value;
-        enableLives.synchronizeWithBackingField();
+        enableLives.set(value);
     }
 
     public int startingLives() {
@@ -85,8 +84,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void startingLives(int value) {
-        instance.startingLives = value;
-        startingLives.synchronizeWithBackingField();
+        startingLives.set(value);
     }
 
     public int livesBetweenRandomises() {
@@ -94,8 +92,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void livesBetweenRandomises(int value) {
-        instance.livesBetweenRandomises = value;
-        livesBetweenRandomises.synchronizeWithBackingField();
+        livesBetweenRandomises.set(value);
     }
 
     public boolean sleepRandomisesOrigin() {
@@ -103,8 +100,7 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void sleepRandomisesOrigin(boolean value) {
-        instance.sleepRandomisesOrigin = value;
-        sleepRandomisesOrigin.synchronizeWithBackingField();
+        sleepRandomisesOrigin.set(value);
     }
 
     public int sleepsBetweenRandomises() {
@@ -112,8 +108,11 @@ public class RandomiserConfig extends ConfigWrapper<OriginsRandomiserConfig> {
     }
 
     public void sleepsBetweenRandomises(int value) {
-        instance.sleepsBetweenRandomises = value;
-        sleepsBetweenRandomises.synchronizeWithBackingField();
-	}
+        sleepsBetweenRandomises.set(value);
+    }
+
+
+
+
 }
 
