@@ -36,7 +36,7 @@ public class OriginsRandomiser implements ModInitializer {
                 player.randomOrigin(translate("origins-randomiser.reason.command"));
                 if (CONFIG.limitCommandUses()) {
                     Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
-                    source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).getScore() + " " + Formatting.RESET + translate("origins-randomiser.command.usesLeft")));
+                    source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).getScore() + " " + Formatting.RESET + translate("origins-randomiser.command.usesRemaining")));
                 }
             } else {
                 source.sendMessage(Text.translatable("origins-randomiser.command.disabled"));
@@ -68,7 +68,7 @@ public class OriginsRandomiser implements ModInitializer {
         if (CONFIG.limitCommandUses()) {
             for (ServerPlayerEntity target : targets) {
                 target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("uses")).setScore(number);
-                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.randomiseUses") + " " + number + "."));
+                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.uses") + " " + number + "."));
             }
         } else {
             source.sendMessage(Text.translatable("origins-randomiser.command.unlimited"));
