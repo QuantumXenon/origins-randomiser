@@ -16,6 +16,9 @@
   "entrypoints": {
     "main": [
       "quantumxenon.randomiser.OriginsRandomiser"
+    ],
+    "modmenu": [
+      "quantumxenon.randomiser.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -25,6 +28,6 @@
     "minecraft": "1.19.x",
     "fabric": "*",
     "origins": "*",
-    "owo": "*"
+    "cloth-config2": "*"
   }
 }

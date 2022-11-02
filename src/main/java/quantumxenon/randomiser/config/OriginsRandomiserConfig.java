@@ -1,28 +1,61 @@
 package quantumxenon.randomiser.config;
 
-import io.wispforest.owo.config.annotation.Config;
-import io.wispforest.owo.config.annotation.Modmenu;
-import io.wispforest.owo.config.annotation.SectionHeader;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import quantumxenon.randomiser.OriginsRandomiser;
 
-@Modmenu(modId = "origins-randomiser")
-@Config(name = "origins-randomiser", wrapperName = "RandomiserConfig")
-public class OriginsRandomiserConfig {
-    @SectionHeader("General")
-    public boolean randomiseOrigins = true;
-    public boolean randomiserMessages = true;
-    public boolean dropExtraInventory = true;
+@Config(name = "origins-randomiser")
+public class OriginsRandomiserConfig implements ConfigData {
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public General general = new General();
 
-    @SectionHeader("Command")
-    public boolean randomiseCommand = true;
-    public boolean limitCommandUses = false;
-    public int randomiseCommandUses = 3;
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Command command = new Command();
 
-    @SectionHeader("Lives")
-    public boolean enableLives = false;
-    public int startingLives = 10;
-    public int livesBetweenRandomises = 1;
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Lives lives = new Lives();
 
-    @SectionHeader("Other")
-    public boolean sleepRandomisesOrigin = false;
-    public int sleepsBetweenRandomises = 1;
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Other other = new Other();
+
+    public static OriginsRandomiserConfig getConfig() {
+        return OriginsRandomiser.defaultConfig == null ? AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig() : OriginsRandomiser.defaultConfig;
+    }
+
+    public static class General {
+        @ConfigEntry.Gui.Tooltip
+        public boolean randomiseOrigins = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean randomiserMessages = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean dropExtraInventory = true;
+    }
+
+    public static class Command {
+        @ConfigEntry.Gui.Tooltip
+        public boolean randomiseCommand = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean limitCommandUses = false;
+        @ConfigEntry.Gui.Tooltip
+        public int randomiseCommandUses = 3;
+    }
+
+    public static class Lives {
+        @ConfigEntry.Gui.Tooltip
+        public boolean enableLives = false;
+        @ConfigEntry.Gui.Tooltip
+        public int startingLives = 10;
+        @ConfigEntry.Gui.Tooltip
+        public int livesBetweenRandomises = 1;
+    }
+
+    public static class Other {
+        @ConfigEntry.Gui.Tooltip
+        public boolean sleepRandomisesOrigin = false;
+        @ConfigEntry.Gui.Tooltip
+        public int sleepsBetweenRandomises = 1;
+    }
+
 }
