@@ -22,16 +22,15 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
+    private static final Logger LOGGER = LoggerFactory.getLogger("origins-randomiser");
     public static OriginsRandomiserConfig config;
     public static OriginsRandomiserConfig defaultConfig = null;
-    private static final Logger LOGGER = LoggerFactory.getLogger("origins-randomiser");
     private ServerCommandSource commandSource;
 
     public void onInitialize() {
         try {
             AutoConfig.register(OriginsRandomiserConfig.class, GsonConfigSerializer::new);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             defaultConfig = new OriginsRandomiserConfig();
             LOGGER.error("Origins Randomiser config is broken! Delete 'origins-randomiser.json' to generate a new one.", e);
         }
