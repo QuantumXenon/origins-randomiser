@@ -49,7 +49,7 @@ public class OriginsRandomiser implements ModInitializer {
 
     private int randomise(ServerCommandSource source) {
         commandSource = source;
-        if (source.getEntity() instanceof Player player) {
+        if (commandSource.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(translate("origins-randomiser.reason.command"));
                 if (CONFIG.limitCommandUses()) {
