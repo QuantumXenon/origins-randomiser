@@ -12,6 +12,7 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
 
     private final Option<java.lang.Boolean> randomiseOrigins = this.optionForKey(new Option.Key("randomiseOrigins"));
     private final Option<java.lang.Boolean> randomiserMessages = this.optionForKey(new Option.Key("randomiserMessages"));
+    private final Option<java.lang.Boolean> dropExtraInventory = this.optionForKey(new Option.Key("dropExtraInventory"));
     private final Option<java.lang.Boolean> randomiseCommand = this.optionForKey(new Option.Key("randomiseCommand"));
     private final Option<java.lang.Boolean> limitCommandUses = this.optionForKey(new Option.Key("limitCommandUses"));
     private final Option<java.lang.Integer> randomiseCommandUses = this.optionForKey(new Option.Key("randomiseCommandUses"));
@@ -45,6 +46,14 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
 
     public void randomiserMessages(boolean value) {
         randomiserMessages.set(value);
+    }
+
+    public boolean dropExtraInventory() {
+        return dropExtraInventory.value();
+    }
+
+    public void dropExtraInventory(boolean value) {
+        dropExtraInventory.set(value);
     }
 
     public boolean randomiseCommand() {
@@ -110,9 +119,5 @@ public class RandomiserConfig extends ConfigWrapper<quantumxenon.randomiser.conf
     public void sleepsBetweenRandomises(int value) {
         sleepsBetweenRandomises.set(value);
     }
-
-
-
-
 }
 
