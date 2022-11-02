@@ -149,8 +149,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void tick(CallbackInfo info) {
         createObjective("livesUntilRandomise", CONFIG.livesBetweenRandomises());
         createObjective("sleepsUntilRandomise", CONFIG.sleepsBetweenRandomises());
-        if (CONFIG.limitCommandUses()) {
-            createObjective("uses", CONFIG.randomiseCommandUses());
+        if (CONFIG.livesBetweenRandomises() > 1 && !getScoreboardTags().contains("livesMessage")) {
+            addScoreboardTag("livesMessage");
+            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
+        }
+        if (CONFIG.sleepsBetweenRandomises() > 1 && !getScoreboardTags().contains("sleepsMessage")) {
+            addScoreboardTag("sleepsMessage");
+            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.sleepsBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"));
         }
         if (CONFIG.enableLives()) {
             createObjective("lives", CONFIG.startingLives());
@@ -159,13 +164,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 send(translate("origins-randomiser.message.outOfLives"));
             }
         }
-        if (CONFIG.livesBetweenRandomises() > 1 && !getScoreboardTags().contains("livesMessage")) {
-            addScoreboardTag("livesMessage");
-            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.livesBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
-        }
-        if (CONFIG.sleepsBetweenRandomises() > 1 && !getScoreboardTags().contains("sleepsMessage")) {
-            addScoreboardTag("sleepsMessage");
-            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + CONFIG.sleepsBetweenRandomises() + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"));
+        if (CONFIG.limitCommandUses()) {
+            createObjective("uses", CONFIG.randomiseCommandUses());
         }
     }
 }
