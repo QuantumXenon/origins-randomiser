@@ -10,7 +10,6 @@ import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.network.ServerPlayerEntity;
