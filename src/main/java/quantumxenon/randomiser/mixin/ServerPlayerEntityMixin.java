@@ -10,6 +10,7 @@ import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -42,7 +43,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         super(world, blockPos, f, gameProfile, null);
     }
 
-    @Shadow public abstract boolean changeGameMode(GameMode gameMode);
+    @Shadow
+    public abstract boolean changeGameMode(GameMode gameMode);
 
     private void send(String message) {
         sendMessage(Text.of(message));
@@ -132,7 +134,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
         if (getValue("livesUntilRandomise") <= 0) {
             if (CONFIG.dropExtraInventory()) {
-                PowerHolderComponent.getPowers(this, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
+                dropItems();
             }
             randomOrigin(translate("origins-randomiser.reason.death"));
         }
@@ -140,6 +142,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             decrementValue("lives");
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " " + translate("origins-randomiser.message.livesRemaining"));
         }
+    }
+
+    private void dropItems() {
+        PowerHolderComponent.getPowers(this, InventoryPower.class).forEach(inventory -> {
+            for (int i = 0; i < inventory.size(); i++) {
+                ItemStack itemStack = inventory.getStack(i);
+                this.dropItem(itemStack, true, false);
+                inventory.setStack(i, ItemStack.EMPTY);
+            }
+        });
     }
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
