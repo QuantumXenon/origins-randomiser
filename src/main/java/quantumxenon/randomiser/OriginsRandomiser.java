@@ -19,6 +19,7 @@ import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
     public static final RandomiserConfig CONFIG = RandomiserConfig.createAndLoad();
+    private ServerCommandSource commandSource;
 
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomise(context.getSource()))));
@@ -30,16 +31,33 @@ public class OriginsRandomiser implements ModInitializer {
         return Text.translatable(key).getString();
     }
 
+    private void send(String message) {
+        commandSource.sendMessage(Text.of(message));
+    }
+
+    private int getUses() {
+        return Objects.requireNonNull(commandSource.getPlayer()).getScoreboard().getPlayerScore(commandSource.getName(), commandSource.getPlayer().getScoreboard().getObjective("uses")).getScore();
+    }
+
+    private void modifyUses() {
+        Objects.requireNonNull(commandSource.getPlayer()).getScoreboard().getPlayerScore(commandSource.getName(), commandSource.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
+    }
+
+    private void setValue(ServerPlayerEntity target, String objective, int value) {
+        target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective(objective)).setScore(value);
+    }
+
     private int randomise(ServerCommandSource source) {
+        commandSource = source;
         if (source.getEntity() instanceof Player player) {
             if (CONFIG.randomiseCommand()) {
                 player.randomOrigin(translate("origins-randomiser.reason.command"));
                 if (CONFIG.limitCommandUses()) {
-                    Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
-                    source.sendMessage(Text.of(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + source.getPlayer().getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).getScore() + " " + Formatting.RESET + translate("origins-randomiser.command.usesRemaining")));
+                    modifyUses();
+                    send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getUses() + " " + Formatting.RESET + translate("origins-randomiser.command.usesRemaining"));
                 }
             } else {
-                source.sendMessage(Text.translatable("origins-randomiser.command.disabled"));
+                send(translate("origins-randomiser.command.disabled"));
             }
         }
         return 1;
@@ -48,15 +66,14 @@ public class OriginsRandomiser implements ModInitializer {
     private int setLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "player");
         int number = IntegerArgumentType.getInteger(context, "number");
-        ServerCommandSource source = context.getSource();
+        commandSource = context.getSource();
         if (CONFIG.enableLives()) {
             for (ServerPlayerEntity target : targets) {
-                target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("lives")).setScore(number);
-                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.lives") + " " + number + "."));
+                setValue(target, "lives", number);
+                send(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.lives") + " " + number + ".");
             }
-
         } else {
-            source.sendMessage(Text.translatable("origins-randomiser.lives.disabled"));
+            send(translate("origins-randomiser.lives.disabled"));
         }
         return 1;
     }
@@ -64,14 +81,14 @@ public class OriginsRandomiser implements ModInitializer {
     private int setCommandUses(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "player");
         int number = IntegerArgumentType.getInteger(context, "number");
-        ServerCommandSource source = context.getSource();
+        commandSource = context.getSource();
         if (CONFIG.limitCommandUses()) {
             for (ServerPlayerEntity target : targets) {
-                target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective("uses")).setScore(number);
-                source.sendMessage(Text.of(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.uses") + " " + number + "."));
+                setValue(target, "uses", number);
+                send(translate("origins-randomiser.command.set") + " " + target.getName().getString() + translate("origins-randomiser.command.uses") + " " + number + ".");
             }
         } else {
-            source.sendMessage(Text.translatable("origins-randomiser.command.unlimited"));
+            send(translate("origins-randomiser.command.unlimited"));
         }
         return 1;
     }
