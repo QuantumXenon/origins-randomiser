@@ -10,7 +10,6 @@ import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -36,7 +35,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final String player = getName().getString();
     private final Scoreboard scoreboard = getScoreboard();
-    private final MinecraftServer server = Objects.requireNonNull(getServer());
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
@@ -56,7 +54,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         return (scoreboard.getPlayerScore(player, scoreboard.getObjective(objective)).getScore());
     }
 
-    private void modifyValue(String objective) {
+    private void decrementValue(String objective) {
         getScoreboard().getPlayerScore(player, getScoreboard().getObjective(objective)).incrementScore(-1);
     }
 
@@ -102,7 +100,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             Origin origin = OriginRegistry.get(originList.get(getRandom().nextInt(originList.size())));
             setOrigin(origin);
             if (CONFIG.randomiserMessages()) {
-                for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
+                for (ServerPlayerEntity entity : Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList()) {
                     entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
                 }
             }
@@ -114,7 +112,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (CONFIG.sleepRandomisesOrigin()) {
-            modifyValue("sleepsUntilRandomise");
+            decrementValue("sleepsUntilRandomise");
             if (CONFIG.sleepsBetweenRandomises() > 1 && getValue("sleepsUntilRandomise") > 0) {
                 send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"));
             }
@@ -126,7 +124,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        modifyValue("livesUntilRandomise");
+        decrementValue("livesUntilRandomise");
         if (CONFIG.livesBetweenRandomises() > 1 && getValue("livesUntilRandomise") > 0) {
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
         }
@@ -134,7 +132,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             randomOrigin(translate("origins-randomiser.reason.death"));
         }
         if (CONFIG.enableLives()) {
-            modifyValue("lives");
+            decrementValue("lives");
             send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " " + translate("origins-randomiser.message.livesRemaining"));
         }
     }
