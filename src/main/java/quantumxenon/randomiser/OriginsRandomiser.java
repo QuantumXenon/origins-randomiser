@@ -12,8 +12,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 import quantumxenon.randomiser.entity.Player;
 
@@ -21,22 +19,16 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
-    private static final Logger LOGGER = LoggerFactory.getLogger("origins-randomiser");
-    public static OriginsRandomiserConfig config;
     public static OriginsRandomiserConfig defaultConfig = null;
     private static ServerCommandSource commandSource;
+    private static OriginsRandomiserConfig config;
 
     public void onInitialize() {
-        try {
-            AutoConfig.register(OriginsRandomiserConfig.class, GsonConfigSerializer::new);
-        } catch (Exception e) {
-            defaultConfig = new OriginsRandomiserConfig();
-            LOGGER.error(translate("origins-randomiser.config.broken"), e);
-        }
-        config = OriginsRandomiserConfig.getConfig();
+        AutoConfig.register(OriginsRandomiserConfig.class, GsonConfigSerializer::new);
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomise(context.getSource()))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setLives").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives))))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses))))));
+        config = OriginsRandomiserConfig.getConfig();
     }
 
     private String translate(String key) {

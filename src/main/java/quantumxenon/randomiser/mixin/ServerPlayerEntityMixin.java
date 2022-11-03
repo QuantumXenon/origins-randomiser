@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 import quantumxenon.randomiser.entity.Player;
 
 import java.util.List;
@@ -33,13 +34,13 @@ import java.util.Random;
 
 import static net.minecraft.util.Formatting.BOLD;
 import static net.minecraft.util.Formatting.RESET;
-import static quantumxenon.randomiser.OriginsRandomiser.config;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
     private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
-    private final String player = getName().getString();
+    private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final Scoreboard scoreboard = getScoreboard();
+    private final String player = getName().getString();
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile, null);
