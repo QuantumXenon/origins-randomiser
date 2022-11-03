@@ -8,21 +8,18 @@ import quantumxenon.randomiser.OriginsRandomiser;
 
 @Config(name = "origins-randomiser")
 public class OriginsRandomiserConfig implements ConfigData {
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public General general = new General();
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Command command = new Command();
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Lives lives = new Lives();
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
+    public Other other = new Other();
+
     public static OriginsRandomiserConfig getConfig() {
         return OriginsRandomiser.defaultConfig == null ? AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig() : OriginsRandomiser.defaultConfig;
     }
-
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public General general = new General();
-
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public Command command = new Command();
-
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public Lives lives = new Lives();
-
-    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public Other other = new Other();
 
     public static class General {
         @ConfigEntry.Gui.Tooltip
@@ -31,6 +28,8 @@ public class OriginsRandomiserConfig implements ConfigData {
         public boolean randomiserMessages = true;
         @ConfigEntry.Gui.Tooltip
         public boolean dropExtraInventory = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean allowDuplicateOrigins = false;
     }
 
     public static class Command {
