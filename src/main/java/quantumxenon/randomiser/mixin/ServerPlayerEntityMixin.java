@@ -15,7 +15,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
@@ -30,12 +29,15 @@ import quantumxenon.randomiser.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
+import static net.minecraft.util.Formatting.BOLD;
+import static net.minecraft.util.Formatting.RESET;
 import static quantumxenon.randomiser.OriginsRandomiser.config;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
-    private static final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
+    private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final String player = getName().getString();
     private final Scoreboard scoreboard = getScoreboard();
 
@@ -45,6 +47,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Shadow
     public abstract boolean changeGameMode(GameMode gameMode);
+
+    @Shadow
+    public abstract void sendMessage(Text message, boolean overlay);
 
     private void send(String message) {
         sendMessage(Text.of(message));
@@ -66,25 +71,34 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         getScoreboard().getPlayerScore(player, getScoreboard().getObjective(objective)).setScore(value);
     }
 
+    private boolean noScoreboardTag(String tag) {
+        return !getScoreboardTags().contains(tag);
+    }
+
     private void createObjective(String name, int number) {
         if (!scoreboard.containsObjective(name)) {
             scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), ScoreboardCriterion.RenderType.INTEGER);
             setValue(name, number);
             if (name.equals("uses")) {
-                send(translate("origins-randomiser.message.commandLimited") + " " + Formatting.BOLD + config.command.randomiseCommandUses + Formatting.RESET + " " + translate("origins-randomiser.message.uses"));
+                sendMessage(Text.translatable("origins-randomiser.message.commandLimited", config.command.randomiseCommandUses));
             }
             if (name.equals("lives")) {
-                send(translate("origins-randomiser.message.livesEnabled") + " " + Formatting.BOLD + config.lives.startingLives + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
+                sendMessage(Text.translatable("origins-randomiser.message.livesEnabled", config.lives.startingLives));
             }
         }
     }
 
-    private StringBuilder formatOrigin(Origin origin) {
+    private StringBuilder format(Origin origin) {
         StringBuilder originName = new StringBuilder();
         for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
             originName.append(StringUtils.capitalize(word)).append(" ");
         }
         return originName;
+    }
+
+    private Origin getOrigin() {
+        List<Origin> origins = layer.getRandomOrigins(this).stream().map(OriginRegistry::get).toList();
+        return origins.get(new Random().nextInt(origins.size()));
     }
 
     private void setOrigin(Origin origin) {
@@ -103,17 +117,27 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (config.general.dropExtraInventory) {
                 dropItems();
             }
-            List<Identifier> originList = layer.getRandomOrigins(this);
-            Origin origin = OriginRegistry.get(originList.get(getRandom().nextInt(originList.size())));
+            Origin origin = getOrigin();
             setOrigin(origin);
             if (config.general.randomiserMessages) {
-                for (ServerPlayerEntity entity : Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList()) {
-                    entity.sendMessage(Text.of(Formatting.BOLD + player + Formatting.RESET + " " + reason + " " + Formatting.BOLD + formatOrigin(origin) + Formatting.RESET));
+                List<ServerPlayerEntity> playerList = Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList();
+                for (ServerPlayerEntity entity : playerList) {
+                    entity.sendMessage(Text.of(BOLD + player + RESET + " " + reason + " " + BOLD + format(origin) + RESET));
                 }
             }
         } else {
-            send(translate("origins-randomiser.origin.disabled"));
+            send(translate("origins-randomiser.disabled"));
         }
+    }
+
+    private void dropItems() {
+        PowerHolderComponent.getPowers(this, InventoryPower.class).forEach(inventory -> {
+            for (int i = 0; i < inventory.size(); i++) {
+                ItemStack itemStack = inventory.getStack(i);
+                dropItem(itemStack, true, false);
+                inventory.setStack(i, ItemStack.EMPTY);
+            }
+        });
     }
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
@@ -121,7 +145,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (config.other.sleepRandomisesOrigin) {
             decrementValue("sleepsUntilRandomise");
             if (config.other.sleepsBetweenRandomises > 1 && getValue("sleepsUntilRandomise") > 0) {
-                send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("sleepsUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.sleepsUntilRandomise"));
+                sendMessage(Text.translatable("origins-randomiser.message.sleepsUntilRandomise", getValue("sleepsUntilRandomise")));
             }
             if (getValue("sleepsUntilRandomise") <= 0) {
                 randomOrigin(translate("origins-randomiser.reason.sleep"));
@@ -133,30 +157,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void death(CallbackInfo info) {
         decrementValue("livesUntilRandomise");
         if (config.lives.livesBetweenRandomises > 1 && getValue("livesUntilRandomise") > 0) {
-            send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("livesUntilRandomise") + Formatting.RESET + " " + translate("origins-randomiser.message.livesUntilRandomise"));
+            sendMessage(Text.translatable("origins-randomiser.message.livesUntilRandomise", getValue("livesUntilRandomise")));
+        }
+        if (config.lives.enableLives) {
+            decrementValue("lives");
+            sendMessage(Text.translatable("origins-randomiser.message.livesRemaining", getValue("lives")));
         }
         if (getValue("livesUntilRandomise") <= 0) {
             randomOrigin(translate("origins-randomiser.reason.death"));
         }
-        if (config.lives.enableLives) {
-            decrementValue("lives");
-            send(translate("origins-randomiser.message.nowHave") + " " + Formatting.BOLD + getValue("lives") + Formatting.RESET + " " + translate("origins-randomiser.message.livesRemaining"));
-        }
-    }
-
-    private void dropItems() {
-        PowerHolderComponent.getPowers(this, InventoryPower.class).forEach(inventory -> {
-            for (int i = 0; i < inventory.size(); i++) {
-                ItemStack itemStack = inventory.getStack(i);
-                this.dropItem(itemStack, true, false);
-                inventory.setStack(i, ItemStack.EMPTY);
-            }
-        });
     }
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
     private void spawn(CallbackInfo info) {
-        if (!getScoreboardTags().contains("firstJoin")) {
+        if (noScoreboardTag("firstJoin")) {
             addScoreboardTag("firstJoin");
             randomOrigin(translate("origins-randomiser.reason.firstJoin"));
         }
@@ -166,13 +180,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void tick(CallbackInfo info) {
         createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
         createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises);
-        if (config.lives.livesBetweenRandomises > 1 && !getScoreboardTags().contains("livesMessage")) {
-            addScoreboardTag("livesMessage");
-            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + config.lives.livesBetweenRandomises + Formatting.RESET + " " + translate("origins-randomiser.message.lives"));
+        if (config.command.limitCommandUses) {
+            createObjective("uses", config.command.randomiseCommandUses);
         }
-        if (config.other.sleepsBetweenRandomises > 1 && !getScoreboardTags().contains("sleepsMessage")) {
+        if (config.lives.livesBetweenRandomises > 1 && noScoreboardTag("livesMessage")) {
+            addScoreboardTag("livesMessage");
+            sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterLives", config.lives.livesBetweenRandomises));
+        }
+        if (config.other.sleepsBetweenRandomises > 1 && noScoreboardTag("sleepsMessage")) {
             addScoreboardTag("sleepsMessage");
-            send(translate("origins-randomiser.message.randomOriginAfter") + " " + Formatting.BOLD + config.other.sleepsBetweenRandomises + Formatting.RESET + " " + translate("origins-randomiser.message.sleeps"));
+            sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises));
         }
         if (config.lives.enableLives) {
             createObjective("lives", config.lives.startingLives);
@@ -180,9 +197,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 changeGameMode(GameMode.SPECTATOR);
                 send(translate("origins-randomiser.message.outOfLives"));
             }
-        }
-        if (config.command.limitCommandUses) {
-            createObjective("uses", config.command.randomiseCommandUses);
         }
     }
 }
