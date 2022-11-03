@@ -8,6 +8,10 @@ import quantumxenon.randomiser.OriginsRandomiser;
 
 @Config(name = "origins-randomiser")
 public class OriginsRandomiserConfig implements ConfigData {
+    public static OriginsRandomiserConfig getConfig() {
+        return OriginsRandomiser.defaultConfig == null ? AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig() : OriginsRandomiser.defaultConfig;
+    }
+
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public General general = new General();
 
@@ -19,10 +23,6 @@ public class OriginsRandomiserConfig implements ConfigData {
 
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public Other other = new Other();
-
-    public static OriginsRandomiserConfig getConfig() {
-        return OriginsRandomiser.defaultConfig == null ? AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig() : OriginsRandomiser.defaultConfig;
-    }
 
     public static class General {
         @ConfigEntry.Gui.Tooltip
