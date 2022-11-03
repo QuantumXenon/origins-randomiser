@@ -24,7 +24,7 @@ public class OriginsRandomiser implements ModInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger("origins-randomiser");
     public static OriginsRandomiserConfig config;
     public static OriginsRandomiserConfig defaultConfig = null;
-    private ServerCommandSource commandSource;
+    private static ServerCommandSource commandSource;
 
     public void onInitialize() {
         try {
