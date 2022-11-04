@@ -1,33 +1,106 @@
 package quantumxenon.randomiser;
 
-import quantumxenon.randomiser.entity.Player;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Util;
-import net.minecraft.world.GameRules;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import quantumxenon.randomiser.config.OriginsRandomiserConfig;
+import quantumxenon.randomiser.entity.Player;
+
+import java.util.Collection;
+import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
-    public static final GameRules.Key<GameRules.BooleanRule> randomiserMessages = GameRuleRegistry.register("randomiserMessages", GameRules.Category.CHAT, GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.BooleanRule> randomiseOrigins = GameRuleRegistry.register("randomiseOrigins", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.BooleanRule> randomiseCommand = GameRuleRegistry.register("randomiseCommand", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.BooleanRule> sleepRandomisesOrigin = GameRuleRegistry.register("sleepRandomisesOrigin", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(false));
+    public static OriginsRandomiserConfig defaultConfig = null;
+    private static ServerCommandSource commandSource;
+    private static OriginsRandomiserConfig config;
 
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> this.randomiseOrigin(context.getSource()))));
+        AutoConfig.register(OriginsRandomiserConfig.class, GsonConfigSerializer::new);
+        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> this.randomise(context.getSource()))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomise(context.getSource()))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register((CommandManager.literal("setLives").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives))))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses))))));
+        config = OriginsRandomiserConfig.getConfig();
     }
 
-    private int randomiseOrigin(ServerCommandSource commandSource) {
-        if (commandSource.getEntity() instanceof Player sourcePlayer) {
-            if (commandSource.getServer().getGameRules().getBoolean(randomiseCommand)) {
-                sourcePlayer.randomOrigin(" randomised their origin and is now a ");
+    private String translate(String key) {
+        return new TranslatableText(key).getString();
+    }
+
+    private void send(String message) {
+        commandSource.sendFeedback(Text.of(message),false);
+    }
+
+    private String getName(ServerPlayerEntity player) {
+        return player.getName().getString();
+    }
+
+    private int getUses(ServerCommandSource source) throws CommandSyntaxException {
+        return Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).getScore();
+    }
+
+    private void decrementUses(ServerCommandSource source) throws CommandSyntaxException {
+        Objects.requireNonNull(source.getPlayer()).getScoreboard().getPlayerScore(source.getName(), source.getPlayer().getScoreboard().getObjective("uses")).incrementScore(-1);
+    }
+
+    private void setValue(ServerPlayerEntity target, String objective, int value) {
+        target.getScoreboard().getPlayerScore(target.getName().getString(), target.getScoreboard().getObjective(objective)).setScore(value);
+    }
+
+    private Collection<ServerPlayerEntity> getPlayers(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return EntityArgumentType.getPlayers(context, "player");
+    }
+
+    private int randomise(ServerCommandSource source) throws CommandSyntaxException {
+        commandSource = source;
+        if (source.getEntity() instanceof Player player) {
+            if (config.command.randomiseCommand) {
+                player.randomOrigin(translate("origins-randomiser.reason.command"));
+                if (config.command.limitCommandUses) {
+                    decrementUses(source);
+                    source.sendFeedback(new TranslatableText("origins-randomiser.command.usesLeft", getUses(source)),false);
+                }
             } else {
-                commandSource.getEntity().sendSystemMessage(new LiteralText("Use of the /randomise command has been disabled."), Util.NIL_UUID);
+                send(translate("origins-randomiser.command.disabled"));
             }
+        }
+        return 1;
+    }
+
+    private int setLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        int number = IntegerArgumentType.getInteger(context, "number");
+        commandSource = context.getSource();
+        if (config.lives.enableLives) {
+            for (ServerPlayerEntity player : getPlayers(context)) {
+                setValue(player, "lives", number);
+                commandSource.sendFeedback(new TranslatableText("origins-randomiser.command.setLives", getName(player), String.valueOf(number)), true);
+            }
+        } else {
+            send(translate("origins-randomiser.lives.disabled"));
+        }
+        return 1;
+    }
+
+    private int setCommandUses(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        int number = IntegerArgumentType.getInteger(context, "number");
+        commandSource = context.getSource();
+        if (config.command.limitCommandUses) {
+            for (ServerPlayerEntity player : getPlayers(context)) {
+                setValue(player, "uses", number);
+                commandSource.sendFeedback(new TranslatableText("origins-randomiser.command.setUses", getName(player), String.valueOf(number)), true);
+            }
+        } else {
+            send(translate("origins-randomiser.command.unlimited"));
         }
         return 1;
     }

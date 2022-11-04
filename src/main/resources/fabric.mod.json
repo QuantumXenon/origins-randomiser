@@ -3,7 +3,8 @@
   "id": "origins-randomiser",
   "name": "Origins Randomiser",
   "version": "${version}",
-  "description": "Assigns you a random origin every time you die.",
+  "description": "Highly configurable mod that assigns you a random origin every time you die.",
+  "license": "MIT",
   "authors": [
     "TheQuantumXenon"
   ],
@@ -11,10 +12,13 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
     "issues": "https://github.com/QuantumXenon/origins-randomiser/issues"
   },
-  "icon": "icon.png",
+  "icon": "assets/icon.png",
   "entrypoints": {
     "main": [
       "quantumxenon.randomiser.OriginsRandomiser"
+    ],
+    "modmenu": [
+      "quantumxenon.randomiser.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -23,6 +27,7 @@
   "depends": {
     "minecraft": "1.18.2",
     "fabric-api": "*",
-    "origins": "*"
+    "origins": "*",
+    "cloth-config2": "*"
   }
 }
