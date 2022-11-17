@@ -84,7 +84,7 @@ public class OriginsRandomiser implements ModInitializer {
         if (config.lives.enableLives) {
             for (ServerPlayerEntity player : getPlayers(context)) {
                 setValue(player, "lives", number);
-                commandSource.sendFeedback(Text.translatable("origins-randomiser.command.setLives", getName(player), String.valueOf(number)), true);
+                commandSource.sendFeedback(Text.translatable("origins-randomiser.command.setLives", getName(player), number), true);
             }
         } else {
             send(translate("origins-randomiser.lives.disabled"));
@@ -98,7 +98,7 @@ public class OriginsRandomiser implements ModInitializer {
         if (config.command.limitCommandUses) {
             for (ServerPlayerEntity player : getPlayers(context)) {
                 setValue(player, "uses", number);
-                commandSource.sendFeedback(Text.translatable("origins-randomiser.command.setUses", getName(player), String.valueOf(number)), true);
+                commandSource.sendFeedback(Text.translatable("origins-randomiser.command.setUses", getName(player), number), true);
             }
         } else {
             send(translate("origins-randomiser.command.unlimited"));
