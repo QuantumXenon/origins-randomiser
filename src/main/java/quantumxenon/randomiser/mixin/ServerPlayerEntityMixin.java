@@ -198,12 +198,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             addScoreboardTag("sleepsMessage");
             sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises));
         }
-        if (config.command.limitCommandUses && noScoreboardTag("uses")) {
-            addScoreboardTag("limitCommandUses");
+        if (config.command.limitCommandUses && noScoreboardTag("limitUsesMessage")) {
+            addScoreboardTag("limitUsesMessage");
             sendMessage(Text.translatable("origins-randomiser.message.limitCommandUses", config.command.randomiseCommandUses));
         }
-        if (config.lives.enableLives && noScoreboardTag("lives")) {
-            addScoreboardTag("livesEnabled");
+        if (config.lives.enableLives && noScoreboardTag("livesEnabledMessage")) {
+            addScoreboardTag("livesEnabledMessage");
             sendMessage(Text.translatable("origins-randomiser.message.livesEnabled", config.lives.startingLives));
         }
     }
