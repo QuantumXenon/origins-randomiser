@@ -81,12 +81,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (!scoreboard.containsObjective(name)) {
             scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
             setValue(name, number);
-            if (name.equals("uses")) {
-                sendMessage(Text.translatable("origins-randomiser.message.commandLimited", config.command.randomiseCommandUses));
-            }
-            if (name.equals("lives")) {
-                sendMessage(Text.translatable("origins-randomiser.message.livesEnabled", config.lives.startingLives));
-            }
         }
     }
 
@@ -203,6 +197,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (config.other.sleepsBetweenRandomises > 1 && noScoreboardTag("sleepsMessage")) {
             addScoreboardTag("sleepsMessage");
             sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises));
+        }
+        if (config.command.limitCommandUses && noScoreboardTag("uses")) {
+            addScoreboardTag("limitCommandUses");
+            sendMessage(Text.translatable("origins-randomiser.message.limitCommandUses", config.command.randomiseCommandUses));
+        }
+        if (config.lives.enableLives && noScoreboardTag("lives")) {
+            addScoreboardTag("livesEnabled");
+            sendMessage(Text.translatable("origins-randomiser.message.livesEnabled", config.lives.startingLives));
         }
     }
 }
