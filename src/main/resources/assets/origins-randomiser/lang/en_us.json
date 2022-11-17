@@ -36,7 +36,7 @@
   "origins-randomiser.command.usesLeft": "You now have %d uses of the /randomise command remaining.",
   "origins-randomiser.disabled": "Origin randomizing has been disabled.",
   "origins-randomiser.lives.disabled": "Lives are disabled. Toggle them with 'enableLives'.",
-  "origins-randomiser.message.commandLimited": "Use of the /randomise command has been limited. You start with %d uses.",
+  "origins-randomiser.message.limitCommandUses": "Use of the /randomise command has been limited. You start with %d uses.",
   "origins-randomiser.message.livesEnabled": "Lives have been enabled. You start with %d lives.",
   "origins-randomiser.message.livesRemaining": "You now have %d lives remaining.",
   "origins-randomiser.message.livesUntilRandomise": "You now have %d more lives until your origin is randomized.",
