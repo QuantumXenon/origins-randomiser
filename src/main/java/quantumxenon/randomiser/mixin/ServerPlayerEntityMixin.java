@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -34,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 import static net.minecraft.util.Formatting.BOLD;
 import static net.minecraft.util.Formatting.RESET;
 
@@ -80,14 +80,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     private void createObjective(String name, int number) {
         if (!scoreboard.containsObjective(name)) {
-            scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), ScoreboardCriterion.RenderType.INTEGER);
+            scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
             setValue(name, number);
-            if (name.equals("uses")) {
-                sendMessage(new TranslatableText("origins-randomiser.message.commandLimited", config.command.randomiseCommandUses),false);
-            }
-            if (name.equals("lives")) {
-                sendMessage(new TranslatableText("origins-randomiser.message.livesEnabled", config.lives.startingLives),false);
-            }
         }
     }
 
@@ -121,12 +115,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (config.general.dropExtraInventory) {
                 dropItems();
             }
-            Origin origin = getOrigin();
-            setOrigin(origin);
+            Origin newOrigin = getOrigin();
+            setOrigin(newOrigin);
             if (config.general.randomiserMessages) {
                 List<ServerPlayerEntity> playerList = Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList();
                 for (ServerPlayerEntity entity : playerList) {
-                    entity.sendMessage(new LiteralText(BOLD + player + RESET + " " + reason + " " + BOLD + format(origin) + RESET), false);
+                    entity.sendMessage(Text.of(BOLD + player + RESET + " " + reason + " " + BOLD + format(newOrigin) + RESET), false);
                 }
             }
         } else {
@@ -149,7 +143,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (config.other.sleepRandomisesOrigin) {
             decrementValue("sleepsUntilRandomise");
             if (config.other.sleepsBetweenRandomises > 1 && getValue("sleepsUntilRandomise") > 0) {
-                sendMessage(new TranslatableText("origins-randomiser.message.sleepsUntilRandomise", getValue("sleepsUntilRandomise")),false);
+                sendMessage(new TranslatableText("origins-randomiser.message.sleepsUntilRandomise", getValue("sleepsUntilRandomise")), false);
             }
             if (getValue("sleepsUntilRandomise") <= 0) {
                 randomOrigin(translate("origins-randomiser.reason.sleep"));
@@ -169,7 +163,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 changeGameMode(GameMode.SPECTATOR);
                 send(translate("origins-randomiser.message.outOfLives"));
             } else {
-                sendMessage(new TranslatableText("origins-randomiser.message.livesRemaining", getValue("lives")),false);
+                sendMessage(new TranslatableText("origins-randomiser.message.livesRemaining", getValue("lives")), false);
             }
         }
         if (getValue("livesUntilRandomise") <= 0) {
@@ -183,18 +177,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             addScoreboardTag("firstJoin");
             randomOrigin(translate("origins-randomiser.reason.firstJoin"));
         }
+        createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
+        createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises);
+        createObjective("uses", config.command.randomiseCommandUses);
+        createObjective("lives", config.lives.startingLives);
     }
 
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
-        createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
-        createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises);
-        if (config.command.limitCommandUses) {
-            createObjective("uses", config.command.randomiseCommandUses);
-        }
-        if (config.lives.enableLives) {
-            createObjective("lives", config.lives.startingLives);
-        }
         if (getValue("livesUntilRandomise") <= 0) {
             setValue("livesUntilRandomise", config.lives.livesBetweenRandomises);
         }
@@ -207,7 +197,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
         if (config.other.sleepsBetweenRandomises > 1 && noScoreboardTag("sleepsMessage")) {
             addScoreboardTag("sleepsMessage");
-            sendMessage(new TranslatableText("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises),false);
+            sendMessage(new TranslatableText("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises), false);
+        }
+        if (config.command.limitCommandUses && noScoreboardTag("limitUsesMessage")) {
+            addScoreboardTag("limitUsesMessage");
+            sendMessage(new TranslatableText("origins-randomiser.message.limitCommandUses", config.command.randomiseCommandUses), false);
+        }
+        if (config.lives.enableLives && noScoreboardTag("livesEnabledMessage")) {
+            addScoreboardTag("livesEnabledMessage");
+            sendMessage(new TranslatableText("origins-randomiser.message.livesEnabled", config.lives.startingLives), false);
         }
     }
 }
