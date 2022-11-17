@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import quantumxenon.randomiser.OriginsRandomiser;
 
 @Config(name = "origins-randomiser")
 public class OriginsRandomiserConfig implements ConfigData {
@@ -18,7 +17,7 @@ public class OriginsRandomiserConfig implements ConfigData {
     public Other other = new Other();
 
     public static OriginsRandomiserConfig getConfig() {
-        return OriginsRandomiser.defaultConfig == null ? AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig() : OriginsRandomiser.defaultConfig;
+        return AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig();
     }
 
     public static class General {
@@ -56,5 +55,4 @@ public class OriginsRandomiserConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public int sleepsBetweenRandomises = 1;
     }
-
 }

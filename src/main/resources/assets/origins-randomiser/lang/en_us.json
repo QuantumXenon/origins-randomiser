@@ -34,7 +34,6 @@
   "origins-randomiser.command.setUses": "Set %s's /randomise uses to %s.",
   "origins-randomiser.command.unlimited": "Use of the /randomise command is unlimited. Toggle this with 'limitCommandUses'.",
   "origins-randomiser.command.usesLeft": "You now have %s uses of the /randomise command remaining.",
-  "origins-randomiser.config.broken": "Origins Randomiser config is broken! Delete 'origins-randomiser.json' to generate a new one.",
   "origins-randomiser.disabled": "Origin randomizing has been disabled.",
   "origins-randomiser.lives.disabled": "Lives are disabled. Toggle them with 'enableLives'.",
   "origins-randomiser.message.commandLimited": "Use of the /randomise command has been limited. You start with %s uses.",

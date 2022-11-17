@@ -19,16 +19,15 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class OriginsRandomiser implements ModInitializer {
-    public static OriginsRandomiserConfig defaultConfig = null;
     private static ServerCommandSource commandSource;
     private static OriginsRandomiserConfig config;
 
     public void onInitialize() {
         AutoConfig.register(OriginsRandomiserConfig.class, GsonConfigSerializer::new);
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomise(context.getSource()))));
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setLives").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setLives))))));
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(1)).executes(this::setCommandUses))))));
         config = OriginsRandomiserConfig.getConfig();
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("randomise").executes(context -> randomise(context.getSource()))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setLives").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(0)).executes(this::setLives))))));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register((CommandManager.literal("setCommandUses").requires((permissions) -> permissions.hasPermissionLevel(2)).then(CommandManager.argument("player", EntityArgumentType.players()).then(CommandManager.argument("number", IntegerArgumentType.integer(0)).executes(this::setCommandUses))))));
     }
 
     private String translate(String key) {
@@ -41,6 +40,10 @@ public class OriginsRandomiser implements ModInitializer {
 
     private String getName(ServerPlayerEntity player) {
         return player.getName().getString();
+    }
+
+    private int getNumber(CommandContext<ServerCommandSource> context) {
+        return IntegerArgumentType.getInteger(context, "number");
     }
 
     private int getUses(ServerCommandSource source) {
@@ -76,7 +79,7 @@ public class OriginsRandomiser implements ModInitializer {
     }
 
     private int setLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        int number = IntegerArgumentType.getInteger(context, "number");
+        int number = getNumber(context);
         commandSource = context.getSource();
         if (config.lives.enableLives) {
             for (ServerPlayerEntity player : getPlayers(context)) {
@@ -90,7 +93,7 @@ public class OriginsRandomiser implements ModInitializer {
     }
 
     private int setCommandUses(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        int number = IntegerArgumentType.getInteger(context, "number");
+        int number = getNumber(context);
         commandSource = context.getSource();
         if (config.command.limitCommandUses) {
             for (ServerPlayerEntity player : getPlayers(context)) {
