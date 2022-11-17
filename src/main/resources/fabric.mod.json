@@ -18,7 +18,7 @@
       "quantumxenon.randomiser.OriginsRandomiser"
     ],
     "modmenu": [
-      "quantumxenon.randomiser.ModMenuIntegration"
+      "quantumxenon.randomiser.config.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -27,7 +27,6 @@
   "depends": {
     "minecraft": "1.19.x",
     "fabric": "*",
-    "origins": "*",
-    "cloth-config2": "*"
+    "origins": "*"
   }
 }
