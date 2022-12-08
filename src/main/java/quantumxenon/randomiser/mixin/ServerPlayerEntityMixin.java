@@ -43,8 +43,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private final Scoreboard scoreboard = getScoreboard();
     private final String player = getName().getString();
 
-    private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
-        super(world, blockPos, f, gameProfile, null);
+    private ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+        super(world, pos, yaw, gameProfile);
     }
 
     @Shadow
