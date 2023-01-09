@@ -1,32 +1,32 @@
 {
-  "schemaVersion": 1,
-  "id": "origins-randomiser",
-  "name": "Origins Randomiser",
-  "version": "${version}",
-  "description": "Highly configurable mod that assigns you a random origin every time you die.",
-  "license": "MIT",
-  "authors": [
-    "TheQuantumXenon"
-  ],
-  "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
-    "issues": "https://github.com/QuantumXenon/origins-randomiser/issues"
-  },
-  "icon": "assets/icon.png",
-  "entrypoints": {
-    "main": [
-      "quantumxenon.randomiser.OriginsRandomiser"
-    ],
-    "modmenu": [
-      "quantumxenon.randomiser.config.ModMenuIntegration"
-    ]
-  },
-  "mixins": [
-    "origins-randomiser.mixins.json"
-  ],
-  "depends": {
-    "minecraft": ">=1.19.3",
-    "fabric-api": "*",
-    "origins": "*"
-  }
+	"schemaVersion":1,
+	"id":"origins-randomiser",
+	"name":"Origins Randomiser",
+	"version":"${version}",
+	"description":"Highly configurable mod that assigns you a random origin every time you die.",
+	"license":"MIT",
+	"authors":[
+		"TheQuantumXenon"
+	],
+	"contact":{
+		"homepage":"https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
+		"issues":"https://github.com/QuantumXenon/origins-randomiser/issues"
+	},
+	"icon":"assets/icon.png",
+	"entrypoints":{
+		"main":[
+			"quantumxenon.randomiser.OriginsRandomiser"
+		],
+		"modmenu":[
+			"quantumxenon.randomiser.config.ModMenuIntegration"
+		]
+	},
+	"mixins":[
+		"origins-randomiser.mixins.json"
+	],
+	"depends":{
+		"minecraft":">=1.19.3",
+		"fabric-api":"*",
+		"origins":"*"
+	}
 }
