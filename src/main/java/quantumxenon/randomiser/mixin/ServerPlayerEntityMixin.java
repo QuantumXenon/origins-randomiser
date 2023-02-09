@@ -42,7 +42,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final Scoreboard scoreboard = getScoreboard();
-    private final String player = getName().getString();
+    private final String playerName = getName().getString();
 
     private ServerPlayerEntityMixin(World world, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(world, blockPos, f, gameProfile);
@@ -63,15 +63,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     private int getValue(String objective) {
-        return (scoreboard.getPlayerScore(player, scoreboard.getObjective(objective)).getScore());
+        return (scoreboard.getPlayerScore(playerName, scoreboard.getObjective(objective)).getScore());
     }
 
     private void decrementValue(String objective) {
-        getScoreboard().getPlayerScore(player, getScoreboard().getObjective(objective)).incrementScore(-1);
+        getScoreboard().getPlayerScore(playerName, getScoreboard().getObjective(objective)).incrementScore(-1);
     }
 
     private void setValue(String objective, int value) {
-        getScoreboard().getPlayerScore(player, getScoreboard().getObjective(objective)).setScore(value);
+        getScoreboard().getPlayerScore(playerName, getScoreboard().getObjective(objective)).setScore(value);
     }
 
     private boolean noScoreboardTag(String tag) {
@@ -120,7 +120,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             if (config.general.randomiserMessages) {
                 List<ServerPlayerEntity> playerList = Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList();
                 for (ServerPlayerEntity entity : playerList) {
-                    entity.sendMessage(Text.of(BOLD + player + RESET + " " + reason + " " + BOLD + format(newOrigin) + RESET), false);
+                    entity.sendMessage(Text.of(BOLD + playerName + RESET + " " + reason + " " + BOLD + format(newOrigin) + RESET), false);
                 }
             }
         } else {
