@@ -74,7 +74,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     private boolean noScoreboardTag(String tag) {
-        return !getScoreboardTags().contains(tag);
+        return !getCommandTags().contains(tag);
     }
 
     private void createObjective(String name, int number) {
@@ -173,7 +173,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     @Inject(at = @At("TAIL"), method = "onSpawn")
     private void spawn(CallbackInfo info) {
         if (noScoreboardTag("firstJoin")) {
-            addScoreboardTag("firstJoin");
+            addCommandTag("firstJoin");
             randomOrigin(translate("origins-randomiser.reason.firstJoin"));
         }
         createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
@@ -191,19 +191,19 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             setValue("sleepsUntilRandomise", config.other.sleepsBetweenRandomises);
         }
         if (config.lives.livesBetweenRandomises > 1 && noScoreboardTag("livesMessage")) {
-            addScoreboardTag("livesMessage");
+            addCommandTag("livesMessage");
             sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterLives", config.lives.livesBetweenRandomises));
         }
         if (config.other.sleepsBetweenRandomises > 1 && noScoreboardTag("sleepsMessage")) {
-            addScoreboardTag("sleepsMessage");
+            addCommandTag("sleepsMessage");
             sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises));
         }
         if (config.command.limitCommandUses && noScoreboardTag("limitUsesMessage")) {
-            addScoreboardTag("limitUsesMessage");
+            addCommandTag("limitUsesMessage");
             sendMessage(Text.translatable("origins-randomiser.message.limitCommandUses", config.command.randomiseCommandUses));
         }
         if (config.lives.enableLives && noScoreboardTag("livesEnabledMessage")) {
-            addScoreboardTag("livesEnabledMessage");
+            addCommandTag("livesEnabledMessage");
             sendMessage(Text.translatable("origins-randomiser.message.livesEnabled", config.lives.startingLives));
         }
     }

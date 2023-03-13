@@ -13,8 +13,8 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${project.minecraft_version}")
-    mappings("net.fabricmc:yarn:${project.minecraft_version}+${project.yarn_mappings}:v2")
+    minecraft("com.mojang:minecraft:${project.minecraft_version}-rc3")
+    mappings("net.fabricmc:yarn:${project.minecraft_version}-rc3+${project.yarn_mappings}:v2")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}+${project.minecraft_version}")
     modImplementation("com.github.apace100:origins-fabric:${project.origins_version}")
     modApi("com.github.apace100:apoli:${project.apoli_version}")
