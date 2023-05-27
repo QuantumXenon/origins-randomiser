@@ -1,210 +1,96 @@
 package quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
-import io.github.apace100.apoli.component.PowerHolderComponent;
-import io.github.apace100.apoli.power.InventoryPower;
-import io.github.apace100.origins.component.OriginComponent;
-import io.github.apace100.origins.origin.Origin;
-import io.github.apace100.origins.origin.OriginLayer;
-import io.github.apace100.origins.origin.OriginLayers;
-import io.github.apace100.origins.origin.OriginRegistry;
-import io.github.apace100.origins.registry.ModComponents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quantumxenon.randomiser.config.OriginsRandomiserConfig;
-import quantumxenon.randomiser.entity.Player;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-
-import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
-import static net.minecraft.util.Formatting.BOLD;
-import static net.minecraft.util.Formatting.RESET;
+import quantumxenon.randomiser.enums.Message;
+import quantumxenon.randomiser.enums.Reason;
+import quantumxenon.randomiser.utils.*;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Player {
-    private final OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
-    private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
-    private final Scoreboard scoreboard = getScoreboard();
-    private final String playerName = getName().getString();
+public abstract class ServerPlayerEntityMixin extends PlayerEntity {
+    ServerPlayerEntity player = ((ServerPlayerEntity) (Object) this) ;
 
     private ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
-    @Shadow
-    public abstract boolean changeGameMode(GameMode gameMode);
-
-    @Shadow
-    public abstract void sendMessage(Text message, boolean overlay);
-
-    private void send(String message) {
-        sendMessage(Text.of(message));
-    }
-
-    private String translate(String key) {
-        return Text.translatable(key).getString();
-    }
-
-    private int getValue(String objective) {
-        return (scoreboard.getPlayerScore(playerName, scoreboard.getObjective(objective)).getScore());
-    }
-
-    private void decrementValue(String objective) {
-        getScoreboard().getPlayerScore(playerName, getScoreboard().getObjective(objective)).incrementScore(-1);
-    }
-
-    private void setValue(String objective, int value) {
-        getScoreboard().getPlayerScore(playerName, getScoreboard().getObjective(objective)).setScore(value);
-    }
-
-    private boolean noScoreboardTag(String tag) {
-        return !getCommandTags().contains(tag);
-    }
-
-    private void createObjective(String name, int number) {
-        if (!scoreboard.containsObjective(name)) {
-            scoreboard.addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
-            setValue(name, number);
+    @Inject(at = @At("TAIL"), method = "onSpawn")
+    private void spawn(CallbackInfo info) {
+        if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
+            player.addCommandTag("firstJoin");
+            ScoreboardUtils.createObjective("livesUntilRandomise", ConfigUtils.livesBetweenRandomises(), player);
+            ScoreboardUtils.createObjective("sleepsUntilRandomise", ConfigUtils.sleepsBetweenRandomises(), player);
+            ScoreboardUtils.createObjective("uses", ConfigUtils.randomiseCommandUses(), player);
+            ScoreboardUtils.createObjective("lives", ConfigUtils.startingLives(), player);
+            OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
         }
     }
 
-    private StringBuilder format(Origin origin) {
-        StringBuilder originName = new StringBuilder();
-        for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
-            originName.append(StringUtils.capitalize(word)).append(" ");
+    @Inject(at = @At("TAIL"), method = "tick")
+    private void tick(CallbackInfo info) {
+        if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
+            ScoreboardUtils.setValue("livesUntilRandomise", ConfigUtils.livesBetweenRandomises(), player);
         }
-        return originName;
-    }
-
-    private Origin getOrigin() {
-        List<Origin> origins = layer.getRandomOrigins(this).stream().map(OriginRegistry::get).toList();
-        Origin currentOrigin = ModComponents.ORIGIN.get(this).getOrigin(layer);
-        Origin newOrigin = origins.get(new Random().nextInt(origins.size()));
-        if (!config.general.allowDuplicateOrigins) {
-            while (newOrigin.equals(currentOrigin)) {
-                newOrigin = origins.get(new Random().nextInt(origins.size()));
-            }
+        if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
+            ScoreboardUtils.setValue("sleepsUntilRandomise", ConfigUtils.sleepsBetweenRandomises(), player);
         }
-        return newOrigin;
-    }
-
-    private void setOrigin(Origin origin) {
-        ModComponents.ORIGIN.get(this).setOrigin(layer, origin);
-        OriginComponent.sync(this);
-    }
-
-    public void randomOrigin(String reason) {
-        if (config.general.randomiseOrigins) {
-            if (config.general.dropExtraInventory) {
-                dropItems();
-            }
-            Origin newOrigin = getOrigin();
-            setOrigin(newOrigin);
-            if (config.general.randomiserMessages) {
-                List<ServerPlayerEntity> playerList = Objects.requireNonNull(getServer()).getPlayerManager().getPlayerList();
-                for (ServerPlayerEntity entity : playerList) {
-                    entity.sendMessage(Text.of(BOLD + playerName + RESET + " " + reason + " " + BOLD + format(newOrigin) + RESET));
-                }
-            }
-        } else {
-            send(translate("origins-randomiser.disabled"));
+        if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag("livesMessage", player)) {
+            player.addCommandTag("livesMessage");
+            PlayerUtils.send(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_SLEEPS, ConfigUtils.sleepsBetweenRandomises()), player.getCommandSource());
         }
-    }
-
-    private void dropItems() {
-        PowerHolderComponent.getPowers(this, InventoryPower.class).forEach(inventory -> {
-            for (int i = 0; i < inventory.size(); i++) {
-                ItemStack itemStack = inventory.getStack(i);
-                dropItem(itemStack, true, false);
-                inventory.setStack(i, ItemStack.EMPTY);
-            }
-        });
-    }
-
-    @Inject(at = @At("TAIL"), method = "wakeUp")
-    private void sleep(CallbackInfo info) {
-        if (config.other.sleepRandomisesOrigin) {
-            decrementValue("sleepsUntilRandomise");
-            if (config.other.sleepsBetweenRandomises > 1 && getValue("sleepsUntilRandomise") > 0) {
-                sendMessage(Text.translatable("origins-randomiser.message.sleepsUntilRandomise", getValue("sleepsUntilRandomise")));
-            }
-            if (getValue("sleepsUntilRandomise") <= 0) {
-                randomOrigin(translate("origins-randomiser.reason.sleep"));
-            }
+        if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag("sleepsMessage", player)) {
+            player.addCommandTag("sleepsMessage");
+            PlayerUtils.send(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_SLEEPS, ConfigUtils.sleepsBetweenRandomises()), player.getCommandSource());
+        }
+        if (ConfigUtils.limitCommandUses() && ScoreboardUtils.noScoreboardTag("limitUsesMessage", player)) {
+            player.addCommandTag("limitUsesMessage");
+            PlayerUtils.send(MessageUtils.getMessage(Message.LIMIT_COMMAND_USES, ConfigUtils.randomiseCommandUses()), player.getCommandSource());
+        }
+        if (ConfigUtils.enableLives() && ScoreboardUtils.noScoreboardTag("livesEnabledMessage", player)) {
+            player.addCommandTag("livesEnabledMessage");
+            PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_ENABLED, ConfigUtils.startingLives()), player.getCommandSource());
         }
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        decrementValue("livesUntilRandomise");
-        if (config.lives.livesBetweenRandomises > 1 && getValue("livesUntilRandomise") > 0) {
-            sendMessage(Text.translatable("origins-randomiser.message.livesUntilRandomise", getValue("livesUntilRandomise")));
+        ScoreboardUtils.decrementValue("livesUntilRandomise", player);
+        if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
+            PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)), player.getCommandSource());
         }
-        if (config.lives.enableLives) {
-            decrementValue("lives");
-            if (getValue("lives") <= 0) {
-                changeGameMode(GameMode.SPECTATOR);
-                send(translate("origins-randomiser.message.outOfLives"));
+        if (ConfigUtils.enableLives()) {
+            ScoreboardUtils.decrementValue("lives", player);
+            if (ScoreboardUtils.getValue("lives", player) <= 0) {
+                player.changeGameMode(GameMode.SPECTATOR);
+                PlayerUtils.send(MessageUtils.getMessage(Message.OUT_OF_LIVES), player.getCommandSource());
             } else {
-                sendMessage(Text.translatable("origins-randomiser.message.livesRemaining", getValue("lives")));
+                PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue("lives", player)), player.getCommandSource());
             }
         }
-        if (getValue("livesUntilRandomise") <= 0) {
-            randomOrigin(translate("origins-randomiser.reason.death"));
+        if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
+            OriginUtils.randomOrigin(Reason.DEATH, player);
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "onSpawn")
-    private void spawn(CallbackInfo info) {
-        if (noScoreboardTag("firstJoin")) {
-            addCommandTag("firstJoin");
-            randomOrigin(translate("origins-randomiser.reason.firstJoin"));
-        }
-        createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
-        createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises);
-        createObjective("uses", config.command.randomiseCommandUses);
-        createObjective("lives", config.lives.startingLives);
-    }
-
-    @Inject(at = @At("TAIL"), method = "tick")
-    private void tick(CallbackInfo info) {
-        if (getValue("livesUntilRandomise") <= 0) {
-            setValue("livesUntilRandomise", config.lives.livesBetweenRandomises);
-        }
-        if (getValue("sleepsUntilRandomise") <= 0) {
-            setValue("sleepsUntilRandomise", config.other.sleepsBetweenRandomises);
-        }
-        if (config.lives.livesBetweenRandomises > 1 && noScoreboardTag("livesMessage")) {
-            addCommandTag("livesMessage");
-            sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterLives", config.lives.livesBetweenRandomises));
-        }
-        if (config.other.sleepsBetweenRandomises > 1 && noScoreboardTag("sleepsMessage")) {
-            addCommandTag("sleepsMessage");
-            sendMessage(Text.translatable("origins-randomiser.message.randomOriginAfterSleeps", config.other.sleepsBetweenRandomises));
-        }
-        if (config.command.limitCommandUses && noScoreboardTag("limitUsesMessage")) {
-            addCommandTag("limitUsesMessage");
-            sendMessage(Text.translatable("origins-randomiser.message.limitCommandUses", config.command.randomiseCommandUses));
-        }
-        if (config.lives.enableLives && noScoreboardTag("livesEnabledMessage")) {
-            addCommandTag("livesEnabledMessage");
-            sendMessage(Text.translatable("origins-randomiser.message.livesEnabled", config.lives.startingLives));
+    @Inject(at = @At("TAIL"), method = "wakeUp")
+    private void sleep(CallbackInfo info) {
+        if (ConfigUtils.sleepRandomisesOrigin()) {
+            ScoreboardUtils.decrementValue("sleepsUntilRandomise", player);
+            if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
+                PlayerUtils.send(MessageUtils.getMessage(Message.SLEEPS_UNTIL_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)), player.getCommandSource());
+            }
+            if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
+                OriginUtils.randomOrigin(Reason.SLEEP, player);
+            }
         }
     }
 }
