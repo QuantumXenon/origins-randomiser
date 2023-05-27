@@ -6,11 +6,17 @@ import quantumxenon.randomiser.enums.Message;
 public interface MessageUtils {
     static String getMessage(Message message) {
         switch (message) {
+            case COMMAND_DISABLED -> {
+                return translate("origins-randomiser.command.disabled");
+            }
             case DISABLED -> {
                 return translate("origins-randomiser.message.disabled");
             }
             case ENABLED -> {
                 return translate("origins-randomiser.message.enabled");
+            }
+            case LIVES_DISABLED -> {
+                return translate("origins-randomiser.lives.disabled");
             }
             case OUT_OF_LIVES -> {
                 return translate("origins-randomiser.message.outOfLives");

@@ -32,7 +32,7 @@ public class RandomiseCommand {
                 source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue("uses", player))));
             }
         } else {
-            source.sendMessage(Text.of(MessageUtils.getMessage(Message.DISABLED)));
+            source.sendMessage(Text.of(MessageUtils.getMessage(Message.COMMAND_DISABLED)));
         }
         return 1;
     }

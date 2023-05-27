@@ -38,7 +38,7 @@ public class LivesCommand {
                 source.sendFeedback(Text.of(MessageUtils.getMessage(Message.SET_LIVES, PlayerUtils.getName(player), number)), true);
             }
         } else {
-            source.sendMessage(Text.of(MessageUtils.getMessage(Message.DISABLED)));
+            source.sendMessage(Text.of(MessageUtils.getMessage(Message.LIVES_DISABLED)));
         }
         return 1;
     }
