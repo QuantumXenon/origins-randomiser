@@ -4,9 +4,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import quantumxenon.randomiser.utils.ConfigUtils;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 import quantumxenon.randomiser.enums.Message;
+import quantumxenon.randomiser.utils.ConfigUtils;
 import quantumxenon.randomiser.utils.MessageUtils;
 
 public class ToggleCommand {

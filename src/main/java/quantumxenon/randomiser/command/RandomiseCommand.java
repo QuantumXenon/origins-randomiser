@@ -6,7 +6,11 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import quantumxenon.randomiser.enums.Message;
 import quantumxenon.randomiser.enums.Reason;
-import quantumxenon.randomiser.utils.*;
+import quantumxenon.randomiser.utils.ConfigUtils;
+import quantumxenon.randomiser.utils.MessageUtils;
+import quantumxenon.randomiser.utils.OriginUtils;
+import quantumxenon.randomiser.utils.ScoreboardUtils;
+
 
 public class RandomiseCommand {
     public static void register() {

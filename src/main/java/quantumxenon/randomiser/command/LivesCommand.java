@@ -10,7 +10,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import quantumxenon.randomiser.enums.Message;
-import quantumxenon.randomiser.utils.*;
+import quantumxenon.randomiser.utils.ConfigUtils;
+import quantumxenon.randomiser.utils.MessageUtils;
+import quantumxenon.randomiser.utils.PlayerUtils;
+import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 import java.util.Collection;
 

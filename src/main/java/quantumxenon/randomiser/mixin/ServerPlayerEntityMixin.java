@@ -1,7 +1,6 @@
 package quantumxenon.randomiser.mixin;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +16,7 @@ import quantumxenon.randomiser.utils.*;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
-    ServerPlayerEntity player = ((ServerPlayerEntity) (Object) this) ;
+    private final ServerPlayerEntity player = ((ServerPlayerEntity) (Object) this);
 
     private ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);

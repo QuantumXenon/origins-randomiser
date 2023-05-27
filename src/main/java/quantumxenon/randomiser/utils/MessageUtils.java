@@ -51,7 +51,8 @@ public interface MessageUtils {
         }
         return null;
     }
-    static String getMessage(Message message,String name, int value) {
+
+    static String getMessage(Message message, String name, int value) {
         switch (message) {
             case SET_LIVES -> {
                 return translate("origins-randomiser.command.setLives", name, value);
