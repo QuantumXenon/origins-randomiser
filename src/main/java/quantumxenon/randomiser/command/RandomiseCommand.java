@@ -12,6 +12,8 @@ import quantumxenon.randomiser.utils.MessageUtils;
 import quantumxenon.randomiser.utils.OriginUtils;
 import quantumxenon.randomiser.utils.ScoreboardUtils;
 
+import java.util.Objects;
+
 
 public class RandomiseCommand {
     public static void register() {
@@ -26,7 +28,7 @@ public class RandomiseCommand {
         if (ConfigUtils.randomiseCommand()) {
             OriginUtils.randomOrigin(Reason.COMMAND, player);
             if (ConfigUtils.limitCommandUses()) {
-                ScoreboardUtils.decrementValue("uses", player);
+                ScoreboardUtils.decrementValue("uses", Objects.requireNonNull(player));
                 source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue("uses", player))));
             }
         } else {

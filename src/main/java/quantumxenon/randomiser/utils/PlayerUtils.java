@@ -18,10 +18,10 @@ public interface PlayerUtils {
 
     static void dropItems(ServerPlayerEntity player) {
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
-            for (int i = 0; i < inventory.size(); i++) {
-                ItemStack itemStack = inventory.getStack(i);
+            for (int slot = 0; slot < inventory.size(); slot++) {
+                ItemStack itemStack = inventory.getStack(slot);
                 player.dropItem(itemStack, true, false);
-                inventory.setStack(i, ItemStack.EMPTY);
+                inventory.setStack(slot, ItemStack.EMPTY);
             }
         });
     }

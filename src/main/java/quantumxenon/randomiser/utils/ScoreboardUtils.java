@@ -1,22 +1,27 @@
 package quantumxenon.randomiser.utils;
 
 import net.minecraft.scoreboard.ScoreboardCriterion;
+import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 
 public interface ScoreboardUtils {
-    static void setValue(String objective, int value, ServerPlayerEntity player) {
-        player.getScoreboard().getPlayerScore(PlayerUtils.getName(player), player.getScoreboard().getObjective(objective)).setScore(value);
+    private static ScoreboardPlayerScore getObjective(ServerPlayerEntity player, String objective) {
+        return player.getScoreboard().getPlayerScore(PlayerUtils.getName(player), player.getScoreboard().getObjective(objective));
     }
 
     static int getValue(String objective, ServerPlayerEntity player) {
-        return player.getScoreboard().getPlayerScore(PlayerUtils.getName(player), player.getScoreboard().getObjective(objective)).getScore();
+        return getObjective(player, objective).getScore();
+    }
+
+    static void setValue(String objective, int value, ServerPlayerEntity player) {
+        getObjective(player, objective).setScore(value);
     }
 
     static void decrementValue(String objective, ServerPlayerEntity player) {
-        player.getScoreboard().getPlayerScore(PlayerUtils.getName(player), player.getScoreboard().getObjective(objective)).incrementScore(-1);
+        getObjective(player, objective).incrementScore(-1);
     }
 
     static void createObjective(String name, int number, ServerPlayerEntity player) {
