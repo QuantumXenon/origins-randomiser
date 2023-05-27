@@ -3,6 +3,7 @@ package quantumxenon.randomiser.command;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import quantumxenon.randomiser.enums.Message;
 import quantumxenon.randomiser.enums.Reason;
@@ -20,11 +21,13 @@ public class RandomiseCommand {
     }
 
     private static int randomise(ServerCommandSource source) {
+        ServerPlayerEntity player = source.getPlayer();
+
         if (ConfigUtils.randomiseCommand()) {
-            OriginUtils.randomOrigin(Reason.COMMAND, source.getPlayer());
+            OriginUtils.randomOrigin(Reason.COMMAND, player);
             if (ConfigUtils.limitCommandUses()) {
-                ScoreboardUtils.decrementValue("uses", source.getPlayer());
-                source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue("uses", source.getPlayer()))));
+                ScoreboardUtils.decrementValue("uses", player);
+                source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue("uses", player))));
             }
         } else {
             source.sendMessage(Text.of(MessageUtils.getMessage(Message.DISABLED)));

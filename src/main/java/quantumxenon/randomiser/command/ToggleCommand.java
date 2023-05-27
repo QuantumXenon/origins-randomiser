@@ -19,6 +19,7 @@ public class ToggleCommand {
 
     private static int toggle(ServerCommandSource source) {
         OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
+
         if (ConfigUtils.randomiseOrigins()) {
             config.general.randomiseOrigins = false;
             source.sendFeedback(Text.of(MessageUtils.getMessage(Message.DISABLED)), true);
