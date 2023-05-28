@@ -21,6 +21,9 @@ public interface MessageUtils {
             case OUT_OF_LIVES -> {
                 return translate("origins-randomiser.message.lives.out");
             }
+            case OUT_OF_USES -> {
+                return translate("origins-randomiser.message.command.out");
+            }
             case UNLIMITED -> {
                 return translate("origins-randomiser.message.command.unlimitedUses");
             }

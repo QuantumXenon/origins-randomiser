@@ -30,6 +30,7 @@
 	"text.autoconfig.origins-randomiser.option.other.sleepsBetweenRandomises.@Tooltip":"הגדר את מספר ישן בין origin אקראית",
 	"origins-randomiser.message.command.disabled":"השימוש בפקודה /אקראית הושבת.",
 	"origins-randomiser.message.command.limitedUses":"השימוש בפקודה /randomise הוגבל. אתה מתחיל עם %d שימושים.",
+	"origins-randomiser.message.command.out":"You have no more uses of /randomise left.",
 	"origins-randomiser.message.command.setLives":"הגדר את החיים של %s ל-%d.",
 	"origins-randomiser.message.command.setUses":"הגדר את השימושים האקראיים של %s ל-%d.",
 	"origins-randomiser.message.command.unlimitedUses":"השימוש בפקודה /randomise הוא בלתי מוגבל. החלף את זה עם 'limitCommandUses'.",

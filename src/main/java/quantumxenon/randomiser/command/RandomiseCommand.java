@@ -25,10 +25,16 @@ public class RandomiseCommand {
         ServerPlayerEntity player = source.getPlayer();
 
         if (ConfigUtils.randomiseCommand()) {
-            OriginUtils.randomOrigin(Reason.COMMAND, player);
             if (ConfigUtils.limitCommandUses()) {
-                ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
-                source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player))));
+                if (ScoreboardUtils.getValue(Objective.USES, player) > 0) {
+                    OriginUtils.randomOrigin(Reason.COMMAND, player);
+                    ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
+                    source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player))));
+                } else {
+                    source.sendMessage(Text.of(MessageUtils.getMessage(Message.OUT_OF_USES)));
+                }
+            } else {
+                OriginUtils.randomOrigin(Reason.COMMAND, player);
             }
         } else {
             source.sendMessage(Text.of(MessageUtils.getMessage(Message.COMMAND_DISABLED)));
