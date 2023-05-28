@@ -5,12 +5,11 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import quantumxenon.randomiser.enums.Argument;
 import quantumxenon.randomiser.enums.Message;
+import quantumxenon.randomiser.enums.Objective;
 import quantumxenon.randomiser.enums.Reason;
-import quantumxenon.randomiser.utils.ConfigUtils;
-import quantumxenon.randomiser.utils.MessageUtils;
-import quantumxenon.randomiser.utils.OriginUtils;
-import quantumxenon.randomiser.utils.ScoreboardUtils;
+import quantumxenon.randomiser.utils.*;
 
 import java.util.Objects;
 
@@ -18,7 +17,7 @@ import java.util.Objects;
 public class RandomiseCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-                .register(CommandManager.literal("randomise")
+                .register(CommandManager.literal(CommandUtils.getArgument(Argument.RANDOMISE))
                 .executes(context -> randomise(context.getSource()))));
     }
 
@@ -28,8 +27,8 @@ public class RandomiseCommand {
         if (ConfigUtils.randomiseCommand()) {
             OriginUtils.randomOrigin(Reason.COMMAND, player);
             if (ConfigUtils.limitCommandUses()) {
-                ScoreboardUtils.decrementValue("uses", Objects.requireNonNull(player));
-                source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue("uses", player))));
+                ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
+                source.sendMessage(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player))));
             }
         } else {
             source.sendMessage(Text.of(MessageUtils.getMessage(Message.COMMAND_DISABLED)));
