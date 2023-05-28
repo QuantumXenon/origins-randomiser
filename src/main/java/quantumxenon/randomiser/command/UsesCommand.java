@@ -34,7 +34,7 @@ public class UsesCommand {
         if (ConfigUtils.limitCommandUses()) {
             for (ServerPlayerEntity player : players) {
                 ScoreboardUtils.setValue(Objective.USES, number, player);
-                source.sendFeedback(Text.of(MessageUtils.getMessage(Message.SET_USES, PlayerUtils.getName(player), number)), true);
+                source.sendFeedback(() -> Text.of(MessageUtils.getMessage(Message.SET_USES, PlayerUtils.getName(player), number)), true);
             }
         } else {
             source.sendMessage(Text.of(MessageUtils.getMessage(Message.UNLIMITED)));

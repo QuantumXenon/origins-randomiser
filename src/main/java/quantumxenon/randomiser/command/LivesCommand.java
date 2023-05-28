@@ -34,7 +34,7 @@ public class LivesCommand {
         if (ConfigUtils.enableLives()) {
             for (ServerPlayerEntity player : players) {
                 ScoreboardUtils.setValue(Objective.LIVES, number, player);
-                source.sendFeedback(Text.of(MessageUtils.getMessage(Message.SET_LIVES, PlayerUtils.getName(player), number)), true);
+                source.sendFeedback(() -> Text.of(MessageUtils.getMessage(Message.SET_LIVES, PlayerUtils.getName(player), number)), true);
             }
         } else {
             source.sendMessage(Text.of(MessageUtils.getMessage(Message.LIVES_DISABLED)));
