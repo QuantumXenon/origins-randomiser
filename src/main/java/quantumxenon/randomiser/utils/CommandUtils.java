@@ -17,22 +17,22 @@ public interface CommandUtils {
     static String getArgument(Argument argument) {
         switch (argument) {
             case NUMBER -> {
-                return MessageUtils.translate("origins-randomiser.command.number");
+                return "number";
             }
             case RANDOMISE -> {
-                return MessageUtils.translate("origins-randomiser.command.randomise");
+                return "randomise";
             }
             case SET_COMMAND_USES -> {
-                return MessageUtils.translate("origins-randomiser.command.setCommandUses");
+                return "setCommandUses";
             }
             case SET_LIVES -> {
-                return MessageUtils.translate("origins-randomiser.command.setLives");
+                return "setLives";
             }
             case TARGET -> {
-                return MessageUtils.translate("origins-randomiser.command.target");
+                return "target";
             }
             case TOGGLE_RANDOMISER -> {
-                return MessageUtils.translate("origins-randomiser.command.toggleRandomiser");
+                return "toggleRandomiser";
             }
         }
         return null;

@@ -17,16 +17,16 @@ public interface ScoreboardUtils {
     static String objectiveName(Objective objective) {
         switch (objective) {
             case LIVES -> {
-                return MessageUtils.translate("origins-randomiser.objective.lives");
+                return "lives";
             }
             case LIVES_UNTIL_RANDOMISE -> {
-                return MessageUtils.translate("origins-randomiser.objective.livesUntilRandomise");
+                return "livesUntilRandomise";
             }
             case SLEEPS_UNTIL_RANDOMISE -> {
-                return MessageUtils.translate("origins-randomiser.objective.sleepsUntilRandomise");
+                return "sleepsUtilRandomise";
             }
             case USES -> {
-                return MessageUtils.translate("origins-randomiser.objective.uses");
+                return "uses";
             }
         }
         return null;
@@ -35,19 +35,19 @@ public interface ScoreboardUtils {
     static String tagName(Tag tag) {
         switch (tag) {
             case FIRST_JOIN -> {
-                return MessageUtils.translate("origins-randomiser.objective.firstJoin");
+                return "firstJoin";
             }
             case LIMIT_USES_MESSAGE -> {
-                return MessageUtils.translate("origins-randomiser.objective.limitUsesMessage");
+                return "limitUsesMessage";
             }
             case LIVES_ENABLED_MESSAGE -> {
-                return MessageUtils.translate("origins-randomiser.objective.livesEnabledMessage");
+                return "livesEnabledMessage";
             }
             case LIVES_MESSAGE -> {
-                return MessageUtils.translate("origins-randomiser.objective.livesMessage");
+                return "livesMessage";
             }
             case SLEEPS_MESSAGE -> {
-                return MessageUtils.translate("origins-randomiser.objective.sleepsMessage");
+                return "sleepsMessage";
             }
         }
         return null;
