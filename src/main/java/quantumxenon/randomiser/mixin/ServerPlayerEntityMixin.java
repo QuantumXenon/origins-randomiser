@@ -46,7 +46,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         }
         if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.LIVES_MESSAGE, player)) {
             player.addCommandTag(ScoreboardUtils.tagName(Tag.LIVES_MESSAGE));
-            PlayerUtils.send(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_SLEEPS, ConfigUtils.sleepsBetweenRandomises()), player.getCommandSource());
+            PlayerUtils.send(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_LIVES, ConfigUtils.livesBetweenRandomises()), player.getCommandSource());
         }
         if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.SLEEPS_MESSAGE, player)) {
             player.addCommandTag(ScoreboardUtils.tagName(Tag.SLEEPS_MESSAGE));
