@@ -1,7 +1,6 @@
 # Gradle
 .gradle
 build
-out
 run
 
 # IntelliJ
