@@ -12,7 +12,7 @@
 		"homepage":"https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
 		"issues":"https://github.com/QuantumXenon/origins-randomiser/issues"
 	},
-	"icon":"assets/icon.png",
+	"icon":"assets/origins-randomiser/icon.png",
 	"entrypoints":{
 		"main":[
 			"quantumxenon.randomiser.OriginsRandomiser"
@@ -25,7 +25,7 @@
 		"origins-randomiser.mixins.json"
 	],
 	"depends":{
-		"minecraft":">=1.20.0",
+		"minecraft":">=1.20",
 		"fabric-api":"*",
 		"origins":"*"
 	}
