@@ -20,7 +20,7 @@ public class ToggleCommand {
     }
 
     private static int toggle(ServerCommandSource source) {
-        OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
+        OriginsRandomiserConfig config = ConfigUtils.getConfig();
 
         if (ConfigUtils.randomiseOrigins()) {
             config.general.randomiseOrigins = false;
