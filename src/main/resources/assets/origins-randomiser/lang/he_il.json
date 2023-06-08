@@ -24,6 +24,8 @@
 	"text.autoconfig.origins-randomiser.option.lives.startingLives.@Tooltip":"הגדר את מספר החיים ששחקנים מתחילים איתם",
 	"text.autoconfig.origins-randomiser.option.lives.livesBetweenRandomises":"חיים בין אקראיות",
 	"text.autoconfig.origins-randomiser.option.lives.livesBetweenRandomises.@Tooltip":"הגדר את מספר החיים בין origin אקראית",
+	"text.autoconfig.origins-randomiser.option.other.deathRandomisesOrigin":"deathRandomizesOrigin",
+	"text.autoconfig.origins-randomiser.option.other.deathRandomisesOrigin.@Tooltip":"Toggle whether dying randomizes origin",
 	"text.autoconfig.origins-randomiser.option.other.sleepRandomisesOrigin":"שינה עושה אקראית Origin",
 	"text.autoconfig.origins-randomiser.option.other.sleepRandomisesOrigin.@Tooltip":"החלף אם שינה עושה אקראית origin",
 	"text.autoconfig.origins-randomiser.option.other.sleepsBetweenRandomises":"ישן בין אקראי",

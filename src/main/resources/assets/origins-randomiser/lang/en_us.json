@@ -24,6 +24,8 @@
 	"text.autoconfig.origins-randomiser.option.lives.startingLives.@Tooltip":"Set the number of lives players start with",
 	"text.autoconfig.origins-randomiser.option.lives.livesBetweenRandomises":"livesBetweenRandomizes",
 	"text.autoconfig.origins-randomiser.option.lives.livesBetweenRandomises.@Tooltip":"Set the number of lives between origin randomization",
+	"text.autoconfig.origins-randomiser.option.other.deathRandomisesOrigin":"deathRandomizesOrigin",
+	"text.autoconfig.origins-randomiser.option.other.deathRandomisesOrigin.@Tooltip":"Toggle whether dying randomizes origin",
 	"text.autoconfig.origins-randomiser.option.other.sleepRandomisesOrigin":"sleepRandomizesOrigin",
 	"text.autoconfig.origins-randomiser.option.other.sleepRandomisesOrigin.@Tooltip":"Toggle whether sleeping randomizes origin",
 	"text.autoconfig.origins-randomiser.option.other.sleepsBetweenRandomises":"sleepsBetweenRandomizes",
