@@ -12,7 +12,7 @@
 		"homepage":"https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
 		"issues":"https://github.com/QuantumXenon/origins-randomiser/issues"
 	},
-	"icon":"assets/icon.png",
+	"icon":"assets/origins-randomiser/icon.png",
 	"entrypoints":{
 		"main":[
 			"quantumxenon.randomiser.OriginsRandomiser"
