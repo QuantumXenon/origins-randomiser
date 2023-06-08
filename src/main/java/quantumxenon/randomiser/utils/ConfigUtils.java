@@ -1,9 +1,14 @@
 package quantumxenon.randomiser.utils;
 
+import me.shedaniel.autoconfig.AutoConfig;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 
 public interface ConfigUtils {
-    OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
+    OriginsRandomiserConfig config = getConfig();
+
+    static OriginsRandomiserConfig getConfig() {
+        return AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig();
+    }
 
     static boolean allowDuplicateOrigins() {
         return config.general.allowDuplicateOrigins;
@@ -44,6 +49,7 @@ public interface ConfigUtils {
     static int livesBetweenRandomises() {
         return config.lives.livesBetweenRandomises;
     }
+
     static int randomiseCommandUses() {
         return config.command.randomiseCommandUses;
     }

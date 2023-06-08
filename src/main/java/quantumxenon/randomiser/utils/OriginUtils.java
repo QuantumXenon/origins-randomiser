@@ -58,6 +58,14 @@ public interface OriginUtils {
         OriginComponent.sync(player);
     }
 
+    private static StringBuilder format(Origin origin) {
+        StringBuilder originName = new StringBuilder();
+        for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
+            originName.append(StringUtils.capitalize(word)).append(" ");
+        }
+        return originName;
+    }
+
     private static String getReason(Reason reason) {
         switch (reason) {
             case DEATH -> {
@@ -73,13 +81,5 @@ public interface OriginUtils {
                 return MessageUtils.translate("origins-randomiser.reason.command");
             }
         }
-    }
-
-    private static StringBuilder format(Origin origin) {
-        StringBuilder originName = new StringBuilder();
-        for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
-            originName.append(StringUtils.capitalize(word)).append(" ");
-        }
-        return originName;
     }
 }
