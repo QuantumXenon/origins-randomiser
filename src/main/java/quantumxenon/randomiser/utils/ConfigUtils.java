@@ -1,9 +1,14 @@
 package quantumxenon.randomiser.utils;
 
+import me.shedaniel.autoconfig.AutoConfig;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 
 public interface ConfigUtils {
-    OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
+    OriginsRandomiserConfig config = getConfig();
+
+    static OriginsRandomiserConfig getConfig() {
+        return AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig();
+    }
 
     static boolean limitCommandUses() {
         return config.command.limitCommandUses;
