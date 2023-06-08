@@ -13,6 +13,30 @@ public interface ScoreboardUtils {
     private static ScoreboardPlayerScore getObjective(ServerPlayerEntity player, Objective objective) {
         return player.getScoreboard().getPlayerScore(PlayerUtils.getName(player), player.getScoreboard().getObjective(objectiveName(objective)));
     }
+    
+    static void createObjective(Objective objective, int number, ServerPlayerEntity player) {
+        String name = objectiveName(objective);
+        if (!player.getScoreboard().containsObjective(name)) {
+            player.getScoreboard().addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
+            setValue(objective, number, player);
+        }
+    }
+
+    static int getValue(Objective objective, ServerPlayerEntity player) {
+        return getObjective(player, objective).getScore();
+    }
+
+    static void setValue(Objective objective, int value, ServerPlayerEntity player) {
+        getObjective(player, objective).setScore(value);
+    }
+
+    static void decrementValue(Objective objective, ServerPlayerEntity player) {
+        getObjective(player, objective).incrementScore(-1);
+    }
+
+    static boolean noScoreboardTag(Tag tag, ServerPlayerEntity player) {
+        return !player.getScoreboardTags().contains(tagName(tag));
+    }
 
     static String objectiveName(Objective objective) {
         switch (objective) {
@@ -51,29 +75,5 @@ public interface ScoreboardUtils {
             }
         }
         return null;
-    }
-
-    static int getValue(Objective objective, ServerPlayerEntity player) {
-        return getObjective(player, objective).getScore();
-    }
-
-    static void setValue(Objective objective, int value, ServerPlayerEntity player) {
-        getObjective(player, objective).setScore(value);
-    }
-
-    static void decrementValue(Objective objective, ServerPlayerEntity player) {
-        getObjective(player, objective).incrementScore(-1);
-    }
-
-    static void createObjective(Objective objective, int number, ServerPlayerEntity player) {
-        String name = objectiveName(objective);
-        if (!player.getScoreboard().containsObjective(name)) {
-            player.getScoreboard().addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
-            setValue(objective, number, player);
-        }
-    }
-
-    static boolean noScoreboardTag(Tag tag, ServerPlayerEntity player) {
-        return !player.getScoreboardTags().contains(tagName(tag));
     }
 }

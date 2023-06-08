@@ -1,6 +1,5 @@
 package quantumxenon.randomiser.config;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -15,10 +14,6 @@ public class OriginsRandomiserConfig implements ConfigData {
     public Lives lives = new Lives();
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public Other other = new Other();
-
-    public static OriginsRandomiserConfig getConfig() {
-        return AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig();
-    }
 
     public static class General {
         @ConfigEntry.Gui.Tooltip
