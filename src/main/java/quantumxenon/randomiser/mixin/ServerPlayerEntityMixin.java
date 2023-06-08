@@ -64,21 +64,23 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
-        if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
-            PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)), player.getCommandSource());
-        }
-        if (ConfigUtils.enableLives()) {
-            ScoreboardUtils.decrementValue(Objective.LIVES, player);
-            if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
-                player.changeGameMode(GameMode.SPECTATOR);
-                PlayerUtils.send(MessageUtils.getMessage(Message.OUT_OF_LIVES), player.getCommandSource());
-            } else {
-                PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)), player.getCommandSource());
+        if (ConfigUtils.deathRandomisesOrigin()) {
+            ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
+            if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
+                PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)), player.getCommandSource());
             }
-        }
-        if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
-            OriginUtils.randomOrigin(Reason.DEATH, player);
+            if (ConfigUtils.enableLives()) {
+                ScoreboardUtils.decrementValue(Objective.LIVES, player);
+                if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
+                    player.changeGameMode(GameMode.SPECTATOR);
+                    PlayerUtils.send(MessageUtils.getMessage(Message.OUT_OF_LIVES), player.getCommandSource());
+                } else {
+                    PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)), player.getCommandSource());
+                }
+            }
+            if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
+                OriginUtils.randomOrigin(Reason.DEATH, player);
+            }
         }
     }
 
