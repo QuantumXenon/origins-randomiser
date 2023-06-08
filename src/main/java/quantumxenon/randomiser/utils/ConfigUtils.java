@@ -5,12 +5,24 @@ import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 public interface ConfigUtils {
     OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
 
-    static boolean limitCommandUses() {
-        return config.command.limitCommandUses;
+    static boolean allowDuplicateOrigins() {
+        return config.general.allowDuplicateOrigins;
+    }
+
+    static boolean deathRandomisesOrigin() {
+        return config.other.deathRandomisesOrigin;
+    }
+
+    static boolean dropExtraInventory() {
+        return config.general.dropExtraInventory;
     }
 
     static boolean enableLives() {
         return config.lives.enableLives;
+    }
+
+    static boolean limitCommandUses() {
+        return config.command.limitCommandUses;
     }
 
     static boolean randomiseCommand() {
@@ -25,20 +37,15 @@ public interface ConfigUtils {
         return config.general.randomiserMessages;
     }
 
-    static boolean allowDuplicateOrigins() {
-        return config.general.allowDuplicateOrigins;
-    }
-
-    static boolean dropExtraInventory() {
-        return config.general.dropExtraInventory;
-    }
-
     static boolean sleepRandomisesOrigin() {
         return config.other.sleepRandomisesOrigin;
     }
 
     static int livesBetweenRandomises() {
         return config.lives.livesBetweenRandomises;
+    }
+    static int randomiseCommandUses() {
+        return config.command.randomiseCommandUses;
     }
 
     static int sleepsBetweenRandomises() {
@@ -47,9 +54,5 @@ public interface ConfigUtils {
 
     static int startingLives() {
         return config.lives.startingLives;
-    }
-
-    static int randomiseCommandUses() {
-        return config.command.randomiseCommandUses;
     }
 }
