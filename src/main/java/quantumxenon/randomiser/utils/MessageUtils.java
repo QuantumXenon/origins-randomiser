@@ -5,6 +5,18 @@ import quantumxenon.randomiser.enums.Message;
 
 public interface MessageUtils {
     static String getMessage(Message message) {
+        static String translate(String key) {
+            return Text.translatable(key).getString();
+        }
+
+        static String translate(String key, int value) {
+            return Text.translatable(key, value).getString();
+        }
+
+        static String translate(String key, String player, int value) {
+            return Text.translatable(key, player, value).getString();
+        }
+
         switch (message) {
             case COMMAND_DISABLED -> {
                 return translate("origins-randomiser.message.command.disabled");
@@ -71,17 +83,5 @@ public interface MessageUtils {
             }
         }
         return null;
-    }
-
-    static String translate(String key) {
-        return Text.translatable(key).getString();
-    }
-
-    static String translate(String key, int value) {
-        return Text.translatable(key, value).getString();
-    }
-
-    static String translate(String key, String player, int value) {
-        return Text.translatable(key, player, value).getString();
     }
 }
