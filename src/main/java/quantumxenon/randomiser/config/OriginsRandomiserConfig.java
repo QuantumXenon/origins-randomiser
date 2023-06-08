@@ -46,6 +46,8 @@ public class OriginsRandomiserConfig implements ConfigData {
 
     public static class Other {
         @ConfigEntry.Gui.Tooltip
+        public boolean deathRandomisesOrigin = true;
+        @ConfigEntry.Gui.Tooltip
         public boolean sleepRandomisesOrigin = false;
         @ConfigEntry.Gui.Tooltip
         public int sleepsBetweenRandomises = 1;
