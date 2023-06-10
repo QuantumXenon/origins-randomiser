@@ -15,12 +15,12 @@ import java.util.Optional;
 import java.util.Random;
 
 public interface OriginUtils {
-    Holder<OriginLayer> layer = OriginsAPI.getActiveLayers().get(0);
+    Holder<OriginLayer> layer = OriginsAPI.getActiveLayers().get(0); // layer = origins:origin
 
     static void randomOrigin(Reason reason, ServerPlayer player) {
         if (ConfigUtils.randomiseOrigins()) {
             if (ConfigUtils.dropExtraInventory()) {
-                // dropItems(player);
+                dropItems(player);
             }
             Holder<Origin> newOrigin = getRandomOrigin(player);
             setOrigin(player, newOrigin);
@@ -38,7 +38,7 @@ public interface OriginUtils {
         List<Holder<Origin>> origins = layer.value().randomOrigins(player);
         Holder<Origin> newOrigin = origins.get(new Random().nextInt(origins.size()));
         if (!ConfigUtils.allowDuplicateOrigins()) {
-            while (newOrigin.equals(getOrigin(player))) {
+            while (Optional.of(newOrigin).equals(getOrigin(player))) {
                 newOrigin = origins.get(new Random().nextInt(origins.size()));
             }
         }
@@ -52,8 +52,10 @@ public interface OriginUtils {
         });
     }
 
-    /*
+
     static void dropItems(ServerPlayer player) {
+        player.sendSystemMessage(Component.literal("Sorry! Item dropping is not yet implemented in the Forge version."));
+        /*
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
             for (int slot = 0; slot < inventory.size(); slot++) {
                 ItemStack itemStack = inventory.getStack(slot);
@@ -61,8 +63,8 @@ public interface OriginUtils {
                 inventory.setStack(slot, ItemStack.EMPTY);
             }
         });
+        */
     }
-     */
 
     private static Optional<Holder<Origin>> getOrigin(ServerPlayer player) {
         return IOriginContainer.get(player).map(container -> OriginsAPI.getOriginsRegistry().getHolder(container.getOrigin(layer)).get());
