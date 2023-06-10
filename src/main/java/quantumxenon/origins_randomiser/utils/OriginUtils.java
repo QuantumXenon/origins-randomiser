@@ -1,5 +1,10 @@
 package quantumxenon.origins_randomiser.utils;
 
+import io.github.edwinmindcraft.apoli.api.component.IPowerContainer;
+import io.github.edwinmindcraft.apoli.api.power.configuration.ConfiguredPower;
+import io.github.edwinmindcraft.apoli.common.power.InventoryPower;
+import io.github.edwinmindcraft.apoli.common.power.configuration.InventoryConfiguration;
+import io.github.edwinmindcraft.apoli.common.registry.ApoliPowers;
 import io.github.edwinmindcraft.origins.api.OriginsAPI;
 import io.github.edwinmindcraft.origins.api.capabilities.IOriginContainer;
 import io.github.edwinmindcraft.origins.api.origin.Origin;
@@ -7,6 +12,8 @@ import io.github.edwinmindcraft.origins.api.origin.OriginLayer;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import quantumxenon.origins_randomiser.enums.Message;
 import quantumxenon.origins_randomiser.enums.Reason;
 
@@ -54,16 +61,17 @@ public interface OriginUtils {
 
 
     static void dropItems(ServerPlayer player) {
-        player.sendSystemMessage(Component.literal("Sorry! Item dropping is not yet implemented in the Forge version."));
-        /*
-        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
-            for (int slot = 0; slot < inventory.size(); slot++) {
-                ItemStack itemStack = inventory.getStack(slot);
-                player.dropItem(itemStack, true, false);
-                inventory.setStack(slot, ItemStack.EMPTY);
+        IPowerContainer.get(player).ifPresent(container -> {
+            List<Holder<ConfiguredPower<InventoryConfiguration, InventoryPower>>> powers = container.getPowers(ApoliPowers.INVENTORY.get());
+            for(Holder<ConfiguredPower<InventoryConfiguration, InventoryPower>> power : powers){
+                Container inventory = power.value().getFactory().getInventory(power.value(), player);
+                for (int i = 0; i < inventory.getContainerSize(); ++i) {
+                    ItemStack itemStack = inventory.getItem(i);
+                    player.drop(itemStack, true, false);
+                    inventory.setItem(i, ItemStack.EMPTY);
+                }
             }
         });
-        */
     }
 
     private static Optional<Holder<Origin>> getOrigin(ServerPlayer player) {
