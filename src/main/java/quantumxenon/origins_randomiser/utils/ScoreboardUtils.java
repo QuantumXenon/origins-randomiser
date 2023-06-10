@@ -16,10 +16,8 @@ public interface ScoreboardUtils {
 
     static void createObjective(Objective objective, int number, ServerPlayer player) {
         String name = objectiveName(objective);
-        if (!player.getScoreboard().hasObjective(name)) {
-            player.getScoreboard().addObjective(name, DUMMY, Component.literal(name), INTEGER);
-            setValue(objective, number, player);
-        }
+        player.getScoreboard().addObjective(name, DUMMY, Component.literal(name), INTEGER);
+        setValue(objective, number, player);
     }
 
     static int getValue(Objective objective, ServerPlayer player) {
