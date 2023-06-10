@@ -7,25 +7,42 @@ import io.github.edwinmindcraft.origins.api.origin.OriginLayer;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import quantumxenon.origins_randomiser.enums.Message;
 import quantumxenon.origins_randomiser.enums.Reason;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public interface OriginUtils {
     Holder<OriginLayer> layer = OriginsAPI.getActiveLayers().get(0);
 
     static void randomOrigin(Reason reason, ServerPlayer player) {
-        Holder<Origin> newOrigin = getRandomOrigin(player);
-        setOrigin(player, newOrigin);
-        for (ServerPlayer serverPlayer : player.getServer().getPlayerList().getPlayers()) {
-            serverPlayer.sendSystemMessage(Component.literal(player.getScoreboardName() + " ").append(Component.translatable(getReason(reason)).append(Component.literal(" " + getName(newOrigin)))));
+        if (ConfigUtils.randomiseOrigins()) {
+            if (ConfigUtils.dropExtraInventory()) {
+                // dropItems(player);
+            }
+            Holder<Origin> newOrigin = getRandomOrigin(player);
+            setOrigin(player, newOrigin);
+            if (ConfigUtils.randomiserMessages()) {
+                for (ServerPlayer serverPlayer : player.getServer().getPlayerList().getPlayers()) {
+                    serverPlayer.sendSystemMessage(Component.literal(player.getScoreboardName() + " ").append(Component.translatable(getReason(reason)).append(Component.literal(" " + getName(newOrigin)))));
+                }
+            }
+        } else {
+            player.sendSystemMessage(MessageUtils.getMessage(Message.DISABLED));
         }
     }
 
     private static Holder<Origin> getRandomOrigin(ServerPlayer player) {
         List<Holder<Origin>> origins = layer.value().randomOrigins(player);
-        return origins.get(new Random().nextInt(origins.size()));
+        Holder<Origin> newOrigin = origins.get(new Random().nextInt(origins.size()));
+        if (!ConfigUtils.allowDuplicateOrigins()) {
+            while (newOrigin.equals(getOrigin(player))) {
+                newOrigin = origins.get(new Random().nextInt(origins.size()));
+            }
+        }
+        return newOrigin;
     }
 
     private static void setOrigin(ServerPlayer player, Holder<Origin> origin) {
@@ -33,6 +50,22 @@ public interface OriginUtils {
             container.setOrigin(layer, origin);
             container.synchronize();
         });
+    }
+
+    /*
+    static void dropItems(ServerPlayer player) {
+        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
+            for (int slot = 0; slot < inventory.size(); slot++) {
+                ItemStack itemStack = inventory.getStack(slot);
+                player.dropItem(itemStack, true, false);
+                inventory.setStack(slot, ItemStack.EMPTY);
+            }
+        });
+    }
+     */
+
+    private static Optional<Holder<Origin>> getOrigin(ServerPlayer player) {
+        return IOriginContainer.get(player).map(container -> OriginsAPI.getOriginsRegistry().getHolder(container.getOrigin(layer)).get());
     }
 
     private static String getName(Holder<Origin> origin) {
@@ -46,6 +79,9 @@ public interface OriginUtils {
             }
             case FIRST_JOIN -> {
                 return "origins-randomiser.reason.firstJoin";
+            }
+            case SLEEP -> {
+                return "origins-randomiser.reason.sleep";
             }
             default -> {
                 return "origins-randomiser.reason.command";
