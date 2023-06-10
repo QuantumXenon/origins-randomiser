@@ -8,6 +8,8 @@ version = "${version}"
 displayName = "Origins Randomiser"
 description = "Highly configurable mod that assigns you a random origin every time you die."
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser"
+issueTrackerURL = "https://github.com/QuantumXenon/origins-randomiser/issues"
+
 authors = "TheQuantumXenon"
 logoFile = "icon.png"
 
