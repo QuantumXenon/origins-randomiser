@@ -22,6 +22,6 @@ mandatory = true
 versionRange = "[1.19.2-1.5.0.6,)"
 
 [[dependencies.origins_randomiser]]
-modId = "cloth-config"
+modId = "cloth_config"
 mandatory = true
 versionRange = "[8.0.75,)"
