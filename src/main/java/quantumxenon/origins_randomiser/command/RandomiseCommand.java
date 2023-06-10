@@ -33,7 +33,7 @@ public class RandomiseCommand {
                 OriginUtils.randomOrigin(Reason.COMMAND, player);
             }
         } else {
-            source.sendSystemMessage(MessageUtils.getMessage(Message.COMMAND_DISABLED));
+            source.sendFailure(MessageUtils.getMessage(Message.COMMAND_DISABLED));
         }
         return 1;
     }

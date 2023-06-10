@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -30,15 +29,15 @@ public class UsesCommand {
     private static int setCommandUses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         int number = IntegerArgumentType.getInteger(context, "number");
         Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
-        CommandSource source = context.getSource().getPlayer();
+        CommandSourceStack source = context.getSource();
 
         if (ConfigUtils.limitCommandUses()) {
             for (ServerPlayer player : players) {
                 ScoreboardUtils.setValue(Objective.USES, number, player);
-                source.sendSystemMessage(MessageUtils.getMessage(Message.SET_USES, player.getName().getString(), number));
+                source.sendSuccess(MessageUtils.getMessage(Message.SET_USES, player.getName().getString(), number), true);
             }
         } else {
-            source.sendSystemMessage(MessageUtils.getMessage(Message.UNLIMITED));
+            source.sendFailure(MessageUtils.getMessage(Message.UNLIMITED));
         }
         return 1;
     }

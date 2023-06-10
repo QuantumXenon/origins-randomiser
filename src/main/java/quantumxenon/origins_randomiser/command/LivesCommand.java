@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -30,15 +29,15 @@ public class LivesCommand {
     private static int setLives(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         int number = IntegerArgumentType.getInteger(context, "number");
         Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
-        CommandSource source = context.getSource().getPlayer();
+        CommandSourceStack source = context.getSource();
 
         if (ConfigUtils.enableLives()) {
             for (ServerPlayer player : players) {
                 ScoreboardUtils.setValue(Objective.LIVES, number, player);
-                source.sendSystemMessage(MessageUtils.getMessage(Message.SET_LIVES, player.getName().getString(), number));
+                source.sendSuccess(MessageUtils.getMessage(Message.SET_LIVES, player.getName().getString(), number), true);
             }
         } else {
-            source.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_DISABLED));
+            source.sendFailure(MessageUtils.getMessage(Message.LIVES_DISABLED));
         }
         return 1;
     }

@@ -18,10 +18,10 @@ public class ToggleCommand {
 
         if (ConfigUtils.randomiseOrigins()) {
             config.general.randomiseOrigins = false;
-            source.sendSystemMessage(MessageUtils.getMessage(Message.DISABLED));
+            source.sendSuccess(MessageUtils.getMessage(Message.DISABLED), true);
         } else {
             config.general.randomiseOrigins = true;
-            source.sendSystemMessage(MessageUtils.getMessage(Message.ENABLED));
+            source.sendSuccess(MessageUtils.getMessage(Message.ENABLED), true);
         }
         return 1;
     }
