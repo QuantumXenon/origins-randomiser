@@ -21,18 +21,6 @@ public abstract class ServerPlayerMixin {
     private final ServerPlayer player = ((ServerPlayer) (Object) this);
 
     @Inject(at = @At("TAIL"), method = "tick")
-    private void spawn(CallbackInfo info) {
-        if (ScoreboardUtils.noScoreboardTag(Tag.FIRST_JOIN, player)) {
-            player.addTag(ScoreboardUtils.tagName(Tag.FIRST_JOIN));
-            ScoreboardUtils.createObjective(Objective.LIVES_UNTIL_RANDOMISE, ConfigUtils.livesBetweenRandomises(), player);
-            ScoreboardUtils.createObjective(Objective.SLEEPS_UNTIL_RANDOMISE, ConfigUtils.sleepsBetweenRandomises(), player);
-            ScoreboardUtils.createObjective(Objective.USES, ConfigUtils.randomiseCommandUses(), player);
-            ScoreboardUtils.createObjective(Objective.LIVES, ConfigUtils.startingLives(), player);
-            OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
-        }
-    }
-
-    @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
         if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
             ScoreboardUtils.setValue(Objective.LIVES_UNTIL_RANDOMISE, ConfigUtils.livesBetweenRandomises(), player);
