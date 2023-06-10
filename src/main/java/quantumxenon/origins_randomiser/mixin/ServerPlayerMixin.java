@@ -17,7 +17,7 @@ import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
 import static net.minecraft.world.level.GameType.SPECTATOR;
 
 @Mixin(ServerPlayer.class)
-public abstract class PlayerMixin {
+public abstract class ServerPlayerMixin {
     private final ServerPlayer player = ((ServerPlayer) (Object) this);
 
     @Inject(at = @At("TAIL"), method = "tick")
