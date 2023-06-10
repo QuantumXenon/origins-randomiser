@@ -6,7 +6,7 @@ import io.github.edwinmindcraft.origins.api.origin.Origin;
 import io.github.edwinmindcraft.origins.api.origin.OriginLayer;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import quantumxenon.origins_randomiser.enums.Reason;
 
 import java.util.List;
@@ -15,18 +15,20 @@ import java.util.Random;
 public interface OriginUtils {
     Holder<OriginLayer> layer = OriginsAPI.getActiveLayers().get(0);
 
-    static void randomOrigin(Reason reason, Player player) {
+    static void randomOrigin(Reason reason, ServerPlayer player) {
         Holder<Origin> newOrigin = getRandomOrigin(player);
         setOrigin(player, newOrigin);
-        player.sendSystemMessage(Component.literal(player.getScoreboardName() + " " + getReason(reason) + " " + getName(newOrigin)));
+        for (ServerPlayer serverPlayer : player.getServer().getPlayerList().getPlayers()) {
+            serverPlayer.sendSystemMessage(Component.literal(player.getScoreboardName() + " " + getReason(reason) + " " + getName(newOrigin)));
+        }
     }
 
-    private static Holder<Origin> getRandomOrigin(Player player) {
+    private static Holder<Origin> getRandomOrigin(ServerPlayer player) {
         List<Holder<Origin>> origins = layer.value().randomOrigins(player);
         return origins.get(new Random().nextInt(origins.size()));
     }
 
-    private static void setOrigin(Player player, Holder<Origin> origin) {
+    private static void setOrigin(ServerPlayer player, Holder<Origin> origin) {
         IOriginContainer.get(player).ifPresent(container -> {
             container.setOrigin(layer, origin);
             container.synchronize();

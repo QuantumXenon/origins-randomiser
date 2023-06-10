@@ -1,6 +1,6 @@
 package quantumxenon.origins_randomiser.mixin;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -10,11 +10,11 @@ import quantumxenon.origins_randomiser.enums.Tag;
 import quantumxenon.origins_randomiser.utils.OriginUtils;
 import quantumxenon.origins_randomiser.utils.PlayerUtils;
 
-@Mixin(Player.class)
+@Mixin(ServerPlayer.class)
 public abstract class PlayerMixin {
-    private final Player player = ((Player) (Object) this);
+    private final ServerPlayer player = ((ServerPlayer) (Object) this);
 
-    @Inject(at = @At("TAIL"), method = "respawn")
+    @Inject(at = @At("TAIL"), method = "tick")
     private void spawn(CallbackInfo info) {
         if (PlayerUtils.noScoreboardTag(Tag.FIRST_JOIN, player)) {
             player.addTag(PlayerUtils.tagName(Tag.FIRST_JOIN));
