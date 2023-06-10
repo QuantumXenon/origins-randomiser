@@ -19,7 +19,7 @@ public interface OriginUtils {
         Holder<Origin> newOrigin = getRandomOrigin(player);
         setOrigin(player, newOrigin);
         for (ServerPlayer serverPlayer : player.getServer().getPlayerList().getPlayers()) {
-            serverPlayer.sendSystemMessage(Component.literal(player.getScoreboardName() + " " + getReason(reason) + " " + getName(newOrigin)));
+            serverPlayer.sendSystemMessage(Component.literal(player.getScoreboardName() + " ").append(Component.translatable(getReason(reason)).append(Component.literal(" " + getName(newOrigin)))));
         }
     }
 
@@ -42,13 +42,13 @@ public interface OriginUtils {
     private static String getReason(Reason reason) {
         switch (reason) {
             case DEATH -> {
-                return PlayerUtils.translate("origins-randomiser.reason.death");
+                return "origins-randomiser.reason.death";
             }
             case FIRST_JOIN -> {
-                return PlayerUtils.translate("origins-randomiser.reason.firstJoin");
+                return "origins-randomiser.reason.firstJoin";
             }
             default -> {
-                return PlayerUtils.translate("origins-randomiser.reason.command");
+                return "origins-randomiser.reason.command";
             }
         }
     }
