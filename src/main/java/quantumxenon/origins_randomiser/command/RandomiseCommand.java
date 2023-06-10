@@ -2,7 +2,6 @@ package quantumxenon.origins_randomiser.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 import quantumxenon.origins_randomiser.enums.Message;
 import quantumxenon.origins_randomiser.enums.Objective;
@@ -12,9 +11,11 @@ import quantumxenon.origins_randomiser.utils.MessageUtils;
 import quantumxenon.origins_randomiser.utils.OriginUtils;
 import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
 
+import static net.minecraft.commands.Commands.literal;
+
 public class RandomiseCommand {
     public RandomiseCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("randomise").executes((context) -> randomise(context.getSource())));
+        dispatcher.register(literal("randomise").executes((context) -> randomise(context.getSource())));
     }
 
     private static int randomise(CommandSourceStack source) {
