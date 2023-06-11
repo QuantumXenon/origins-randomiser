@@ -1,21 +1,18 @@
 package quantumxenon.randomiser.command;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
-import quantumxenon.randomiser.enums.Argument;
 import quantumxenon.randomiser.enums.Message;
-import quantumxenon.randomiser.utils.CommandUtils;
 import quantumxenon.randomiser.utils.ConfigUtils;
 import quantumxenon.randomiser.utils.MessageUtils;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
 public class ToggleCommand {
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-                .register(CommandManager.literal(CommandUtils.getArgument(Argument.TOGGLE_RANDOMISER))
-                .requires((permissions) -> permissions.hasPermissionLevel(2))
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+            dispatcher.register(literal("toggleRandomiser").requires(permissions -> permissions.hasPermissionLevel(2))
                 .executes(context -> toggle(context.getSource()))));
     }
 
@@ -24,10 +21,10 @@ public class ToggleCommand {
 
         if (ConfigUtils.randomiseOrigins()) {
             config.general.randomiseOrigins = false;
-            source.sendFeedback(Text.of(MessageUtils.getMessage(Message.DISABLED)), true);
+            source.sendFeedback(MessageUtils.getMessage(Message.DISABLED), true);
         } else {
             config.general.randomiseOrigins = true;
-            source.sendFeedback(Text.of(MessageUtils.getMessage(Message.ENABLED)), true);
+            source.sendFeedback(MessageUtils.getMessage(Message.ENABLED), true);
         }
         return 1;
     }
