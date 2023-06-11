@@ -14,7 +14,10 @@ import quantumxenon.randomiser.enums.Message;
 import quantumxenon.randomiser.enums.Objective;
 import quantumxenon.randomiser.enums.Reason;
 import quantumxenon.randomiser.enums.Tag;
-import quantumxenon.randomiser.utils.*;
+import quantumxenon.randomiser.utils.ConfigUtils;
+import quantumxenon.randomiser.utils.MessageUtils;
+import quantumxenon.randomiser.utils.OriginUtils;
+import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
@@ -32,7 +35,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             ScoreboardUtils.createObjective(Objective.SLEEPS_UNTIL_RANDOMISE, ConfigUtils.sleepsBetweenRandomises(), player);
             ScoreboardUtils.createObjective(Objective.USES, ConfigUtils.randomiseCommandUses(), player);
             ScoreboardUtils.createObjective(Objective.LIVES, ConfigUtils.startingLives(), player);
-            OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
+            if (ConfigUtils.randomiseOrigins()) {
+                OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
+            }
         }
     }
 
@@ -44,56 +49,64 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         if (ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
             ScoreboardUtils.setValue(Objective.SLEEPS_UNTIL_RANDOMISE, ConfigUtils.sleepsBetweenRandomises(), player);
         }
-        if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.LIVES_MESSAGE, player)) {
-            player.addScoreboardTag(ScoreboardUtils.tagName(Tag.LIVES_MESSAGE));
-            PlayerUtils.send(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_LIVES, ConfigUtils.livesBetweenRandomises()), player.getCommandSource());
-        }
-        if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.SLEEPS_MESSAGE, player)) {
-            player.addScoreboardTag(ScoreboardUtils.tagName(Tag.SLEEPS_MESSAGE));
-            PlayerUtils.send(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_SLEEPS, ConfigUtils.sleepsBetweenRandomises()), player.getCommandSource());
+        if (ConfigUtils.enableLives() && ScoreboardUtils.noScoreboardTag(Tag.LIVES_ENABLED_MESSAGE, player)) {
+            player.addScoreboardTag(ScoreboardUtils.tagName(Tag.LIVES_ENABLED_MESSAGE));
+            player.sendMessage(MessageUtils.getMessage(Message.LIVES_ENABLED, ConfigUtils.startingLives()));
         }
         if (ConfigUtils.limitCommandUses() && ScoreboardUtils.noScoreboardTag(Tag.LIMIT_USES_MESSAGE, player)) {
             player.addScoreboardTag(ScoreboardUtils.tagName(Tag.LIMIT_USES_MESSAGE));
-            PlayerUtils.send(MessageUtils.getMessage(Message.LIMIT_COMMAND_USES, ConfigUtils.randomiseCommandUses()), player.getCommandSource());
+            player.sendMessage(MessageUtils.getMessage(Message.LIMIT_COMMAND_USES, ConfigUtils.randomiseCommandUses()));
         }
-        if (ConfigUtils.enableLives() && ScoreboardUtils.noScoreboardTag(Tag.LIVES_ENABLED_MESSAGE, player)) {
-            player.addScoreboardTag(ScoreboardUtils.tagName(Tag.LIVES_ENABLED_MESSAGE));
-            PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_ENABLED, ConfigUtils.startingLives()), player.getCommandSource());
+        if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.LIVES_MESSAGE, player)) {
+            player.addScoreboardTag(ScoreboardUtils.tagName(Tag.LIVES_MESSAGE));
+            player.sendMessage(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_LIVES, ConfigUtils.livesBetweenRandomises()));
+        }
+        if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.SLEEPS_MESSAGE, player)) {
+            player.addScoreboardTag(ScoreboardUtils.tagName(Tag.SLEEPS_MESSAGE));
+            player.sendMessage(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_SLEEPS, ConfigUtils.sleepsBetweenRandomises()));
         }
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        if (ConfigUtils.deathRandomisesOrigin()) {
-            ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
-            if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
-                PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)), player.getCommandSource());
-            }
-            if (ConfigUtils.enableLives()) {
-                ScoreboardUtils.decrementValue(Objective.LIVES, player);
-                if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
-                    player.changeGameMode(GameMode.SPECTATOR);
-                    PlayerUtils.send(MessageUtils.getMessage(Message.OUT_OF_LIVES), player.getCommandSource());
-                } else {
-                    PlayerUtils.send(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)), player.getCommandSource());
+        if (ConfigUtils.randomiseOrigins()) {
+            if (ConfigUtils.deathRandomisesOrigin()) {
+                ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
+                if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
+                    player.sendMessage(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)));
+                }
+                if (ConfigUtils.enableLives()) {
+                    ScoreboardUtils.decrementValue(Objective.LIVES, player);
+                    if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
+                        player.changeGameMode(GameMode.SPECTATOR);
+                        player.sendMessage(MessageUtils.getMessage(Message.OUT_OF_LIVES));
+                    } else {
+                        player.sendMessage(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)));
+                    }
+                }
+                if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
+                    OriginUtils.randomOrigin(Reason.DEATH, player);
                 }
             }
-            if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
-                OriginUtils.randomOrigin(Reason.DEATH, player);
-            }
+        } else {
+            player.sendMessage(MessageUtils.getMessage(Message.DISABLED));
         }
     }
 
     @Inject(at = @At("TAIL"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (ConfigUtils.sleepRandomisesOrigin()) {
-            ScoreboardUtils.decrementValue(Objective.SLEEPS_UNTIL_RANDOMISE, player);
-            if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) > 0) {
-                PlayerUtils.send(MessageUtils.getMessage(Message.SLEEPS_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player)), player.getCommandSource());
+        if (ConfigUtils.randomiseOrigins()) {
+            if (ConfigUtils.sleepRandomisesOrigin()) {
+                ScoreboardUtils.decrementValue(Objective.SLEEPS_UNTIL_RANDOMISE, player);
+                if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) > 0) {
+                    player.sendMessage(MessageUtils.getMessage(Message.SLEEPS_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player)));
+                }
+                if (ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
+                    OriginUtils.randomOrigin(Reason.SLEEP, player);
+                }
             }
-            if (ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
-                OriginUtils.randomOrigin(Reason.SLEEP, player);
-            }
+        } else {
+            player.sendMessage(MessageUtils.getMessage(Message.DISABLED));
         }
     }
 }
