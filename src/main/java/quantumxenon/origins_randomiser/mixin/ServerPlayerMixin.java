@@ -14,8 +14,6 @@ import quantumxenon.origins_randomiser.utils.MessageUtils;
 import quantumxenon.origins_randomiser.utils.OriginUtils;
 import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
 
-import static net.minecraft.world.level.GameType.SPECTATOR;
-
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
     private final ServerPlayer player = ((ServerPlayer) (Object) this);
@@ -43,28 +41,6 @@ public abstract class ServerPlayerMixin {
         if (ConfigUtils.enableLives() && ScoreboardUtils.noScoreboardTag(Tag.LIVES_ENABLED_MESSAGE, player)) {
             player.addTag(ScoreboardUtils.tagName(Tag.LIVES_ENABLED_MESSAGE));
             player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_ENABLED, ConfigUtils.startingLives()));
-        }
-    }
-
-    @Inject(at = @At("TAIL"), method = "die")
-    private void death(CallbackInfo info) {
-        if (ConfigUtils.deathRandomisesOrigin()) {
-            ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
-            if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
-                player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)));
-            }
-            if (ConfigUtils.enableLives()) {
-                ScoreboardUtils.decrementValue(Objective.LIVES, player);
-                if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
-                    player.setGameMode(SPECTATOR);
-                    player.sendSystemMessage(MessageUtils.getMessage(Message.OUT_OF_LIVES));
-                } else {
-                    player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)));
-                }
-            }
-            if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
-                OriginUtils.randomOrigin(Reason.DEATH, player);
-            }
         }
     }
 

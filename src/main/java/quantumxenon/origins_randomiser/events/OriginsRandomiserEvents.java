@@ -6,25 +6,27 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import quantumxenon.origins_randomiser.OriginsRandomiser;
-import quantumxenon.origins_randomiser.command.LivesCommand;
 import quantumxenon.origins_randomiser.command.RandomiseCommand;
+import quantumxenon.origins_randomiser.command.SetCommand;
 import quantumxenon.origins_randomiser.command.ToggleCommand;
-import quantumxenon.origins_randomiser.command.UsesCommand;
+import quantumxenon.origins_randomiser.enums.Message;
 import quantumxenon.origins_randomiser.enums.Objective;
 import quantumxenon.origins_randomiser.enums.Reason;
 import quantumxenon.origins_randomiser.enums.Tag;
 import quantumxenon.origins_randomiser.utils.ConfigUtils;
+import quantumxenon.origins_randomiser.utils.MessageUtils;
 import quantumxenon.origins_randomiser.utils.OriginUtils;
 import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
+
+import static net.minecraft.world.level.GameType.SPECTATOR;
 
 @Mod.EventBusSubscriber(modid = OriginsRandomiser.MOD_ID)
 public class OriginsRandomiserEvents {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
-        new LivesCommand(event.getDispatcher());
         new RandomiseCommand(event.getDispatcher());
+        new SetCommand(event.getDispatcher());
         new ToggleCommand(event.getDispatcher());
-        new UsesCommand(event.getDispatcher());
     }
 
     @SubscribeEvent
@@ -37,6 +39,30 @@ public class OriginsRandomiserEvents {
                 ScoreboardUtils.createObjective(Objective.USES, ConfigUtils.randomiseCommandUses(), player);
                 ScoreboardUtils.createObjective(Objective.LIVES, ConfigUtils.startingLives(), player);
                 OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && !event.isEndConquered()) {
+            if (ConfigUtils.deathRandomisesOrigin()) {
+                ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
+                if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
+                    player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)));
+                }
+                if (ConfigUtils.enableLives()) {
+                    ScoreboardUtils.decrementValue(Objective.LIVES, player);
+                    if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
+                        player.setGameMode(SPECTATOR);
+                        player.sendSystemMessage(MessageUtils.getMessage(Message.OUT_OF_LIVES));
+                    } else {
+                        player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)));
+                    }
+                }
+                if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
+                    OriginUtils.randomOrigin(Reason.DEATH, player);
+                }
             }
         }
     }
