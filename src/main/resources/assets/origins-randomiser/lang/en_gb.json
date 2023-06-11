@@ -47,8 +47,8 @@
 	"origins-randomiser.message.lives.untilRandomise":"You now have %d more lives until your origin is randomised.",
 	"origins-randomiser.message.sleeps.betweenRandomises":"You will receive a random origin after every %d sleeps.",
 	"origins-randomiser.message.sleeps.untilRandomise":"You now have %d more sleeps until your origin is randomised.",
-	"origins-randomiser.reason.command":"randomised their origin and is now a",
-	"origins-randomiser.reason.death":"died and respawned as a",
-	"origins-randomiser.reason.firstJoin":"spawned for the first time as a",
-	"origins-randomiser.reason.sleep":"slept and woke up as a"
+	"origins-randomiser.reason.command":"%s randomised their origin and is now a %s",
+	"origins-randomiser.reason.death":"%s died and respawned as a %s",
+	"origins-randomiser.reason.firstJoin":"%s spawned for the first time as a %s",
+	"origins-randomiser.reason.sleep":"%s slept and woke up as a %s"
 }
