@@ -32,7 +32,7 @@ public interface OriginUtils {
         if (ConfigUtils.randomiserMessages()) {
             List<ServerPlayerEntity> playerList = Objects.requireNonNull(player.getServer()).getPlayerManager().getPlayerList();
             for (ServerPlayerEntity serverPlayer : playerList) {
-                serverPlayer.sendMessage(getReason(reason, player.getName().getString(), format(newOrigin).toString()));
+                serverPlayer.sendMessage(getReason(reason, player.getName().getString(), format(newOrigin).toString()), false);
             }
         }
     }
