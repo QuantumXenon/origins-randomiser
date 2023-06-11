@@ -5,40 +5,44 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import quantumxenon.randomiser.enums.Argument;
 import quantumxenon.randomiser.enums.Message;
 import quantumxenon.randomiser.enums.Objective;
 import quantumxenon.randomiser.enums.Reason;
-import quantumxenon.randomiser.utils.*;
+import quantumxenon.randomiser.utils.ConfigUtils;
+import quantumxenon.randomiser.utils.MessageUtils;
+import quantumxenon.randomiser.utils.OriginUtils;
+import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 import java.util.Objects;
 
 
 public class RandomiseCommand {
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher
-                .register(CommandManager.literal(CommandUtils.getArgument(Argument.RANDOMISE))
+        CommandRegistrationCallback.EVENT.register((dispatcher, environment) ->
+            dispatcher.register(CommandManager.literal("randomise")
                 .executes(context -> randomise(context.getSource()))));
     }
 
     private static int randomise(ServerCommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayer();
-
-        if (ConfigUtils.randomiseCommand()) {
-            if (ConfigUtils.limitCommandUses()) {
-                if (ScoreboardUtils.getValue(Objective.USES, player) > 0) {
-                    OriginUtils.randomOrigin(Reason.COMMAND, player);
-                    ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
-                    source.sendFeedback(Text.of(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player))), false);
+        if (ConfigUtils.randomiseOrigins()) {
+            if (ConfigUtils.randomiseCommand()) {
+                if (ConfigUtils.limitCommandUses()) {
+                    if (ScoreboardUtils.getValue(Objective.USES, player) > 0) {
+                        OriginUtils.randomOrigin(Reason.COMMAND, player);
+                        ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
+                        source.sendFeedback(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player)), false);
+                    } else {
+                        source.sendError(MessageUtils.getMessage(Message.OUT_OF_USES));
+                    }
                 } else {
-                    source.sendFeedback(Text.of(MessageUtils.getMessage(Message.OUT_OF_USES)), false);
+                    OriginUtils.randomOrigin(Reason.COMMAND, player);
                 }
             } else {
-                OriginUtils.randomOrigin(Reason.COMMAND, player);
+                source.sendError(MessageUtils.getMessage(Message.COMMAND_DISABLED));
             }
         } else {
-            source.sendFeedback(Text.of(MessageUtils.getMessage(Message.COMMAND_DISABLED)), false);
+            source.sendError(MessageUtils.getMessage(Message.DISABLED));
         }
         return 1;
     }
