@@ -1,23 +1,23 @@
 package quantumxenon.randomiser.utils;
 
-import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import quantumxenon.randomiser.enums.Objective;
 import quantumxenon.randomiser.enums.Tag;
 
+import static net.minecraft.scoreboard.ScoreboardCriterion.DUMMY;
 import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 
 public interface ScoreboardUtils {
     private static ScoreboardPlayerScore getObjective(ServerPlayerEntity player, Objective objective) {
-        return player.getScoreboard().getPlayerScore(PlayerUtils.getName(player), player.getScoreboard().getObjective(objectiveName(objective)));
+        return player.getScoreboard().getPlayerScore(player.getName().getString(), player.getScoreboard().getObjective(objectiveName(objective)));
     }
-    
+
     static void createObjective(Objective objective, int number, ServerPlayerEntity player) {
         String name = objectiveName(objective);
         if (!player.getScoreboard().containsObjective(name)) {
-            player.getScoreboard().addObjective(name, ScoreboardCriterion.DUMMY, Text.of(name), INTEGER);
+            player.getScoreboard().addObjective(name, DUMMY, Text.of(name), INTEGER);
             setValue(objective, number, player);
         }
     }

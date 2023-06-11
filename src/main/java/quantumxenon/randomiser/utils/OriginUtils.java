@@ -1,43 +1,38 @@
 package quantumxenon.randomiser.utils;
 
+import io.github.apace100.apoli.component.PowerHolderComponent;
+import io.github.apace100.apoli.power.InventoryPower;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
 import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.StringUtils;
-import quantumxenon.randomiser.enums.Message;
 import quantumxenon.randomiser.enums.Reason;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import static net.minecraft.util.Formatting.BOLD;
-import static net.minecraft.util.Formatting.RESET;
-
 public interface OriginUtils {
     OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin"));
 
     static void randomOrigin(Reason reason, ServerPlayerEntity player) {
-        if (ConfigUtils.randomiseOrigins()) {
-            if (ConfigUtils.dropExtraInventory()) {
-                PlayerUtils.dropItems(player);
+        if (ConfigUtils.dropExtraInventory()) {
+            dropItems(player);
+        }
+        Origin newOrigin = getOrigin(player);
+        setOrigin(player, newOrigin);
+        if (ConfigUtils.randomiserMessages()) {
+            List<ServerPlayerEntity> playerList = Objects.requireNonNull(player.getServer()).getPlayerManager().getPlayerList();
+            for (ServerPlayerEntity serverPlayer : playerList) {
+                serverPlayer.sendMessage(getReason(reason, player.getName().getString(), format(newOrigin).toString()));
             }
-            Origin newOrigin = getOrigin(player);
-            setOrigin(player, newOrigin);
-            if (ConfigUtils.randomiserMessages()) {
-                List<ServerPlayerEntity> playerList = Objects.requireNonNull(player.getServer()).getPlayerManager().getPlayerList();
-                for (ServerPlayerEntity entity : playerList) {
-                    entity.sendMessage(Text.of(BOLD + PlayerUtils.getName(player) + RESET + " " + getReason(reason) + " " + BOLD + format(newOrigin) + RESET));
-                }
-            }
-        } else {
-            PlayerUtils.send(MessageUtils.getMessage(Message.DISABLED), player.getCommandSource());
         }
     }
 
@@ -66,19 +61,29 @@ public interface OriginUtils {
         return originName;
     }
 
-    private static String getReason(Reason reason) {
+    static void dropItems(ServerPlayerEntity player) {
+        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
+            for (int slot = 0; slot < inventory.size(); slot++) {
+                ItemStack itemStack = inventory.getStack(slot);
+                player.dropItem(itemStack, true, false);
+                inventory.setStack(slot, ItemStack.EMPTY);
+            }
+        });
+    }
+
+    private static Text getReason(Reason reason, String player, String origin) {
         switch (reason) {
             case DEATH -> {
-                return MessageUtils.translate("origins-randomiser.reason.death");
+                return Text.translatable("origins-randomiser.reason.death", player, origin);
             }
             case FIRST_JOIN -> {
-                return MessageUtils.translate("origins-randomiser.reason.firstJoin");
+                return Text.translatable("origins-randomiser.reason.firstJoin", player, origin);
             }
             case SLEEP -> {
-                return MessageUtils.translate("origins-randomiser.reason.sleep");
+                return Text.translatable("origins-randomiser.reason.sleep", player, origin);
             }
             default -> {
-                return MessageUtils.translate("origins-randomiser.reason.command");
+                return Text.translatable("origins-randomiser.reason.command", player, origin);
             }
         }
     }
