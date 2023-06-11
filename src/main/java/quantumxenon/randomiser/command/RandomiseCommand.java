@@ -31,7 +31,7 @@ public class RandomiseCommand {
                         ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
                         source.sendMessage(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player)));
                     } else {
-                        source.sendMessage(MessageUtils.getMessage(Message.OUT_OF_USES));
+                        source.sendError(MessageUtils.getMessage(Message.OUT_OF_USES));
                     }
                 } else {
                     OriginUtils.randomOrigin(Reason.COMMAND, player);
