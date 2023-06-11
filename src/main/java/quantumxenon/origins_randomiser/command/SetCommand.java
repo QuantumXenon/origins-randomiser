@@ -20,19 +20,23 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 import static net.minecraft.commands.arguments.EntityArgument.players;
 
-public class LivesCommand {
-    public LivesCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher
-            .register(literal("setLives")
-            .requires(permissions -> permissions.hasPermission(2))
-            .then(argument("target", players())
-            .then(argument("number", integer(0)))
-            .executes(LivesCommand::setLives)));
+public class SetCommand {
+    public SetCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(
+            literal("set").requires(permissions -> permissions.hasPermission(2))
+                .then(literal("lives")
+                    .then(argument("target", players())
+                    .then(argument("number", integer(0))
+                    .executes(SetCommand::setLives))))
+                .then(literal("uses")
+                    .then(argument("target", players())
+                    .then(argument("number", integer(0))
+                    .executes(SetCommand::setUses)))));
     }
 
     private static int setLives(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
-        int number = IntegerArgumentType.getInteger(context, "number");
+        final Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
+        final int number = IntegerArgumentType.getInteger(context, "number");
         CommandSourceStack source = context.getSource();
 
         if (ConfigUtils.enableLives()) {
@@ -42,6 +46,22 @@ public class LivesCommand {
             }
         } else {
             source.sendFailure(MessageUtils.getMessage(Message.LIVES_DISABLED));
+        }
+        return 1;
+    }
+
+    private static int setUses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
+        final int number = IntegerArgumentType.getInteger(context, "number");
+        CommandSourceStack source = context.getSource();
+
+        if (ConfigUtils.limitCommandUses()) {
+            for (ServerPlayer player : players) {
+                ScoreboardUtils.setValue(Objective.USES, number, player);
+                source.sendSuccess(MessageUtils.getMessage(Message.SET_USES, player.getName().getString(), number), true);
+            }
+        } else {
+            source.sendFailure(MessageUtils.getMessage(Message.UNLIMITED));
         }
         return 1;
     }
