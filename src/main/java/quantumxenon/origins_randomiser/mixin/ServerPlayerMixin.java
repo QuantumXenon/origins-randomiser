@@ -26,6 +26,14 @@ public abstract class ServerPlayerMixin {
         if (ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
             ScoreboardUtils.setValue(Objective.SLEEPS_UNTIL_RANDOMISE, ConfigUtils.sleepsBetweenRandomises(), player);
         }
+        if (ConfigUtils.enableLives() && ScoreboardUtils.noScoreboardTag(Tag.LIVES_ENABLED_MESSAGE, player)) {
+            player.addTag(ScoreboardUtils.tagName(Tag.LIVES_ENABLED_MESSAGE));
+            player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_ENABLED, ConfigUtils.startingLives()));
+        }
+        if (ConfigUtils.limitCommandUses() && ScoreboardUtils.noScoreboardTag(Tag.LIMIT_USES_MESSAGE, player)) {
+            player.addTag(ScoreboardUtils.tagName(Tag.LIMIT_USES_MESSAGE));
+            player.sendSystemMessage(MessageUtils.getMessage(Message.LIMIT_COMMAND_USES, ConfigUtils.randomiseCommandUses()));
+        }
         if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.LIVES_MESSAGE, player)) {
             player.addTag(ScoreboardUtils.tagName(Tag.LIVES_MESSAGE));
             player.sendSystemMessage(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_LIVES, ConfigUtils.livesBetweenRandomises()));
@@ -33,14 +41,6 @@ public abstract class ServerPlayerMixin {
         if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.noScoreboardTag(Tag.SLEEPS_MESSAGE, player)) {
             player.addTag(ScoreboardUtils.tagName(Tag.SLEEPS_MESSAGE));
             player.sendSystemMessage(MessageUtils.getMessage(Message.RANDOM_ORIGIN_AFTER_SLEEPS, ConfigUtils.sleepsBetweenRandomises()));
-        }
-        if (ConfigUtils.limitCommandUses() && ScoreboardUtils.noScoreboardTag(Tag.LIMIT_USES_MESSAGE, player)) {
-            player.addTag(ScoreboardUtils.tagName(Tag.LIMIT_USES_MESSAGE));
-            player.sendSystemMessage(MessageUtils.getMessage(Message.LIMIT_COMMAND_USES, ConfigUtils.randomiseCommandUses()));
-        }
-        if (ConfigUtils.enableLives() && ScoreboardUtils.noScoreboardTag(Tag.LIVES_ENABLED_MESSAGE, player)) {
-            player.addTag(ScoreboardUtils.tagName(Tag.LIVES_ENABLED_MESSAGE));
-            player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_ENABLED, ConfigUtils.startingLives()));
         }
     }
 
