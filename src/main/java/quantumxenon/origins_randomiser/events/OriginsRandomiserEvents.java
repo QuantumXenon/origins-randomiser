@@ -38,7 +38,9 @@ public class OriginsRandomiserEvents {
                 ScoreboardUtils.createObjective(Objective.SLEEPS_UNTIL_RANDOMISE, ConfigUtils.sleepsBetweenRandomises(), player);
                 ScoreboardUtils.createObjective(Objective.USES, ConfigUtils.randomiseCommandUses(), player);
                 ScoreboardUtils.createObjective(Objective.LIVES, ConfigUtils.startingLives(), player);
-                OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
+                if (ConfigUtils.randomiseOrigins()) {
+                    OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
+                }
             }
         }
     }
@@ -46,23 +48,27 @@ public class OriginsRandomiserEvents {
     @SubscribeEvent
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player && !event.isEndConquered()) {
-            if (ConfigUtils.deathRandomisesOrigin()) {
-                ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
-                if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
-                    player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)));
-                }
-                if (ConfigUtils.enableLives()) {
-                    ScoreboardUtils.decrementValue(Objective.LIVES, player);
-                    if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
-                        player.setGameMode(SPECTATOR);
-                        player.sendSystemMessage(MessageUtils.getMessage(Message.OUT_OF_LIVES));
-                    } else {
-                        player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)));
+            if (ConfigUtils.randomiseOrigins()) {
+                if (ConfigUtils.deathRandomisesOrigin()) {
+                    ScoreboardUtils.decrementValue(Objective.LIVES_UNTIL_RANDOMISE, player);
+                    if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) > 0) {
+                        player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player)));
+                    }
+                    if (ConfigUtils.enableLives()) {
+                        ScoreboardUtils.decrementValue(Objective.LIVES, player);
+                        if (ScoreboardUtils.getValue(Objective.LIVES, player) <= 0) {
+                            player.setGameMode(SPECTATOR);
+                            player.sendSystemMessage(MessageUtils.getMessage(Message.OUT_OF_LIVES));
+                        } else {
+                            player.sendSystemMessage(MessageUtils.getMessage(Message.LIVES_REMAINING, ScoreboardUtils.getValue(Objective.LIVES, player)));
+                        }
+                    }
+                    if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
+                        OriginUtils.randomOrigin(Reason.DEATH, player);
                     }
                 }
-                if (ScoreboardUtils.getValue(Objective.LIVES_UNTIL_RANDOMISE, player) <= 0) {
-                    OriginUtils.randomOrigin(Reason.DEATH, player);
-                }
+            } else {
+                player.sendSystemMessage(MessageUtils.getMessage(Message.DISABLED));
             }
         }
     }

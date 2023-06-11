@@ -20,21 +20,24 @@ public class RandomiseCommand {
 
     private static int randomise(CommandSourceStack source) {
         ServerPlayer player = source.getPlayer();
-
-        if (ConfigUtils.randomiseCommand()) {
-            if (ConfigUtils.limitCommandUses()) {
-                if (ScoreboardUtils.getValue(Objective.USES, player) > 0) {
-                    OriginUtils.randomOrigin(Reason.COMMAND, player);
-                    ScoreboardUtils.decrementValue(Objective.USES, player);
-                    source.sendSystemMessage(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player)));
+        if (ConfigUtils.randomiseOrigins()) {
+            if (ConfigUtils.randomiseCommand()) {
+                if (ConfigUtils.limitCommandUses()) {
+                    if (ScoreboardUtils.getValue(Objective.USES, player) > 0) {
+                        OriginUtils.randomOrigin(Reason.COMMAND, player);
+                        ScoreboardUtils.decrementValue(Objective.USES, player);
+                        source.sendSystemMessage(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player)));
+                    } else {
+                        source.sendFailure(MessageUtils.getMessage(Message.OUT_OF_USES));
+                    }
                 } else {
-                    source.sendSystemMessage(MessageUtils.getMessage(Message.OUT_OF_USES));
+                    OriginUtils.randomOrigin(Reason.COMMAND, player);
                 }
             } else {
-                OriginUtils.randomOrigin(Reason.COMMAND, player);
+                source.sendFailure(MessageUtils.getMessage(Message.COMMAND_DISABLED));
             }
         } else {
-            source.sendFailure(MessageUtils.getMessage(Message.COMMAND_DISABLED));
+            source.sendFailure(MessageUtils.getMessage(Message.DISABLED));
         }
         return 1;
     }

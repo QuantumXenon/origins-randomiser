@@ -46,14 +46,18 @@ public abstract class ServerPlayerMixin {
 
     @Inject(at = @At("TAIL"), method = "stopSleepInBed")
     private void sleep(CallbackInfo info) {
-        if (ConfigUtils.sleepRandomisesOrigin()) {
-            ScoreboardUtils.decrementValue(Objective.SLEEPS_UNTIL_RANDOMISE, player);
-            if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) > 0) {
-                player.sendSystemMessage(MessageUtils.getMessage(Message.SLEEPS_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player)));
+        if (ConfigUtils.randomiseOrigins()) {
+            if (ConfigUtils.sleepRandomisesOrigin()) {
+                ScoreboardUtils.decrementValue(Objective.SLEEPS_UNTIL_RANDOMISE, player);
+                if (ConfigUtils.sleepsBetweenRandomises() > 1 && ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) > 0) {
+                    player.sendSystemMessage(MessageUtils.getMessage(Message.SLEEPS_UNTIL_RANDOMISE, ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player)));
+                }
+                if (ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
+                    OriginUtils.randomOrigin(Reason.SLEEP, player);
+                }
             }
-            if (ScoreboardUtils.getValue(Objective.SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
-                OriginUtils.randomOrigin(Reason.SLEEP, player);
-            }
+        } else {
+            player.sendSystemMessage(MessageUtils.getMessage(Message.DISABLED));
         }
     }
 }
