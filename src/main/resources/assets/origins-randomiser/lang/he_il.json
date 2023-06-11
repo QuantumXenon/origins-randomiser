@@ -47,8 +47,8 @@
 	"origins-randomiser.message.lives.untilRandomise":"כעת יש לך עוד %d חיים עד שה-origin שלך יעבור אקראי.",
 	"origins-randomiser.message.sleeps.betweenRandomises":"תקבל origin אקראי לאחר כל %d שינה.",
 	"origins-randomiser.message.sleeps.untilRandomise":"כעת יש לך עוד %d ישן עד שה-origin שלך יעבור אקראי.",
-	"origins-randomiser.reason.command":"עשו אקראי את origin שלהם וכעת הוא a",
-	"origins-randomiser.reason.death":"מת והופיע מחדש כמו א",
-	"origins-randomiser.reason.firstJoin":"הוליד לראשונה בתור א",
-	"origins-randomiser.reason.sleep":"ישן והתעורר כמו א"
+	"origins-randomiser.reason.command":"%s עשו אקראי את origin שלהם וכעת הוא a %s",
+	"origins-randomiser.reason.death":"%s מת והופיע מחדש כמו א %s",
+	"origins-randomiser.reason.firstJoin":"%s הוליד לראשונה בתור א %s",
+	"origins-randomiser.reason.sleep":"%s ישן והתעורר כמו א %s"
 }
