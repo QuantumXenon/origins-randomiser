@@ -4,15 +4,16 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import quantumxenon.randomiser.enums.Message;
-import quantumxenon.randomiser.enums.Objective;
-import quantumxenon.randomiser.enums.Reason;
 import quantumxenon.randomiser.utils.ConfigUtils;
 import quantumxenon.randomiser.utils.MessageUtils;
 import quantumxenon.randomiser.utils.OriginUtils;
 import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 import java.util.Objects;
+
+import static quantumxenon.randomiser.enums.Message.*;
+import static quantumxenon.randomiser.enums.Objective.USES;
+import static quantumxenon.randomiser.enums.Reason.COMMAND;
 
 
 public class RandomiseCommand {
@@ -27,21 +28,21 @@ public class RandomiseCommand {
         if (ConfigUtils.randomiseOrigins()) {
             if (ConfigUtils.randomiseCommand()) {
                 if (ConfigUtils.limitCommandUses()) {
-                    if (ScoreboardUtils.getValue(Objective.USES, player) > 0) {
-                        OriginUtils.randomOrigin(Reason.COMMAND, player);
-                        ScoreboardUtils.decrementValue(Objective.USES, Objects.requireNonNull(player));
-                        source.sendMessage(MessageUtils.getMessage(Message.USES_LEFT, ScoreboardUtils.getValue(Objective.USES, player)));
+                    if (ScoreboardUtils.getValue(USES, player) > 0) {
+                        OriginUtils.randomOrigin(COMMAND, player);
+                        ScoreboardUtils.decrementValue(USES, Objects.requireNonNull(player));
+                        source.sendMessage(MessageUtils.getMessage(USES_LEFT, ScoreboardUtils.getValue(USES, player)));
                     } else {
-                        source.sendError(MessageUtils.getMessage(Message.OUT_OF_USES));
+                        source.sendError(MessageUtils.getMessage(OUT_OF_USES));
                     }
                 } else {
-                    OriginUtils.randomOrigin(Reason.COMMAND, player);
+                    OriginUtils.randomOrigin(COMMAND, player);
                 }
             } else {
-                source.sendError(MessageUtils.getMessage(Message.COMMAND_DISABLED));
+                source.sendError(MessageUtils.getMessage(COMMAND_DISABLED));
             }
         } else {
-            source.sendError(MessageUtils.getMessage(Message.DISABLED));
+            source.sendError(MessageUtils.getMessage(DISABLED));
         }
         return 1;
     }

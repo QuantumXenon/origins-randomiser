@@ -7,8 +7,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import quantumxenon.randomiser.enums.Message;
-import quantumxenon.randomiser.enums.Objective;
 import quantumxenon.randomiser.utils.ConfigUtils;
 import quantumxenon.randomiser.utils.MessageUtils;
 import quantumxenon.randomiser.utils.ScoreboardUtils;
@@ -19,6 +17,9 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.command.argument.EntityArgumentType.players;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quantumxenon.randomiser.enums.Message.*;
+import static quantumxenon.randomiser.enums.Objective.LIVES;
+import static quantumxenon.randomiser.enums.Objective.USES;
 
 public class SetCommand {
     public static void register() {
@@ -41,11 +42,11 @@ public class SetCommand {
 
         if (ConfigUtils.enableLives()) {
             for (ServerPlayerEntity player : players) {
-                ScoreboardUtils.setValue(Objective.LIVES, number, player);
-                source.sendFeedback(MessageUtils.getMessage(Message.SET_LIVES, player.getEntityName(), number), true);
+                ScoreboardUtils.setValue(LIVES, number, player);
+                source.sendFeedback(MessageUtils.getMessage(SET_LIVES, player.getEntityName(), number), true);
             }
         } else {
-            source.sendError(MessageUtils.getMessage(Message.LIVES_DISABLED));
+            source.sendError(MessageUtils.getMessage(LIVES_DISABLED));
         }
         return 1;
     }
@@ -57,11 +58,11 @@ public class SetCommand {
 
         if (ConfigUtils.limitCommandUses()) {
             for (ServerPlayerEntity player : players) {
-                ScoreboardUtils.setValue(Objective.USES, number, player);
-                source.sendFeedback(MessageUtils.getMessage(Message.SET_USES, player.getEntityName(), number), true);
+                ScoreboardUtils.setValue(USES, number, player);
+                source.sendFeedback(MessageUtils.getMessage(SET_USES, player.getEntityName(), number), true);
             }
         } else {
-            source.sendError(MessageUtils.getMessage(Message.UNLIMITED));
+            source.sendError(MessageUtils.getMessage(UNLIMITED));
         }
         return 1;
     }
