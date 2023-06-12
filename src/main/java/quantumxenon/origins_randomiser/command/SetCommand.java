@@ -23,7 +23,7 @@ import static net.minecraft.commands.arguments.EntityArgument.players;
 public class SetCommand {
     public SetCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-            literal("set").requires(permissions -> permissions.hasPermission(2))
+            literal("set").requires(source -> source.hasPermission(2))
                 .then(literal("lives")
                     .then(argument("target", players())
                     .then(argument("number", integer(0))
@@ -42,7 +42,7 @@ public class SetCommand {
         if (ConfigUtils.enableLives()) {
             for (ServerPlayer player : players) {
                 ScoreboardUtils.setValue(Objective.LIVES, number, player);
-                source.sendSuccess(MessageUtils.getMessage(Message.SET_LIVES, player.getName().getString(), number), true);
+                source.sendSuccess(MessageUtils.getMessage(Message.SET_LIVES, player.getScoreboardName(), number), true);
             }
         } else {
             source.sendFailure(MessageUtils.getMessage(Message.LIVES_DISABLED));
@@ -58,7 +58,7 @@ public class SetCommand {
         if (ConfigUtils.limitCommandUses()) {
             for (ServerPlayer player : players) {
                 ScoreboardUtils.setValue(Objective.USES, number, player);
-                source.sendSuccess(MessageUtils.getMessage(Message.SET_USES, player.getName().getString(), number), true);
+                source.sendSuccess(MessageUtils.getMessage(Message.SET_USES, player.getScoreboardName(), number), true);
             }
         } else {
             source.sendFailure(MessageUtils.getMessage(Message.UNLIMITED));

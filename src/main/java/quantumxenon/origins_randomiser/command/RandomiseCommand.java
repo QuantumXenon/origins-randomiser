@@ -15,7 +15,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class RandomiseCommand {
     public RandomiseCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(literal("randomise").executes((context) -> randomise(context.getSource())));
+        dispatcher.register(literal("randomise").executes(context -> randomise(context.getSource())));
     }
 
     private static int randomise(CommandSourceStack source) {

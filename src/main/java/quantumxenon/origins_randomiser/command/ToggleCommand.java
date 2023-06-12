@@ -13,8 +13,8 @@ public class ToggleCommand {
     public ToggleCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
             literal("toggleRandomiser")
-                .requires(permissions -> permissions.hasPermission(2))
-                .executes((context) -> toggle(context.getSource())));
+                .requires(source -> source.hasPermission(2))
+                .executes(context -> toggle(context.getSource())));
     }
 
     private static int toggle(CommandSourceStack source) {
