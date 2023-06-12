@@ -2,6 +2,7 @@ package quantumxenon.randomiser.utils;
 
 import net.minecraft.text.Text;
 import quantumxenon.randomiser.enums.Message;
+import quantumxenon.randomiser.enums.Reason;
 
 public interface MessageUtils {
     static Text getMessage(Message message) {
@@ -71,5 +72,22 @@ public interface MessageUtils {
             }
         }
         return null;
+    }
+
+    static Text getMessage(Reason reason, String player, String origin) {
+        switch (reason) {
+            case DEATH -> {
+                return Text.translatable("origins-randomiser.reason.death", player, origin);
+            }
+            case FIRST_JOIN -> {
+                return Text.translatable("origins-randomiser.reason.firstJoin", player, origin);
+            }
+            case SLEEP -> {
+                return Text.translatable("origins-randomiser.reason.sleep", player, origin);
+            }
+            default -> {
+                return Text.translatable("origins-randomiser.reason.command", player, origin);
+            }
+        }
     }
 }
