@@ -5,8 +5,6 @@ import io.github.edwinmindcraft.origins.api.capabilities.IOriginContainer;
 import io.github.edwinmindcraft.origins.api.origin.Origin;
 import io.github.edwinmindcraft.origins.api.origin.OriginLayer;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import quantumxenon.origins_randomiser.enums.Reason;
 
@@ -23,7 +21,7 @@ public interface OriginUtils {
         if (ConfigUtils.randomiserMessages()) {
             List<ServerPlayer> playerList = player.getServer().getPlayerList().getPlayers();
             for (ServerPlayer serverPlayer : playerList) {
-                serverPlayer.sendSystemMessage(getReason(reason, player.getScoreboardName(), format(newOrigin)));
+                serverPlayer.sendSystemMessage(MessageUtils.getMessage(reason, player.getScoreboardName(), format(newOrigin)));
             }
         }
     }
@@ -49,22 +47,5 @@ public interface OriginUtils {
 
     private static String format(Holder<Origin> origin) {
         return origin.value().getName().getString();
-    }
-
-    private static MutableComponent getReason(Reason reason, String player, String origin) {
-        switch (reason) {
-            case DEATH -> {
-                return Component.translatable("origins-randomiser.reason.death", player, origin);
-            }
-            case FIRST_JOIN -> {
-                return Component.translatable("origins-randomiser.reason.firstJoin", player, origin);
-            }
-            case SLEEP -> {
-                return Component.translatable("origins-randomiser.reason.sleep", player, origin);
-            }
-            default -> {
-                return Component.translatable("origins-randomiser.reason.command", player, origin);
-            }
-        }
     }
 }

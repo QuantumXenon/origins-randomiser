@@ -3,6 +3,7 @@ package quantumxenon.origins_randomiser.utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import quantumxenon.origins_randomiser.enums.Message;
+import quantumxenon.origins_randomiser.enums.Reason;
 
 public interface MessageUtils {
     static MutableComponent getMessage(Message message) {
@@ -72,5 +73,22 @@ public interface MessageUtils {
             }
         }
         return null;
+    }
+
+    static MutableComponent getMessage(Reason reason, String player, String origin) {
+        switch (reason) {
+            case DEATH -> {
+                return Component.translatable("origins-randomiser.reason.death", player, origin);
+            }
+            case FIRST_JOIN -> {
+                return Component.translatable("origins-randomiser.reason.firstJoin", player, origin);
+            }
+            case SLEEP -> {
+                return Component.translatable("origins-randomiser.reason.sleep", player, origin);
+            }
+            default -> {
+                return Component.translatable("origins-randomiser.reason.command", player, origin);
+            }
+        }
     }
 }
