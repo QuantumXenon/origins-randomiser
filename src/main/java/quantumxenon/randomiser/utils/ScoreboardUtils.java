@@ -11,7 +11,7 @@ import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 
 public interface ScoreboardUtils {
     private static ScoreboardPlayerScore getObjective(ServerPlayerEntity player, Objective objective) {
-        return player.getScoreboard().getPlayerScore(player.getName().getString(), player.getScoreboard().getObjective(objectiveName(objective)));
+        return player.getScoreboard().getPlayerScore(player.getEntityName(), player.getScoreboard().getObjective(objectiveName(objective)));
     }
 
     static void createObjective(Objective objective, int number, ServerPlayerEntity player) {

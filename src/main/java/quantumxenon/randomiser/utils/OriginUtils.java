@@ -10,13 +10,11 @@ import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.StringUtils;
 import quantumxenon.randomiser.enums.Reason;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public interface OriginUtils {
@@ -29,9 +27,9 @@ public interface OriginUtils {
         Origin newOrigin = getOrigin(player);
         setOrigin(player, newOrigin);
         if (ConfigUtils.randomiserMessages()) {
-            List<ServerPlayerEntity> playerList = Objects.requireNonNull(player.getServer()).getPlayerManager().getPlayerList();
+            List<ServerPlayerEntity> playerList = player.getServer().getPlayerManager().getPlayerList();
             for (ServerPlayerEntity serverPlayer : playerList) {
-                serverPlayer.sendMessage(getReason(reason, player.getName().getString(), format(newOrigin).toString()));
+                serverPlayer.sendMessage(MessageUtils.getMessage(reason, player.getEntityName(), format(newOrigin)));
             }
         }
     }
@@ -53,15 +51,15 @@ public interface OriginUtils {
         OriginComponent.sync(player);
     }
 
-    private static StringBuilder format(Origin origin) {
+    private static String format(Origin origin) {
         StringBuilder originName = new StringBuilder();
         for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
             originName.append(StringUtils.capitalize(word)).append(" ");
         }
-        return originName;
+        return originName.toString();
     }
 
-    static void dropItems(ServerPlayerEntity player) {
+    private static void dropItems(ServerPlayerEntity player) {
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
             for (int slot = 0; slot < inventory.size(); slot++) {
                 ItemStack itemStack = inventory.getStack(slot);
@@ -69,22 +67,5 @@ public interface OriginUtils {
                 inventory.setStack(slot, ItemStack.EMPTY);
             }
         });
-    }
-
-    private static Text getReason(Reason reason, String player, String origin) {
-        switch (reason) {
-            case DEATH -> {
-                return Text.translatable("origins-randomiser.reason.death", player, origin);
-            }
-            case FIRST_JOIN -> {
-                return Text.translatable("origins-randomiser.reason.firstJoin", player, origin);
-            }
-            case SLEEP -> {
-                return Text.translatable("origins-randomiser.reason.sleep", player, origin);
-            }
-            default -> {
-                return Text.translatable("origins-randomiser.reason.command", player, origin);
-            }
-        }
     }
 }
