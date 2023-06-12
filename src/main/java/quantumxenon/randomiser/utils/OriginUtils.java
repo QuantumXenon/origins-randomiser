@@ -24,7 +24,7 @@ public interface OriginUtils {
         if (ConfigUtils.dropExtraInventory()) {
             dropItems(player);
         }
-        Origin newOrigin = getOrigin(player);
+        Origin newOrigin = getRandomOrigin(player);
         setOrigin(player, newOrigin);
         if (ConfigUtils.randomiserMessages()) {
             List<ServerPlayerEntity> playerList = player.getServer().getPlayerManager().getPlayerList();
@@ -34,7 +34,7 @@ public interface OriginUtils {
         }
     }
 
-    private static Origin getOrigin(ServerPlayerEntity player) {
+    private static Origin getRandomOrigin(ServerPlayerEntity player) {
         List<Origin> origins = layer.getRandomOrigins(player).stream().map(OriginRegistry::get).toList();
         Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
         Origin newOrigin = origins.get(new Random().nextInt(origins.size()));
