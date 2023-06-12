@@ -13,7 +13,7 @@ public class ToggleCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
             dispatcher.register(literal("toggleRandomiser")
-                .requires(permissions -> permissions.hasPermissionLevel(2))
+                .requires(source -> source.hasPermissionLevel(2))
                 .executes(context -> toggle(context.getSource()))));
     }
 

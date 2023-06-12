@@ -24,7 +24,7 @@ public class SetCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
             dispatcher.register(
-                literal("set").requires(permissions -> permissions.hasPermissionLevel(2))
+                literal("set").requires(source -> source.hasPermissionLevel(2))
                     .then(literal("lives")
                         .then(argument("target", players())
                         .then(argument("number", integer(0))
@@ -43,7 +43,7 @@ public class SetCommand {
         if (ConfigUtils.enableLives()) {
             for (ServerPlayerEntity player : players) {
                 ScoreboardUtils.setValue(Objective.LIVES, number, player);
-                source.sendFeedback(() -> MessageUtils.getMessage(Message.SET_LIVES, player.getName().getString(), number), true);
+                source.sendFeedback(() -> MessageUtils.getMessage(Message.SET_LIVES, player.getEntityName(), number), true);
             }
         } else {
             source.sendError(MessageUtils.getMessage(Message.LIVES_DISABLED));
@@ -59,7 +59,7 @@ public class SetCommand {
         if (ConfigUtils.limitCommandUses()) {
             for (ServerPlayerEntity player : players) {
                 ScoreboardUtils.setValue(Objective.USES, number, player);
-                source.sendFeedback(() -> MessageUtils.getMessage(Message.SET_USES, player.getName().getString(), number), true);
+                source.sendFeedback(() -> MessageUtils.getMessage(Message.SET_USES, player.getEntityName(), number), true);
             }
         } else {
             source.sendError(MessageUtils.getMessage(Message.UNLIMITED));
