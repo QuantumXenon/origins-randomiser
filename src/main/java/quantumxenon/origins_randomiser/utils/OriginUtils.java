@@ -21,17 +21,19 @@ public interface OriginUtils {
         Holder<Origin> newOrigin = getRandomOrigin(player);
         setOrigin(player, newOrigin);
         if (ConfigUtils.randomiserMessages()) {
-            for (ServerPlayer serverPlayer : player.getServer().getPlayerList().getPlayers()) {
-                serverPlayer.sendSystemMessage(getReason(reason, player.getScoreboardName(),getName(newOrigin)));
+            List<ServerPlayer> playerList = player.getServer().getPlayerList().getPlayers();
+            for (ServerPlayer serverPlayer : playerList) {
+                serverPlayer.sendSystemMessage(getReason(reason, player.getScoreboardName(), format(newOrigin)));
             }
         }
     }
 
     private static Holder<Origin> getRandomOrigin(ServerPlayer player) {
         List<Holder<Origin>> origins = layer.value().randomOrigins(player);
+        Optional<Holder<Origin>> currentOrigin = IOriginContainer.get(player).map(container -> OriginsAPI.getOriginsRegistry().getHolder(container.getOrigin(layer)).get());
         Holder<Origin> newOrigin = origins.get(new Random().nextInt(origins.size()));
         if (!ConfigUtils.allowDuplicateOrigins()) {
-            while (Optional.of(newOrigin).equals(getOrigin(player))) {
+            while (Optional.of(newOrigin).equals(currentOrigin)) {
                 newOrigin = origins.get(new Random().nextInt(origins.size()));
             }
         }
@@ -45,11 +47,7 @@ public interface OriginUtils {
         });
     }
 
-    private static Optional<Holder<Origin>> getOrigin(ServerPlayer player) {
-        return IOriginContainer.get(player).map(container -> OriginsAPI.getOriginsRegistry().getHolder(container.getOrigin(layer)).get());
-    }
-
-    private static String getName(Holder<Origin> origin) {
+    private static String format(Holder<Origin> origin) {
         return origin.value().getName().getString();
     }
 
