@@ -7,8 +7,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
-import quantumxenon.origins_randomiser.enums.Message;
-import quantumxenon.origins_randomiser.enums.Objective;
 import quantumxenon.origins_randomiser.utils.ConfigUtils;
 import quantumxenon.origins_randomiser.utils.MessageUtils;
 import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
@@ -19,6 +17,9 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 import static net.minecraft.commands.arguments.EntityArgument.players;
+import static quantumxenon.origins_randomiser.enums.Message.*;
+import static quantumxenon.origins_randomiser.enums.Objective.LIVES;
+import static quantumxenon.origins_randomiser.enums.Objective.USES;
 
 public class SetCommand {
     public SetCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -41,11 +42,11 @@ public class SetCommand {
 
         if (ConfigUtils.enableLives()) {
             for (ServerPlayer player : players) {
-                ScoreboardUtils.setValue(Objective.LIVES, number, player);
-                source.sendSuccess(MessageUtils.getMessage(Message.SET_LIVES, player.getScoreboardName(), number), true);
+                ScoreboardUtils.setValue(LIVES, number, player);
+                source.sendSuccess(MessageUtils.getMessage(SET_LIVES, player.getScoreboardName(), number), true);
             }
         } else {
-            source.sendFailure(MessageUtils.getMessage(Message.LIVES_DISABLED));
+            source.sendFailure(MessageUtils.getMessage(LIVES_DISABLED));
         }
         return 1;
     }
@@ -57,11 +58,11 @@ public class SetCommand {
 
         if (ConfigUtils.limitCommandUses()) {
             for (ServerPlayer player : players) {
-                ScoreboardUtils.setValue(Objective.USES, number, player);
-                source.sendSuccess(MessageUtils.getMessage(Message.SET_USES, player.getScoreboardName(), number), true);
+                ScoreboardUtils.setValue(USES, number, player);
+                source.sendSuccess(MessageUtils.getMessage(SET_USES, player.getScoreboardName(), number), true);
             }
         } else {
-            source.sendFailure(MessageUtils.getMessage(Message.UNLIMITED));
+            source.sendFailure(MessageUtils.getMessage(UNLIMITED));
         }
         return 1;
     }
