@@ -18,8 +18,6 @@ import static net.minecraft.command.argument.EntityArgumentType.players;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quantumxenon.randomiser.enums.Message.*;
-import static quantumxenon.randomiser.enums.Objective.LIVES;
-import static quantumxenon.randomiser.enums.Objective.USES;
 
 public class SetCommand {
     private static final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
@@ -45,7 +43,7 @@ public class SetCommand {
 
         if (config.lives.enableLives) {
             for (ServerPlayerEntity player : players) {
-                ScoreboardUtils.setValue(LIVES, number, player);
+                ScoreboardUtils.setValue("lives", number, player);
                 source.sendFeedback(() -> MessageUtils.getMessage(SET_LIVES, player.getEntityName(), number), true);
             }
         } else {
@@ -61,7 +59,7 @@ public class SetCommand {
 
         if (config.command.limitCommandUses) {
             for (ServerPlayerEntity player : players) {
-                ScoreboardUtils.setValue(USES, number, player);
+                ScoreboardUtils.setValue("uses", number, player);
                 source.sendFeedback(() -> MessageUtils.getMessage(SET_USES, player.getEntityName(), number), true);
             }
         } else {

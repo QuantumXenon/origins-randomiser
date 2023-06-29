@@ -17,8 +17,6 @@ import quantumxenon.randomiser.utils.OriginUtils;
 import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 import static quantumxenon.randomiser.enums.Message.*;
-import static quantumxenon.randomiser.enums.Objective.*;
-import static quantumxenon.randomiser.enums.Tag.*;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
@@ -31,12 +29,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
     private void spawn(CallbackInfo info) {
-        if (ScoreboardUtils.noScoreboardTag(FIRST_JOIN, player)) {
-            player.addCommandTag(ScoreboardUtils.tagName(FIRST_JOIN));
-            ScoreboardUtils.createObjective(LIVES_UNTIL_RANDOMISE, config.lives.livesBetweenRandomises, player);
-            ScoreboardUtils.createObjective(SLEEPS_UNTIL_RANDOMISE, config.other.sleepsBetweenRandomises, player);
-            ScoreboardUtils.createObjective(USES, config.command.randomiseCommandUses, player);
-            ScoreboardUtils.createObjective(LIVES, config.lives.startingLives, player);
+        if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
+            player.addCommandTag("firstJoin");
+            ScoreboardUtils.createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
+            ScoreboardUtils.createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
+            ScoreboardUtils.createObjective("uses", config.command.randomiseCommandUses, player);
+            ScoreboardUtils.createObjective("lives", config.lives.startingLives, player);
             if (config.general.randomiseOrigins) {
                 OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
             }
@@ -45,26 +43,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
-        if (ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player) <= 0) {
-            ScoreboardUtils.setValue(LIVES_UNTIL_RANDOMISE, config.lives.livesBetweenRandomises, player);
+        if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
+            ScoreboardUtils.setValue("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
         }
-        if (ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
-            ScoreboardUtils.setValue(SLEEPS_UNTIL_RANDOMISE, config.other.sleepsBetweenRandomises, player);
+        if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
+            ScoreboardUtils.setValue("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
         }
-        if (config.lives.enableLives && ScoreboardUtils.noScoreboardTag(LIVES_ENABLED_MESSAGE, player)) {
-            player.addCommandTag(ScoreboardUtils.tagName(LIVES_ENABLED_MESSAGE));
+        if (config.lives.enableLives && ScoreboardUtils.noScoreboardTag("livesEnabledMessage", player)) {
+            player.addCommandTag("livesEnabledMessage");
             player.sendMessage(MessageUtils.getMessage(LIVES_ENABLED, config.lives.startingLives), false);
         }
-        if (config.command.limitCommandUses && ScoreboardUtils.noScoreboardTag(LIMIT_USES_MESSAGE, player)) {
-            player.addCommandTag(ScoreboardUtils.tagName(LIMIT_USES_MESSAGE));
+        if (config.command.limitCommandUses && ScoreboardUtils.noScoreboardTag("limitUsesMessage", player)) {
+            player.addCommandTag("limitUsesMessage");
             player.sendMessage(MessageUtils.getMessage(LIMIT_COMMAND_USES, config.command.randomiseCommandUses), false);
         }
-        if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.noScoreboardTag(LIVES_MESSAGE, player)) {
-            player.addCommandTag(ScoreboardUtils.tagName(LIVES_MESSAGE));
+        if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.noScoreboardTag("livesMessage", player)) {
+            player.addCommandTag("livesMessage");
             player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_LIVES, config.lives.livesBetweenRandomises), false);
         }
-        if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.noScoreboardTag(SLEEPS_MESSAGE, player)) {
-            player.addCommandTag(ScoreboardUtils.tagName(SLEEPS_MESSAGE));
+        if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.noScoreboardTag("sleepsMessage", player)) {
+            player.addCommandTag("sleepsMessage");
             player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_SLEEPS, config.other.sleepsBetweenRandomises), false);
         }
     }
@@ -73,20 +71,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void death(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
             if (config.other.deathRandomisesOrigin) {
-                ScoreboardUtils.decrementValue(LIVES_UNTIL_RANDOMISE, player);
-                if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player) > 0) {
-                    player.sendMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player)), false);
+                ScoreboardUtils.decrementValue("livesUntilRandomise", player);
+                if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
+                    player.sendMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)), false);
                 }
                 if (config.lives.enableLives) {
-                    ScoreboardUtils.decrementValue(LIVES, player);
-                    if (ScoreboardUtils.getValue(LIVES, player) <= 0) {
+                    ScoreboardUtils.decrementValue("lives", player);
+                    if (ScoreboardUtils.getValue("lives", player) <= 0) {
                         player.changeGameMode(GameMode.SPECTATOR);
                         player.sendMessage(MessageUtils.getMessage(OUT_OF_LIVES), false);
                     } else {
-                        player.sendMessage(MessageUtils.getMessage(LIVES_REMAINING, ScoreboardUtils.getValue(LIVES, player)), false);
+                        player.sendMessage(MessageUtils.getMessage(LIVES_REMAINING, ScoreboardUtils.getValue("lives", player)), false);
                     }
                 }
-                if (ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player) <= 0) {
+                if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
                     OriginUtils.randomOrigin(Reason.DEATH, player);
                 }
             }
@@ -99,11 +97,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void sleep(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
             if (config.other.sleepRandomisesOrigin) {
-                ScoreboardUtils.decrementValue(SLEEPS_UNTIL_RANDOMISE, player);
-                if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player) > 0) {
-                    player.sendMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player)), false);
+                ScoreboardUtils.decrementValue("sleepsUntilRandomise", player);
+                if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
+                    player.sendMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)), false);
                 }
-                if (ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
+                if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
                     OriginUtils.randomOrigin(Reason.SLEEP, player);
                 }
             }
