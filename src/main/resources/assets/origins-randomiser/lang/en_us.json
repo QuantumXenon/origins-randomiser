@@ -8,8 +8,6 @@
 	"text.autoconfig.origins-randomiser.option.general.randomiseOrigins.@Tooltip":"Master toggle for origin randomization",
 	"text.autoconfig.origins-randomiser.option.general.randomiserMessages":"randomizerMessages",
 	"text.autoconfig.origins-randomiser.option.general.randomiserMessages.@Tooltip":"Toggle global messages about a player's new origin",
-	"text.autoconfig.origins-randomiser.option.general.dropExtraInventory":"dropExtraInventory",
-	"text.autoconfig.origins-randomiser.option.general.dropExtraInventory.@Tooltip":"Drop items out of extra inventories when your origin is randomised",
 	"text.autoconfig.origins-randomiser.option.general.allowDuplicateOrigins":"allowDuplicateOrigins",
 	"text.autoconfig.origins-randomiser.option.general.allowDuplicateOrigins.@Tooltip":"Toggle possibility that new origin is the same as the previous",
 	"text.autoconfig.origins-randomiser.option.command.randomiseCommand":"randomizeCommand",

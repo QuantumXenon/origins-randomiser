@@ -26,8 +26,6 @@ public class OriginsRandomiserConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean randomiserMessages = true;
         @ConfigEntry.Gui.Tooltip
-        public boolean dropExtraInventory = true;
-        @ConfigEntry.Gui.Tooltip
         public boolean allowDuplicateOrigins = false;
     }
 

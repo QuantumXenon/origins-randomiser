@@ -8,8 +8,6 @@
 	"text.autoconfig.origins-randomiser.option.general.randomiseOrigins.@Tooltip":"החלפת מאסטר לאקראי מקור",
 	"text.autoconfig.origins-randomiser.option.general.randomiserMessages":"הודעות אקראיות",
 	"text.autoconfig.origins-randomiser.option.general.randomiserMessages.@Tooltip":"החלף הודעות גלובליות על ה-origin החדש של שחקן",
-	"text.autoconfig.origins-randomiser.option.general.dropExtraInventory":"שחרר מלאי נוסף",
-	"text.autoconfig.origins-randomiser.option.general.dropExtraInventory.@Tooltip":"זרוק פריטים ממלאי נוסף כאשר המקור שלך הוא אקראי",
 	"text.autoconfig.origins-randomiser.option.general.allowDuplicateOrigins":"אפשר שכפול Origins",
 	"text.autoconfig.origins-randomiser.option.general.allowDuplicateOrigins.@Tooltip":"החלף אפשרות ש-origin חדש זהה לקודם",
 	"text.autoconfig.origins-randomiser.option.command.randomiseCommand":"הפקודה אקראית",
