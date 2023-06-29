@@ -11,15 +11,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
-import quantumxenon.randomiser.enums.Message;
 import quantumxenon.randomiser.enums.Reason;
 import quantumxenon.randomiser.utils.MessageUtils;
 import quantumxenon.randomiser.utils.OriginUtils;
 import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 import static quantumxenon.randomiser.enums.Message.*;
-import static quantumxenon.randomiser.enums.Objective.LIVES_UNTIL_RANDOMISE;
-import static quantumxenon.randomiser.enums.Objective.SLEEPS_UNTIL_RANDOMISE;
 import static quantumxenon.randomiser.enums.Objective.*;
 import static quantumxenon.randomiser.enums.Tag.*;
 
@@ -78,7 +75,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             if (config.other.deathRandomisesOrigin) {
                 ScoreboardUtils.decrementValue(LIVES_UNTIL_RANDOMISE, player);
                 if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player) > 0) {
-                    player.sendMessage(MessageUtils.getMessage(Message.LIVES_UNTIL_RANDOMISE, ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player)), false);
+                    player.sendMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue(LIVES_UNTIL_RANDOMISE, player)), false);
                 }
                 if (config.lives.enableLives) {
                     ScoreboardUtils.decrementValue(LIVES, player);
@@ -104,7 +101,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             if (config.other.sleepRandomisesOrigin) {
                 ScoreboardUtils.decrementValue(SLEEPS_UNTIL_RANDOMISE, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player) > 0) {
-                    player.sendMessage(MessageUtils.getMessage(Message.SLEEPS_UNTIL_RANDOMISE, ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player)), false);
+                    player.sendMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player)), false);
                 }
                 if (ScoreboardUtils.getValue(SLEEPS_UNTIL_RANDOMISE, player) <= 0) {
                     OriginUtils.randomOrigin(Reason.SLEEP, player);

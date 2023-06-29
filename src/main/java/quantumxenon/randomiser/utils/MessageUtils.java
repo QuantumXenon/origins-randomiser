@@ -43,7 +43,7 @@ public interface MessageUtils {
             case LIVES_REMAINING -> {
                 return Text.translatable("origins-randomiser.message.lives.remaining", value);
             }
-            case LIVES_UNTIL_RANDOMISE -> {
+            case LIVES_UNTIL_NEXT_RANDOMISE -> {
                 return Text.translatable("origins-randomiser.message.lives.untilRandomise", value);
             }
             case RANDOM_ORIGIN_AFTER_LIVES -> {
@@ -52,7 +52,7 @@ public interface MessageUtils {
             case RANDOM_ORIGIN_AFTER_SLEEPS -> {
                 return Text.translatable("origins-randomiser.message.sleeps.betweenRandomises", value);
             }
-            case SLEEPS_UNTIL_RANDOMISE -> {
+            case SLEEPS_UNTIL_NEXT_RANDOMISE -> {
                 return Text.translatable("origins-randomiser.message.sleeps.untilRandomise", value);
             }
             case USES_LEFT -> {
