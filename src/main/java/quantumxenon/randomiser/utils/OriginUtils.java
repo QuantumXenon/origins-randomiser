@@ -10,8 +10,8 @@ import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.StringUtils;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 import quantumxenon.randomiser.enums.Reason;
 
@@ -55,11 +55,7 @@ public interface OriginUtils {
     }
 
     private static String getFormattedName(Origin origin) {
-        StringBuilder originName = new StringBuilder();
-        for (String word : origin.getIdentifier().toString().split(":")[1].split("_")) {
-            originName.append(StringUtils.capitalize(word)).append(" ");
-        }
-        return originName.toString();
+        return Text.translatable(origin.getOrCreateNameTranslationKey()).getString();
     }
 
     private static void dropItems(ServerPlayerEntity player) {
