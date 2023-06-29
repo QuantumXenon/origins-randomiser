@@ -4,7 +4,7 @@ plugins {
 }
 
 version = project.mod_version
-archivesBaseName = "origins-randomiser-forge"
+archivesBaseName = "origins-randomiser"
 
 repositories {
     maven { url = "https://cursemaven.com" }
