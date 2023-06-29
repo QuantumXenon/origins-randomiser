@@ -26,16 +26,16 @@ public class SetCommand {
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-            dispatcher.register(
-                literal("set").requires(source -> source.hasPermissionLevel(2))
-                    .then(literal("lives")
-                        .then(argument("target", players())
-                        .then(argument("number", integer(0))
-                        .executes(SetCommand::setLives))))
-                    .then(literal("uses")
-                        .then(argument("target", players())
-                        .then(argument("number", integer(0))
-                        .executes(SetCommand::setUses))))));
+            dispatcher.register(literal("set")
+                .requires(source -> source.hasPermissionLevel(2))
+                .then(literal("lives")
+                    .then(argument("target", players())
+                    .then(argument("number", integer(0))
+                    .executes(SetCommand::setLives))))
+                .then(literal("uses")
+                    .then(argument("target", players())
+                    .then(argument("number", integer(0))
+                    .executes(SetCommand::setUses))))));
     }
 
     private static int setLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
