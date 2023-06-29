@@ -11,10 +11,10 @@ public interface MessageUtils {
             case COMMAND_DISABLED -> {
                 return Component.translatable("origins-randomiser.message.command.disabled");
             }
-            case DISABLED -> {
+            case RANDOMISER_DISABLED -> {
                 return Component.translatable("origins-randomiser.message.disabled");
             }
-            case ENABLED -> {
+            case RANDOMISER_ENABLED -> {
                 return Component.translatable("origins-randomiser.message.enabled");
             }
             case LIVES_DISABLED -> {
@@ -26,7 +26,7 @@ public interface MessageUtils {
             case OUT_OF_USES -> {
                 return Component.translatable("origins-randomiser.message.command.out");
             }
-            case UNLIMITED -> {
+            case UNLIMITED_USES -> {
                 return Component.translatable("origins-randomiser.message.command.unlimitedUses");
             }
         }
@@ -44,7 +44,7 @@ public interface MessageUtils {
             case LIVES_REMAINING -> {
                 return Component.translatable("origins-randomiser.message.lives.remaining", value);
             }
-            case LIVES_UNTIL_RANDOMISE -> {
+            case LIVES_UNTIL_NEXT_RANDOMISE -> {
                 return Component.translatable("origins-randomiser.message.lives.untilRandomise", value);
             }
             case RANDOM_ORIGIN_AFTER_LIVES -> {
@@ -53,7 +53,7 @@ public interface MessageUtils {
             case RANDOM_ORIGIN_AFTER_SLEEPS -> {
                 return Component.translatable("origins-randomiser.message.sleeps.betweenRandomises", value);
             }
-            case SLEEPS_UNTIL_RANDOMISE -> {
+            case SLEEPS_UNTIL_NEXT_RANDOMISE -> {
                 return Component.translatable("origins-randomiser.message.sleeps.untilRandomise", value);
             }
             case USES_LEFT -> {
