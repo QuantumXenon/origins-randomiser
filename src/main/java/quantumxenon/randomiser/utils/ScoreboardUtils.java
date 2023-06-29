@@ -34,25 +34,4 @@ public interface ScoreboardUtils {
     static boolean noScoreboardTag(String tag, ServerPlayerEntity player) {
         return !player.getCommandTags().contains(tag);
     }
-
-    static String tagName(Tag tag) {
-        switch (tag) {
-            case FIRST_JOIN -> {
-                return "firstJoin";
-            }
-            case LIMIT_USES_MESSAGE -> {
-                return "limitUsesMessage";
-            }
-            case LIVES_ENABLED_MESSAGE -> {
-                return "livesEnabledMessage";
-            }
-            case LIVES_MESSAGE -> {
-                return "livesMessage";
-            }
-            case SLEEPS_MESSAGE -> {
-                return "sleepsMessage";
-            }
-        }
-        return null;
-    }
 }

@@ -11,7 +11,6 @@ import quantumxenon.randomiser.utils.ScoreboardUtils;
 
 import static net.minecraft.server.command.CommandManager.literal;
 import static quantumxenon.randomiser.enums.Message.*;
-import static quantumxenon.randomiser.enums.Objective.USES;
 
 
 public class RandomiseCommand {
@@ -28,10 +27,10 @@ public class RandomiseCommand {
         if (config.general.randomiseOrigins) {
             if (config.command.randomiseCommand) {
                 if (config.command.limitCommandUses) {
-                    if (ScoreboardUtils.getValue(USES, player) > 0) {
+                    if (ScoreboardUtils.getValue("uses", player) > 0) {
                         OriginUtils.randomOrigin(Reason.COMMAND, player);
-                        ScoreboardUtils.decrementValue(USES, player);
-                        source.sendMessage(MessageUtils.getMessage(USES_LEFT, ScoreboardUtils.getValue(USES, player)));
+                        ScoreboardUtils.decrementValue("uses", player);
+                        source.sendMessage(MessageUtils.getMessage(USES_LEFT, ScoreboardUtils.getValue("uses", player)));
                     } else {
                         source.sendError(MessageUtils.getMessage(OUT_OF_USES));
                     }
