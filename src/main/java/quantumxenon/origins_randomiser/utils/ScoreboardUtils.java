@@ -13,8 +13,10 @@ public interface ScoreboardUtils {
     }
 
     static void createObjective(String objective, int number, ServerPlayer player) {
-        player.getScoreboard().addObjective(objective, DUMMY, Component.literal(objective), INTEGER);
-        setValue(objective, number, player);
+        if (!player.getScoreboard().hasObjective(objective)) {
+            player.getScoreboard().addObjective(objective, DUMMY, Component.literal(objective), INTEGER);
+            setValue(objective, number, player);
+        }
     }
 
     static int getValue(String objective, ServerPlayer player) {

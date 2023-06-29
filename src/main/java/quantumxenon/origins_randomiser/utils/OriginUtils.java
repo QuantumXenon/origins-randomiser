@@ -20,10 +20,11 @@ public interface OriginUtils {
     static void randomOrigin(Reason reason, ServerPlayer player) {
         Holder<Origin> newOrigin = getRandomOrigin(player);
         setOrigin(player, newOrigin);
+        String originName = getFormattedName(newOrigin);
         if (config.general.randomiserMessages) {
             List<ServerPlayer> playerList = player.getServer().getPlayerList().getPlayers();
             for (ServerPlayer serverPlayer : playerList) {
-                serverPlayer.sendSystemMessage(MessageUtils.getMessage(reason, player.getScoreboardName(), format(newOrigin)));
+                serverPlayer.sendSystemMessage(MessageUtils.getMessage(reason, player.getScoreboardName(), originName));
             }
         }
     }
@@ -47,7 +48,7 @@ public interface OriginUtils {
         });
     }
 
-    private static String format(Holder<Origin> origin) {
+    private static String getFormattedName(Holder<Origin> origin) {
         return origin.value().getName().getString();
     }
 }
