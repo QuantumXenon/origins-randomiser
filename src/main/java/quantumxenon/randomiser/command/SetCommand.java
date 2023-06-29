@@ -65,7 +65,7 @@ public class SetCommand {
                 source.sendFeedback(() -> MessageUtils.getMessage(SET_USES, player.getEntityName(), number), true);
             }
         } else {
-            source.sendError(MessageUtils.getMessage(UNLIMITED));
+            source.sendError(MessageUtils.getMessage(UNLIMITED_USES));
         }
         return 1;
     }

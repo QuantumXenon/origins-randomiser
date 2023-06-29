@@ -10,10 +10,10 @@ public interface MessageUtils {
             case COMMAND_DISABLED -> {
                 return Text.translatable("origins-randomiser.message.command.disabled");
             }
-            case DISABLED -> {
+            case RANDOMISER_DISABLED -> {
                 return Text.translatable("origins-randomiser.message.disabled");
             }
-            case ENABLED -> {
+            case RANDOMISER_ENABLED -> {
                 return Text.translatable("origins-randomiser.message.enabled");
             }
             case LIVES_DISABLED -> {
@@ -25,7 +25,7 @@ public interface MessageUtils {
             case OUT_OF_USES -> {
                 return Text.translatable("origins-randomiser.message.command.out");
             }
-            case UNLIMITED -> {
+            case UNLIMITED_USES -> {
                 return Text.translatable("origins-randomiser.message.command.unlimitedUses");
             }
         }

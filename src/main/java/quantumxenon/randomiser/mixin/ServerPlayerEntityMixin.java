@@ -91,7 +91,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 }
             }
         } else {
-            player.sendMessage(MessageUtils.getMessage(DISABLED), false);
+            player.sendMessage(MessageUtils.getMessage(RANDOMISER_DISABLED), false);
         }
     }
 
@@ -108,7 +108,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 }
             }
         } else {
-            player.sendMessage(MessageUtils.getMessage(DISABLED), false);
+            player.sendMessage(MessageUtils.getMessage(RANDOMISER_DISABLED), false);
         }
     }
 }

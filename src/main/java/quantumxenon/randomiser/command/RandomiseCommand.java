@@ -42,7 +42,7 @@ public class RandomiseCommand {
                 source.sendError(MessageUtils.getMessage(COMMAND_DISABLED));
             }
         } else {
-            source.sendError(MessageUtils.getMessage(DISABLED));
+            source.sendError(MessageUtils.getMessage(RANDOMISER_DISABLED));
         }
         return 1;
     }
