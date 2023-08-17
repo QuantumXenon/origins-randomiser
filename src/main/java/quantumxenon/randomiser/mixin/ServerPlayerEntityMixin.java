@@ -71,12 +71,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void death(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
             if (config.other.deathRandomisesOrigin) {
-                ScoreboardUtils.decrementValue("livesUntilRandomise", player);
+                ScoreboardUtils.changeValue("livesUntilRandomise", -1, player);
                 if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
                     player.sendMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)), false);
                 }
                 if (config.lives.enableLives) {
-                    ScoreboardUtils.decrementValue("lives", player);
+                    ScoreboardUtils.changeValue("lives", -1, player);
                     if (ScoreboardUtils.getValue("lives", player) <= 0) {
                         player.changeGameMode(SPECTATOR);
                         player.sendMessage(MessageUtils.getMessage(OUT_OF_LIVES), false);
@@ -97,7 +97,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void sleep(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
             if (config.other.sleepRandomisesOrigin) {
-                ScoreboardUtils.decrementValue("sleepsUntilRandomise", player);
+                ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
                     player.sendMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)), false);
                 }
