@@ -48,7 +48,7 @@ public abstract class ServerPlayerMixin {
     private void sleep(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
             if (config.other.sleepRandomisesOrigin) {
-                ScoreboardUtils.decrementValue("sleepsUntilRandomise", player);
+                ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
                     player.sendSystemMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)));
                 }

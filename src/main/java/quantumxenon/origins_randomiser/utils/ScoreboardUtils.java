@@ -27,8 +27,8 @@ public interface ScoreboardUtils {
         getObjective(player, objective).setScore(value);
     }
 
-    static void decrementValue(String objective, ServerPlayer player) {
-        getObjective(player, objective).add(-1);
+    static void changeValue(String objective, int value, ServerPlayer player) {
+        getObjective(player, objective).add(value);
     }
 
     static boolean noScoreboardTag(String tag, ServerPlayer player) {

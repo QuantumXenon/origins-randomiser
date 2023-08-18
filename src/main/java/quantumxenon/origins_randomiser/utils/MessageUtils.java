@@ -65,11 +65,11 @@ public interface MessageUtils {
 
     static MutableComponent getMessage(Message message, String name, int value) {
         switch (message) {
-            case SET_LIVES -> {
-                return Component.translatable("origins-randomiser.message.command.setLives", name, value);
+            case NEW_LIVES -> {
+                return Component.translatable("origins-randomiser.message.command.newLives", name, value);
             }
-            case SET_USES -> {
-                return Component.translatable("origins-randomiser.message.command.setUses", name, value);
+            case NEW_USES -> {
+                return Component.translatable("origins-randomiser.message.command.newUses", name, value);
             }
         }
         return null;

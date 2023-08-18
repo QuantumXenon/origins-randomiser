@@ -6,6 +6,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import quantumxenon.origins_randomiser.OriginsRandomiser;
+import quantumxenon.origins_randomiser.command.ChangeCommand;
 import quantumxenon.origins_randomiser.command.RandomiseCommand;
 import quantumxenon.origins_randomiser.command.SetCommand;
 import quantumxenon.origins_randomiser.command.ToggleCommand;
@@ -22,6 +23,7 @@ import static quantumxenon.origins_randomiser.enums.Message.*;
 public class OriginsRandomiserEvents {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
+        new ChangeCommand(event.getDispatcher());
         new RandomiseCommand(event.getDispatcher());
         new SetCommand(event.getDispatcher());
         new ToggleCommand(event.getDispatcher());
@@ -48,12 +50,12 @@ public class OriginsRandomiserEvents {
         if (event.getEntity() instanceof ServerPlayer player && !event.isEndConquered()) {
             if (ConfigUtils.randomiseOrigins()) {
                 if (ConfigUtils.deathRandomisesOrigin()) {
-                    ScoreboardUtils.decrementValue("livesUntilRandomise", player);
+                    ScoreboardUtils.changeValue("livesUntilRandomise", -1, player);
                     if (ConfigUtils.livesBetweenRandomises() > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
                         player.sendSystemMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)));
                     }
                     if (ConfigUtils.enableLives()) {
-                        ScoreboardUtils.decrementValue("lives", player);
+                        ScoreboardUtils.changeValue("lives", -1, player);
                         if (ScoreboardUtils.getValue("lives", player) <= 0) {
                             player.setGameMode(SPECTATOR);
                             player.sendSystemMessage(MessageUtils.getMessage(OUT_OF_LIVES));

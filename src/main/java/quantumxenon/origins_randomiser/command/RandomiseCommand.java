@@ -27,7 +27,7 @@ public class RandomiseCommand {
                 if (config.command.limitCommandUses) {
                     if (ScoreboardUtils.getValue("uses", player) > 0) {
                         OriginUtils.randomOrigin(Reason.COMMAND, player);
-                        ScoreboardUtils.decrementValue("uses", player);
+                        ScoreboardUtils.changeValue("uses", -1, player);
                         source.sendSystemMessage(MessageUtils.getMessage(USES_LEFT, ScoreboardUtils.getValue("uses", player)));
                     } else {
                         source.sendFailure(MessageUtils.getMessage(OUT_OF_USES));
