@@ -27,8 +27,8 @@ public interface ScoreboardUtils {
         getObjective(player, objective).setScore(value);
     }
 
-    static void changeValue(String objective, int number, ServerPlayerEntity player) {
-        getObjective(player, objective).incrementScore(number);
+    static void changeValue(String objective, int value, ServerPlayerEntity player) {
+        getObjective(player, objective).incrementScore(value);
     }
 
     static boolean noScoreboardTag(String tag, ServerPlayerEntity player) {
