@@ -19,31 +19,31 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quantumxenon.randomiser.enums.Message.*;
 
-public class SetCommand {
+public class ChangeCommand {
     private static final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, environment) ->
-            dispatcher.register(literal("set")
-                .requires(source -> source.hasPermissionLevel(2))
-                .then(literal("lives")
-                    .then(argument("target", players())
-                    .then(argument("number", integer(0))
-                    .executes(SetCommand::setLives))))
-                .then(literal("uses")
-                    .then(argument("target", players())
-                    .then(argument("number", integer(0))
-                    .executes(SetCommand::setUses))))));
+                dispatcher.register(literal("change")
+                        .requires(source -> source.hasPermissionLevel(2))
+                        .then(literal("lives")
+                                .then(argument("target", players())
+                                        .then(argument("number", integer())
+                                                .executes(ChangeCommand::changeLives))))
+                        .then(literal("uses")
+                                .then(argument("target", players())
+                                        .then(argument("number", integer())
+                                                .executes(ChangeCommand::changeUses))))));
     }
 
-    private static int setLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int changeLives(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         final Collection<ServerPlayerEntity> players = EntityArgumentType.getPlayers(context, "target");
         final int number = IntegerArgumentType.getInteger(context, "number");
         ServerCommandSource source = context.getSource();
 
         if (config.lives.enableLives) {
             for (ServerPlayerEntity player : players) {
-                ScoreboardUtils.setValue("lives", number, player);
+                ScoreboardUtils.changeValue("lives", number, player);
                 source.sendFeedback(MessageUtils.getMessage(NEW_LIVES, player.getEntityName(), ScoreboardUtils.getValue("lives", player)), true);
             }
         } else {
@@ -52,14 +52,14 @@ public class SetCommand {
         return 1;
     }
 
-    private static int setUses(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int changeUses(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         final Collection<ServerPlayerEntity> players = EntityArgumentType.getPlayers(context, "target");
         final int number = IntegerArgumentType.getInteger(context, "number");
         ServerCommandSource source = context.getSource();
 
         if (config.command.limitCommandUses) {
             for (ServerPlayerEntity player : players) {
-                ScoreboardUtils.setValue("uses", number, player);
+                ScoreboardUtils.changeValue("uses", number, player);
                 source.sendFeedback(MessageUtils.getMessage(NEW_USES, player.getEntityName(), ScoreboardUtils.getValue("uses", player)), true);
             }
         } else {

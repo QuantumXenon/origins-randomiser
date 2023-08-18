@@ -65,11 +65,11 @@ public interface MessageUtils {
 
     static Text getMessage(Message message, String name, int value) {
         switch (message) {
-            case SET_LIVES -> {
-                return new TranslatableText("origins-randomiser.message.command.setLives", name, value);
+            case NEW_LIVES -> {
+                return new TranslatableText("origins-randomiser.message.command.newLives", name, value);
             }
-            case SET_USES -> {
-                return new TranslatableText("origins-randomiser.message.command.setUses", name, value);
+            case NEW_USES -> {
+                return new TranslatableText("origins-randomiser.message.command.newUses", name, value);
             }
         }
         return null;
