@@ -7,8 +7,8 @@ version = project.mod_version
 archivesBaseName = "origins-randomiser"
 
 repositories {
-    maven { url = "https://cursemaven.com/" }
     maven { url = "https://jitpack.io/" }
+    maven { url = "https://maven.merchantpug.net/releases/" }
     maven { url = "https://maven.shedaniel.me/" }
 }
 
@@ -18,7 +18,9 @@ minecraft {
 
 dependencies {
     minecraft("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}")
-	implementation fg.deobf("curse.maven:origins-474438:${project.origins_file}")
+    implementation(fg.deobf("io.github.edwinmindcraft:apoli-forge:${project.minecraft_version}-${apoli_version}"))
+    implementation(fg.deobf("io.github.edwinmindcraft:calio-forge:${project.minecraft_version}-${calio_version}"))
+    implementation(fg.deobf("io.github.edwinmindcraft:origins-forge:${project.minecraft_version}-${origins_version}"))
     implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${project.cloth_version}"))
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
