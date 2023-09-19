@@ -21,10 +21,10 @@ public class ToggleCommand {
     private static int toggle(CommandSourceStack source) {
         if (config.general.randomiseOrigins) {
             config.general.randomiseOrigins = false;
-            source.sendSuccess(MessageUtils.getMessage(RANDOMISER_DISABLED), true);
+            source.sendSuccess(() -> MessageUtils.getMessage(RANDOMISER_DISABLED), true);
         } else {
             config.general.randomiseOrigins = true;
-            source.sendSuccess(MessageUtils.getMessage(RANDOMISER_ENABLED), true);
+            source.sendSuccess(() -> MessageUtils.getMessage(RANDOMISER_ENABLED), true);
         }
         return 1;
     }

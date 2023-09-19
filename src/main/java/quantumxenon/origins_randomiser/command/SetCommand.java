@@ -43,7 +43,7 @@ public class SetCommand {
         if (config.lives.enableLives) {
             for (ServerPlayer player : players) {
                 ScoreboardUtils.setValue("lives", number, player);
-                source.sendSuccess(MessageUtils.getMessage(NEW_LIVES, player.getScoreboardName(), ScoreboardUtils.getValue("lives", player)), true);
+                source.sendSuccess(() -> MessageUtils.getMessage(NEW_LIVES, player.getScoreboardName(), ScoreboardUtils.getValue("lives", player)), true);
             }
         } else {
             source.sendFailure(MessageUtils.getMessage(LIVES_DISABLED));
@@ -59,7 +59,7 @@ public class SetCommand {
         if (config.command.limitCommandUses) {
             for (ServerPlayer player : players) {
                 ScoreboardUtils.setValue("uses", number, player);
-                source.sendSuccess(MessageUtils.getMessage(NEW_USES, player.getScoreboardName(), ScoreboardUtils.getValue("uses", player)), true);
+                source.sendSuccess(() -> MessageUtils.getMessage(NEW_USES, player.getScoreboardName(), ScoreboardUtils.getValue("uses", player)), true);
             }
         } else {
             source.sendFailure(MessageUtils.getMessage(UNLIMITED_USES));
