@@ -19,7 +19,7 @@ import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
 import static net.minecraft.world.level.GameType.SPECTATOR;
 import static quantumxenon.origins_randomiser.enums.Message.*;
 
-@Mod.EventBusSubscriber(modid = OriginsRandomiser.MOD_ID)
+@Mod.EventBusSubscriber(modid = OriginsRandomiser.ID)
 public class OriginsRandomiserEvents {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {

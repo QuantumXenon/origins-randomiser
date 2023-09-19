@@ -9,7 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import quantumxenon.origins_randomiser.OriginsRandomiser;
 import quantumxenon.origins_randomiser.config.OriginsRandomiserConfig;
 
-@Mod.EventBusSubscriber(modid = OriginsRandomiser.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = OriginsRandomiser.ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class OriginsRandomiserClient {
     @SubscribeEvent
     public static void registerConfig(FMLClientSetupEvent event) {
