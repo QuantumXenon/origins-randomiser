@@ -10,7 +10,7 @@ import static quantumxenon.randomiser.utils.OriginUtils.config;
 public class OriginsRandomiserEvents {
     public static void firstJoin(ServerPlayerEntity player) {
         if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
-            if (config.general.randomiseOrigins) {
+            if (config.general.randomiseOrigins && config.general.randomiseOnFirstJoin) {
                 OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
             }
         }
