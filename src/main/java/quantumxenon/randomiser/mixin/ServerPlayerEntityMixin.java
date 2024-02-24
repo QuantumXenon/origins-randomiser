@@ -35,7 +35,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             ScoreboardUtils.createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
             ScoreboardUtils.createObjective("uses", config.command.randomiseCommandUses, player);
             ScoreboardUtils.createObjective("lives", config.lives.startingLives, player);
-            if (config.general.randomiseOrigins) {
+            if (config.general.randomiseOrigins && config.general.randomiseOnFirstJoin) {
                 OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
             }
         }
