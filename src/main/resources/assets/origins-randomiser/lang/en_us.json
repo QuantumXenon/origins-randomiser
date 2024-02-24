@@ -6,6 +6,8 @@
 	"text.autoconfig.origins-randomiser.option.other":"Other",
 	"text.autoconfig.origins-randomiser.option.general.randomiseOrigins":"randomizeOrigins",
 	"text.autoconfig.origins-randomiser.option.general.randomiseOrigins.@Tooltip":"Master toggle for origin randomization",
+	"text.autoconfig.origins-randomiser.option.general.randomiseOnFirstJoin":"randomizeOnFirstJoin",
+	"text.autoconfig.origins-randomiser.option.general.randomiseOnFirstJoin.@Tooltip":"Toggle assigning a random origin on a player's first join",
 	"text.autoconfig.origins-randomiser.option.general.randomiserMessages":"randomizerMessages",
 	"text.autoconfig.origins-randomiser.option.general.randomiserMessages.@Tooltip":"Toggle global messages about a player's new origin",
 	"text.autoconfig.origins-randomiser.option.general.allowDuplicateOrigins":"allowDuplicateOrigins",
