@@ -85,8 +85,6 @@ public abstract class ServerPlayerEntityMixin {
                     OriginUtils.randomOrigin(Reason.DEATH, player);
                 }
             }
-        } else {
-            player.sendMessage(MessageUtils.getMessage(RANDOMISER_DISABLED), false);
         }
     }
 
@@ -102,8 +100,6 @@ public abstract class ServerPlayerEntityMixin {
                     OriginUtils.randomOrigin(Reason.SLEEP, player);
                 }
             }
-        } else {
-            player.sendMessage(MessageUtils.getMessage(RANDOMISER_DISABLED), false);
         }
     }
 }
