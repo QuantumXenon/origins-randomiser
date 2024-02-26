@@ -85,10 +85,10 @@ public abstract class ServerPlayerEntityMixin {
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "wakeUp")
+    @Inject(at = @At("HEAD"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
-            if (config.other.sleepRandomisesOrigin) {
+            if (config.other.sleepRandomisesOrigin && player.canResetTimeBySleeping()) {
                 ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
                     player.sendMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)));
