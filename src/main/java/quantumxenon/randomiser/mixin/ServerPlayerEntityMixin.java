@@ -1,10 +1,7 @@
 package quantumxenon.randomiser.mixin;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,12 +16,12 @@ import static net.minecraft.world.GameMode.SPECTATOR;
 import static quantumxenon.randomiser.enums.Message.*;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity {
+public abstract class ServerPlayerEntityMixin {
     private final ServerPlayerEntity player = ((ServerPlayerEntity) (Object) this);
     private static final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
 
-    private ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
-        super(world, pos, yaw, gameProfile);
+    private ServerPlayerEntityMixin() {
+        super();
     }
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
@@ -93,10 +90,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "wakeUp")
+    @Inject(at = @At("HEAD"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
-            if (config.other.sleepRandomisesOrigin) {
+            if (config.other.sleepRandomisesOrigin && player.canResetTimeBySleeping()) {
                 ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
                     player.sendMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)), false);
