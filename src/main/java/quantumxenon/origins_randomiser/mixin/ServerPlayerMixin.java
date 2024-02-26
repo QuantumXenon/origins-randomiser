@@ -44,10 +44,10 @@ public abstract class ServerPlayerMixin {
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "stopSleepInBed")
+    @Inject(at = @At("HEAD"), method = "stopSleepInBed")
     private void sleep(CallbackInfo info) {
         if (config.general.randomiseOrigins) {
-            if (config.other.sleepRandomisesOrigin) {
+            if (config.other.sleepRandomisesOrigin && player.isSleepingLongEnough()) {
                 ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
                     player.sendSystemMessage(MessageUtils.getMessage(SLEEPS_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("sleepsUntilRandomise", player)));
