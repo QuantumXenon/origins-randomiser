@@ -69,8 +69,6 @@ public class OriginsRandomiserEvents {
                         OriginUtils.randomOrigin(Reason.DEATH, player);
                     }
                 }
-            } else {
-                player.sendSystemMessage(MessageUtils.getMessage(RANDOMISER_DISABLED));
             }
         }
     }
