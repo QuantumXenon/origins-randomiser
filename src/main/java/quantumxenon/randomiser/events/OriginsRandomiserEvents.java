@@ -10,7 +10,7 @@ public class OriginsRandomiserEvents {
     private static final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
 
     public static void firstJoin(ServerPlayerEntity player) {
-        if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
+        if (!ScoreboardUtils.hasScoreboardTag("firstJoin", player)) {
             ScoreboardUtils.createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
             ScoreboardUtils.createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
             ScoreboardUtils.createObjective("uses", config.command.randomiseCommandUses, player);

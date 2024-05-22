@@ -31,7 +31,11 @@ public interface ScoreboardUtils {
         getObjective(player, objective).setScore(getValue(objective, player) + value);
     }
 
-    static boolean noScoreboardTag(String tag, ServerPlayerEntity player) {
-        return !player.getCommandTags().contains(tag);
+    static boolean hasScoreboardTag(String tag, ServerPlayerEntity player) {
+        return player.getCommandTags().contains(tag);
+    }
+
+    static void removeScoreboardTag(String tag, ServerPlayerEntity player) {
+        player.getCommandTags().remove(tag);
     }
 }

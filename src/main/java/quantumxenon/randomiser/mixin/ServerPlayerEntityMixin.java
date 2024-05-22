@@ -1,5 +1,7 @@
 package quantumxenon.randomiser.mixin;
 
+import io.github.apace100.origins.networking.packet.s2c.OpenChooseOriginScreenS2CPacket;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,11 +27,9 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
     private void spawn(CallbackInfo info) {
-        if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
-            player.addCommandTag("firstJoin");
-            if (config.general.randomiseOrigins && config.general.randomiseOnFirstJoin) {
-                OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
-            }
+        if (ScoreboardUtils.hasScoreboardTag("showScreen", player)) {
+            ServerPlayNetworking.send(player, new OpenChooseOriginScreenS2CPacket(false));
+            ScoreboardUtils.removeScoreboardTag("showScreen", player);
         }
     }
 
@@ -41,19 +41,19 @@ public abstract class ServerPlayerEntityMixin {
         if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
             ScoreboardUtils.setValue("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
         }
-        if (config.lives.enableLives && ScoreboardUtils.noScoreboardTag("livesEnabledMessage", player)) {
+        if (config.lives.enableLives && !ScoreboardUtils.hasScoreboardTag("livesEnabledMessage", player)) {
             player.addCommandTag("livesEnabledMessage");
             player.sendMessage(MessageUtils.getMessage(LIVES_ENABLED, config.lives.startingLives));
         }
-        if (config.command.limitCommandUses && ScoreboardUtils.noScoreboardTag("limitUsesMessage", player)) {
+        if (config.command.limitCommandUses && !ScoreboardUtils.hasScoreboardTag("limitUsesMessage", player)) {
             player.addCommandTag("limitUsesMessage");
             player.sendMessage(MessageUtils.getMessage(LIMIT_COMMAND_USES, config.command.randomiseCommandUses));
         }
-        if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.noScoreboardTag("livesMessage", player)) {
+        if (config.lives.livesBetweenRandomises > 1 && !ScoreboardUtils.hasScoreboardTag("livesMessage", player)) {
             player.addCommandTag("livesMessage");
             player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_LIVES, config.lives.livesBetweenRandomises));
         }
-        if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.noScoreboardTag("sleepsMessage", player)) {
+        if (config.other.sleepsBetweenRandomises > 1 && !ScoreboardUtils.hasScoreboardTag("sleepsMessage", player)) {
             player.addCommandTag("sleepsMessage");
             player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_SLEEPS, config.other.sleepsBetweenRandomises));
         }
@@ -80,6 +80,10 @@ public abstract class ServerPlayerEntityMixin {
                     OriginUtils.randomOrigin(Reason.DEATH, player);
                 }
             }
+        } else if (config.other.originScreenOnDeath) {
+            OriginUtils.dropItems(player);
+            OriginUtils.clearOrigins(player);
+            player.addCommandTag("showScreen");
         }
     }
 

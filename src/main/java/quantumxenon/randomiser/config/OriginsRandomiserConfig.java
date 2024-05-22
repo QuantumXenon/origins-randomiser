@@ -31,6 +31,8 @@ public class OriginsRandomiserConfig implements ConfigData {
         public boolean dropExtraInventory = true;
         @ConfigEntry.Gui.Tooltip
         public boolean allowDuplicateOrigins = false;
+        @ConfigEntry.Gui.Tooltip
+        public boolean randomiseAllLayers = false;
     }
 
     public static class Command {
@@ -58,5 +60,7 @@ public class OriginsRandomiserConfig implements ConfigData {
         public boolean sleepRandomisesOrigin = false;
         @ConfigEntry.Gui.Tooltip
         public int sleepsBetweenRandomises = 1;
+        @ConfigEntry.Gui.Tooltip
+        public boolean originScreenOnDeath = false;
     }
 }

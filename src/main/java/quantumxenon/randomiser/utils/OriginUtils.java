@@ -15,42 +15,59 @@ import net.minecraft.util.Identifier;
 import quantumxenon.randomiser.config.OriginsRandomiserConfig;
 import quantumxenon.randomiser.enums.Reason;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public interface OriginUtils {
-    OriginLayer layer = OriginLayers.getLayer(new Identifier("origins", "origin")); // layer = origins:origin
+    OriginLayer baseLayer = OriginLayers.getLayer(new Identifier("origins", "origin")); // layer = origins:origin
     OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
+    Collection<OriginLayer> randomLayers = getRandomLayers();
 
     static void randomOrigin(Reason reason, ServerPlayerEntity player) {
-        if (config.general.dropExtraInventory) {
+        Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
+
+        if (!Objects.equals(currentOrigin, (OriginRegistry.get(new Identifier("origins", "human"))))) { // origin = origins:human
             dropItems(player);
-        }
-        Origin newOrigin = getRandomOrigin(player);
-        setOrigin(player, newOrigin);
-        String originName = getFormattedName(newOrigin);
-        if (config.general.randomiserMessages) {
-            List<ServerPlayerEntity> playerList = player.getServer().getPlayerManager().getPlayerList();
-            for (ServerPlayerEntity serverPlayer : playerList) {
-                serverPlayer.sendMessage(MessageUtils.getMessage(reason, String.valueOf(player.getName()), originName));
-            }
+
+            randomLayers.stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> {
+                Origin newOrigin = getRandomOrigin(player, layer);
+                setOrigin(player, layer, newOrigin);
+                if (layer.equals(baseLayer) && config.general.randomiserMessages) {
+                    List<ServerPlayerEntity> playerList = player.getServer().getPlayerManager().getPlayerList();
+                    for (ServerPlayerEntity serverPlayer : playerList) {
+                        serverPlayer.sendMessage(MessageUtils.getMessage(reason, player.getNameForScoreboard(), getFormattedName(newOrigin)));
+                    }
+                }
+            });
         }
     }
 
-    private static Origin getRandomOrigin(ServerPlayerEntity player) {
-        List<Origin> origins = layer.getRandomOrigins(player).stream().map(OriginRegistry::get).toList();
-        Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
-        Origin newOrigin = origins.get(new Random().nextInt(origins.size()));
+    private static Collection<OriginLayer> getRandomLayers() {
+        if (config.general.randomiseAllLayers) {
+            return OriginLayers.getLayers();
+        } else {
+            return Collections.singletonList(baseLayer);
+        }
+    }
+
+    private static Origin getRandomOrigin(ServerPlayerEntity player, OriginLayer layer) {
+        List<Origin> randomOrigins = layer.getRandomOrigins(player).stream().map(OriginRegistry::get).toList();
+        Origin newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
         if (!config.general.allowDuplicateOrigins) {
+            Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
             while (newOrigin.equals(currentOrigin)) {
-                newOrigin = origins.get(new Random().nextInt(origins.size()));
+                newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
             }
         }
         return newOrigin;
     }
 
-    private static void setOrigin(ServerPlayerEntity player, Origin origin) {
+    private static void setOrigin(ServerPlayerEntity player, OriginLayer layer, Origin origin) {
         ModComponents.ORIGIN.get(player).setOrigin(layer, origin);
+        OriginComponent.sync(player);
+    }
+
+    static void clearOrigins(ServerPlayerEntity player) {
+        randomLayers.stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
         OriginComponent.sync(player);
     }
 
@@ -58,13 +75,15 @@ public interface OriginUtils {
         return Text.translatable(origin.getOrCreateNameTranslationKey()).getString();
     }
 
-    private static void dropItems(ServerPlayerEntity player) {
-        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
-            for (int slot = 0; slot < inventory.size(); slot++) {
-                ItemStack itemStack = inventory.getStack(slot);
-                player.dropItem(itemStack, true, false);
-                inventory.setStack(slot, ItemStack.EMPTY);
-            }
-        });
+    static void dropItems(ServerPlayerEntity player) {
+        if (config.general.dropExtraInventory) {
+            PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
+                for (int slot = 0; slot < inventory.size(); slot++) {
+                    ItemStack itemStack = inventory.getStack(slot);
+                    player.dropItem(itemStack, true, false);
+                    inventory.setStack(slot, ItemStack.EMPTY);
+                }
+            });
+        }
     }
 }
