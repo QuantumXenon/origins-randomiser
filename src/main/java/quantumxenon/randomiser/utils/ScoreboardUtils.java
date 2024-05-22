@@ -1,7 +1,6 @@
 package quantumxenon.randomiser.utils;
 
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ScoreboardScore;
+import net.minecraft.scoreboard.ScoreAccess;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -9,8 +8,8 @@ import static net.minecraft.scoreboard.ScoreboardCriterion.DUMMY;
 import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 
 public interface ScoreboardUtils {
-    private static ScoreboardScore getObjective(ServerPlayerEntity player, String objective) {
-        return (ScoreboardScore) player.getScoreboard().getScore(player, player.getScoreboard().getNullableObjective(objective));
+    private static ScoreAccess getObjective(ServerPlayerEntity player, String objective) {
+        return player.getScoreboard().getOrCreateScore(player, player.getScoreboard().getNullableObjective(objective));
     }
 
     static void createObjective(String objective, int number, ServerPlayerEntity player) {
