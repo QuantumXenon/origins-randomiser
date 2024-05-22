@@ -35,7 +35,7 @@
 	"text.autoconfig.origins-randomiser.option.other.sleepsBetweenRandomises":"sleepsBetweenRandomises",
 	"text.autoconfig.origins-randomiser.option.other.sleepsBetweenRandomises.@Tooltip":"Set the number of sleeps between origin randomisation",
 	"text.autoconfig.origins-randomiser.option.other.showOriginScreenOnDeath":"showOriginScreenOnDeath",
-	"text.autoconfig.origins-randomiser.option.other.showOriginScreenOnDeath.@Tooltip":"Toggle showing the Origin selection screen after death (only works if randomiseOrigins is disabled)",
+	"text.autoconfig.origins-randomiser.option.other.showOriginScreenOnDeath.@Tooltip":"Toggle showing the origin selection screen after death (only works if randomiseOrigins is disabled)",
 	"origins-randomiser.message.command.disabled":"Use of the /randomise command has been disabled.",
 	"origins-randomiser.message.command.limitedUses":"Use of the /randomise command has been limited. You start with %d uses.",
 	"origins-randomiser.message.command.newLives":"%s now has %d lives.",
