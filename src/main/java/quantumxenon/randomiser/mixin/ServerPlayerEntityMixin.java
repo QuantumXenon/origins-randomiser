@@ -80,7 +80,7 @@ public abstract class ServerPlayerEntityMixin {
                     OriginUtils.randomOrigin(Reason.DEATH, player);
                 }
             }
-        } else if (config.other.originScreenOnDeath) {
+        } else if (config.other.showOriginScreenOnDeath) {
             OriginUtils.dropItems(player);
             OriginUtils.clearOrigins(player);
             player.addCommandTag("showScreen");

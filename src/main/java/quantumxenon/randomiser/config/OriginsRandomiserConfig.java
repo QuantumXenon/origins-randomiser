@@ -61,6 +61,6 @@ public class OriginsRandomiserConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public int sleepsBetweenRandomises = 1;
         @ConfigEntry.Gui.Tooltip
-        public boolean originScreenOnDeath = false;
+        public boolean showOriginScreenOnDeath = false;
     }
 }
