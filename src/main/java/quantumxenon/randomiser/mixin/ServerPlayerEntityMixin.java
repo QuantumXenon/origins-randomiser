@@ -35,61 +35,65 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
-        if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
-            ScoreboardUtils.setValue("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
-        }
-        if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
-            ScoreboardUtils.setValue("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
-        }
-        if (config.lives.enableLives && !ScoreboardUtils.hasScoreboardTag("livesEnabledMessage", player)) {
-            player.addCommandTag("livesEnabledMessage");
-            player.sendMessage(MessageUtils.getMessage(LIVES_ENABLED, config.lives.startingLives));
-        }
-        if (config.command.limitCommandUses && !ScoreboardUtils.hasScoreboardTag("limitUsesMessage", player)) {
-            player.addCommandTag("limitUsesMessage");
-            player.sendMessage(MessageUtils.getMessage(LIMIT_COMMAND_USES, config.command.randomiseCommandUses));
-        }
-        if (config.lives.livesBetweenRandomises > 1 && !ScoreboardUtils.hasScoreboardTag("livesMessage", player)) {
-            player.addCommandTag("livesMessage");
-            player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_LIVES, config.lives.livesBetweenRandomises));
-        }
-        if (config.other.sleepsBetweenRandomises > 1 && !ScoreboardUtils.hasScoreboardTag("sleepsMessage", player)) {
-            player.addCommandTag("sleepsMessage");
-            player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_SLEEPS, config.other.sleepsBetweenRandomises));
+        if(!OriginUtils.isHuman(player)) {
+            if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
+                ScoreboardUtils.setValue("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
+            }
+            if (ScoreboardUtils.getValue("sleepsUntilRandomise", player) <= 0) {
+                ScoreboardUtils.setValue("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
+            }
+            if (config.lives.enableLives && !ScoreboardUtils.hasScoreboardTag("livesEnabledMessage", player)) {
+                player.addCommandTag("livesEnabledMessage");
+                player.sendMessage(MessageUtils.getMessage(LIVES_ENABLED, config.lives.startingLives));
+            }
+            if (config.command.limitCommandUses && !ScoreboardUtils.hasScoreboardTag("limitUsesMessage", player)) {
+                player.addCommandTag("limitUsesMessage");
+                player.sendMessage(MessageUtils.getMessage(LIMIT_COMMAND_USES, config.command.randomiseCommandUses));
+            }
+            if (config.lives.livesBetweenRandomises > 1 && !ScoreboardUtils.hasScoreboardTag("livesMessage", player)) {
+                player.addCommandTag("livesMessage");
+                player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_LIVES, config.lives.livesBetweenRandomises));
+            }
+            if (config.other.sleepsBetweenRandomises > 1 && !ScoreboardUtils.hasScoreboardTag("sleepsMessage", player)) {
+                player.addCommandTag("sleepsMessage");
+                player.sendMessage(MessageUtils.getMessage(RANDOM_ORIGIN_AFTER_SLEEPS, config.other.sleepsBetweenRandomises));
+            }
         }
     }
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        if (config.general.randomiseOrigins) {
-            if (config.other.deathRandomisesOrigin) {
-                ScoreboardUtils.changeValue("livesUntilRandomise", -1, player);
-                if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
-                    player.sendMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)));
-                }
-                if (config.lives.enableLives) {
-                    ScoreboardUtils.changeValue("lives", -1, player);
-                    if (ScoreboardUtils.getValue("lives", player) <= 0) {
-                        player.changeGameMode(SPECTATOR);
-                        player.sendMessage(MessageUtils.getMessage(OUT_OF_LIVES));
-                    } else {
-                        player.sendMessage(MessageUtils.getMessage(LIVES_REMAINING, ScoreboardUtils.getValue("lives", player)));
+        if (!OriginUtils.isHuman(player)) {
+            if (config.general.randomiseOrigins) {
+                if (config.other.deathRandomisesOrigin) {
+                    ScoreboardUtils.changeValue("livesUntilRandomise", -1, player);
+                    if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
+                        player.sendMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)));
+                    }
+                    if (config.lives.enableLives) {
+                        ScoreboardUtils.changeValue("lives", -1, player);
+                        if (ScoreboardUtils.getValue("lives", player) <= 0) {
+                            player.changeGameMode(SPECTATOR);
+                            player.sendMessage(MessageUtils.getMessage(OUT_OF_LIVES));
+                        } else {
+                            player.sendMessage(MessageUtils.getMessage(LIVES_REMAINING, ScoreboardUtils.getValue("lives", player)));
+                        }
+                    }
+                    if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
+                        OriginUtils.randomOrigin(Reason.DEATH, player);
                     }
                 }
-                if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
-                    OriginUtils.randomOrigin(Reason.DEATH, player);
-                }
+            } else if (config.other.showOriginScreenOnDeath) {
+                OriginUtils.dropItems(player);
+                OriginUtils.clearOrigins(player);
+                player.addCommandTag("showScreen");
             }
-        } else if (config.other.showOriginScreenOnDeath) {
-            OriginUtils.dropItems(player);
-            OriginUtils.clearOrigins(player);
-            player.addCommandTag("showScreen");
         }
     }
 
     @Inject(at = @At("HEAD"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (config.general.randomiseOrigins) {
+        if (config.general.randomiseOrigins && !OriginUtils.isHuman(player)) {
             if (config.other.sleepRandomisesOrigin && player.canResetTimeBySleeping()) {
                 ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
