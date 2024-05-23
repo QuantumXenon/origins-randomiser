@@ -23,7 +23,7 @@ public interface OriginUtils {
     Collection<OriginLayer> randomLayers = getRandomLayers();
 
     static void randomOrigin(Reason reason, ServerPlayerEntity player) {
-        if (!isHuman(player)) {
+        if (isNotHuman(player)) {
             dropItems(player);
 
             randomLayers.stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> {
@@ -39,9 +39,10 @@ public interface OriginUtils {
         }
     }
 
-    static boolean isHuman(ServerPlayerEntity player) {
+    static boolean isNotHuman(ServerPlayerEntity player) {
         Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
-        return Objects.equals(currentOrigin, (OriginRegistry.get(new Identifier("origins", "human")))); // origin = origins:human
+        Origin humanOrigin = OriginRegistry.get(new Identifier("origins", "human")); // origin = origins:human
+        return !Objects.equals(currentOrigin, humanOrigin);
     }
 
     private static Collection<OriginLayer> getRandomLayers() {

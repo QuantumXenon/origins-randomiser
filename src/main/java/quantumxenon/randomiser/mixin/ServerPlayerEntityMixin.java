@@ -35,7 +35,7 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
-        if(!OriginUtils.isHuman(player)) {
+        if(OriginUtils.isNotHuman(player)) {
             if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
                 ScoreboardUtils.setValue("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
             }
@@ -63,7 +63,7 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("TAIL"), method = "onDeath")
     private void death(CallbackInfo info) {
-        if (!OriginUtils.isHuman(player)) {
+        if (OriginUtils.isNotHuman(player)) {
             if (config.general.randomiseOrigins) {
                 if (config.other.deathRandomisesOrigin) {
                     ScoreboardUtils.changeValue("livesUntilRandomise", -1, player);
@@ -93,7 +93,7 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "wakeUp")
     private void sleep(CallbackInfo info) {
-        if (config.general.randomiseOrigins && !OriginUtils.isHuman(player)) {
+        if (config.general.randomiseOrigins && OriginUtils.isNotHuman(player)) {
             if (config.other.sleepRandomisesOrigin && player.canResetTimeBySleeping()) {
                 ScoreboardUtils.changeValue("sleepsUntilRandomise", -1, player);
                 if (config.other.sleepsBetweenRandomises > 1 && ScoreboardUtils.getValue("sleepsUntilRandomise", player) > 0) {
