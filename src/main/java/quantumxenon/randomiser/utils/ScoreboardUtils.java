@@ -13,7 +13,7 @@ public interface ScoreboardUtils {
     }
 
     static void createObjective(String objective, int number, ServerPlayerEntity player) {
-        if (!player.getScoreboard().playerHasObjective(player.getEntityName(), player.getScoreboard().getNullableObjective(objective))) {
+        if (!player.getScoreboard().getObjectiveNames().contains(objective)) {
             player.getScoreboard().addObjective(objective, DUMMY, Text.of(objective), INTEGER);
             setValue(objective, number, player);
         }

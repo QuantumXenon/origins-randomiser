@@ -25,12 +25,7 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("TAIL"), method = "onSpawn")
     private void spawn(CallbackInfo info) {
-        if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
-            player.addCommandTag("firstJoin");
-            if (config.general.randomiseOrigins && config.general.randomiseOnFirstJoin) {
-                OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
-            }
-        }
+        // TODO: Port from 1.20.4
     }
 
     @Inject(at = @At("TAIL"), method = "tick")
