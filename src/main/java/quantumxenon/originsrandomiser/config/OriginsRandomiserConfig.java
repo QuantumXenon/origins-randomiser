@@ -1,4 +1,4 @@
-package quantumxenon.randomiser.config;
+package quantumxenon.originsrandomiser.config;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -14,7 +14,9 @@ public class OriginsRandomiserConfig implements ConfigData {
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public Lives lives = new Lives();
     @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-    public Other other = new Other();
+    public Sleep sleep = new Sleep();
+    @ConfigEntry.Gui.CollapsibleObject()
+    public Advanced advanced = new Advanced();
 
     public static OriginsRandomiserConfig getConfig() {
         return AutoConfig.getConfigHolder(OriginsRandomiserConfig.class).getConfig();
@@ -24,13 +26,7 @@ public class OriginsRandomiserConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean randomiseOrigins = true;
         @ConfigEntry.Gui.Tooltip
-        public boolean randomiseOnFirstJoin = true;
-        @ConfigEntry.Gui.Tooltip
         public boolean randomiserMessages = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean dropExtraInventory = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean allowDuplicateOrigins = false;
         @ConfigEntry.Gui.Tooltip
         public boolean randomiseAllLayers = false;
     }
@@ -53,13 +49,20 @@ public class OriginsRandomiserConfig implements ConfigData {
         public int livesBetweenRandomises = 1;
     }
 
-    public static class Other {
-        @ConfigEntry.Gui.Tooltip
-        public boolean deathRandomisesOrigin = true;
+    public static class Sleep {
         @ConfigEntry.Gui.Tooltip
         public boolean sleepRandomisesOrigin = false;
         @ConfigEntry.Gui.Tooltip
         public int sleepsBetweenRandomises = 1;
+    }
+
+    public static class Advanced {
+        @ConfigEntry.Gui.Tooltip
+        public boolean randomiseOnFirstJoin = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean allowDuplicateOrigins = false;
+        @ConfigEntry.Gui.Tooltip
+        public boolean deathRandomisesOrigin = true;
         @ConfigEntry.Gui.Tooltip
         public boolean showOriginScreenOnDeath = false;
     }

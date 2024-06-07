@@ -1,11 +1,11 @@
-package quantumxenon.randomiser.utils;
+package quantumxenon.originsrandomiser.util;
 
 import net.minecraft.text.Text;
-import quantumxenon.randomiser.enums.Message;
-import quantumxenon.randomiser.enums.Reason;
+import quantumxenon.originsrandomiser.enums.Message;
+import quantumxenon.originsrandomiser.enums.Reason;
 
-public interface MessageUtils {
-    static Text getMessage(Message message) {
+public class OriginsRandomiserMessages {
+    public static Text getMessage(Message message) {
         switch (message) {
             case COMMAND_DISABLED -> {
                 return Text.translatable("origins-randomiser.message.command.disabled");
@@ -32,7 +32,7 @@ public interface MessageUtils {
         return null;
     }
 
-    static Text getMessage(Message message, int value) {
+    public static Text getMessage(Message message, int value) {
         switch (message) {
             case LIMIT_COMMAND_USES -> {
                 return Text.translatable("origins-randomiser.message.command.limitedUses", value);
@@ -62,7 +62,7 @@ public interface MessageUtils {
         return null;
     }
 
-    static Text getMessage(Message message, String name, int value) {
+    public static Text getMessage(Message message, String name, int value) {
         switch (message) {
             case NEW_LIVES -> {
                 return Text.translatable("origins-randomiser.message.command.newLives", name, value);
@@ -74,7 +74,7 @@ public interface MessageUtils {
         return null;
     }
 
-    static Text getMessage(Reason reason, String player, String origin) {
+    public static Text getMessage(Reason reason, String player, String origin) {
         switch (reason) {
             case DEATH -> {
                 return Text.translatable("origins-randomiser.reason.death", player, origin);
