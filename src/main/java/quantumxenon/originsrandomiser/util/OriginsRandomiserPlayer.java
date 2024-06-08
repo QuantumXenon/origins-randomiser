@@ -19,7 +19,10 @@ import quantumxenon.originsrandomiser.config.OriginsRandomiserConfig;
 import quantumxenon.originsrandomiser.enums.Message;
 import quantumxenon.originsrandomiser.enums.Reason;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Stream;
 
 import static net.minecraft.scoreboard.ScoreboardCriterion.DUMMY;
 import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
@@ -91,7 +94,7 @@ public class OriginsRandomiserPlayer {
     public void randomiseOrigin(Reason reason) {
         if (config.general.randomiseOrigins && this.isNotHuman()) {
             this.dropItems();
-            this.getRandomLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> {
+            this.getRandomLayers().forEach(layer -> {
                 Origin newOrigin = this.getRandomOrigin(layer);
                 this.updateOrigin(layer, newOrigin);
                 if (layer.equals(baseLayer) && config.general.randomiserMessages) {
@@ -110,9 +113,8 @@ public class OriginsRandomiserPlayer {
         return !Objects.equals(currentOrigin, humanOrigin);
     }
 
-    /* Modified from io/github/apace100/origins/content/OrbOfOriginItem */
     public void clearOrigins() {
-        this.getRandomLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
+        this.getRandomLayers().forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
         OriginComponent.sync(player);
     }
 
@@ -124,11 +126,11 @@ public class OriginsRandomiserPlayer {
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
     }
 
-    private Collection<OriginLayer> getRandomLayers() {
+    private Stream<OriginLayer> getRandomLayers() {
         if (config.general.randomiseAllLayers) {
-            return OriginLayers.getLayers();
+            return OriginLayers.getLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed);
         } else {
-            return Collections.singletonList(baseLayer);
+            return Stream.of(baseLayer);
         }
     }
 
