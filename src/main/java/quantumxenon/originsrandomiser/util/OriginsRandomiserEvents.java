@@ -1,12 +1,15 @@
 package quantumxenon.originsrandomiser.util;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
 import quantumxenon.originsrandomiser.config.OriginsRandomiserConfig;
 import quantumxenon.originsrandomiser.enums.Reason;
 
 public class OriginsRandomiserEvents {
     private static final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
 
-    public static void join(OriginsRandomiserPlayer player){
+    public static void join(ServerPlayerEntity serverPlayer){
+        OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
         if (!player.hasScoreboardTag("firstJoin")) {
             player.createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
             player.createObjective("sleepsUntilRandomise", config.sleep.sleepsBetweenRandomises);
@@ -18,7 +21,8 @@ public class OriginsRandomiserEvents {
         }
     }
 
-    public static void respawn(OriginsRandomiserPlayer player) {
+    public static void respawn(ServerPlayerEntity serverPlayer) {
+        OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
         if (player.hasScoreboardTag("showOriginsScreen")) {
             player.openOriginsScreen();
             player.removeScoreboardTag("showOriginsScreen");

@@ -11,7 +11,6 @@ import quantumxenon.originsrandomiser.command.SetCommand;
 import quantumxenon.originsrandomiser.command.ToggleCommand;
 import quantumxenon.originsrandomiser.config.OriginsRandomiserConfig;
 import quantumxenon.originsrandomiser.util.OriginsRandomiserEvents;
-import quantumxenon.originsrandomiser.util.OriginsRandomiserPlayer;
 
 public class OriginsRandomiser implements ModInitializer {
     public void onInitialize() {
@@ -32,14 +31,7 @@ public class OriginsRandomiser implements ModInitializer {
     }
 
     private void registerEvents() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(handler.getPlayer());
-            OriginsRandomiserEvents.join(player);
-
-        });
-        ServerPlayerEvents.AFTER_RESPAWN.register((handler, sender, server) -> {
-            OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(handler);
-            OriginsRandomiserEvents.respawn(player);
-        });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> OriginsRandomiserEvents.join(handler.getPlayer()));
+        ServerPlayerEvents.AFTER_RESPAWN.register((handler, sender, server) -> OriginsRandomiserEvents.respawn(handler));
     }
 }
