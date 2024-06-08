@@ -1,6 +1,5 @@
 package quantumxenon.originsrandomiser.util;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import quantumxenon.originsrandomiser.config.OriginsRandomiserConfig;
 import quantumxenon.originsrandomiser.enums.Reason;
@@ -24,6 +23,7 @@ public class OriginsRandomiserEvents {
     public static void respawn(ServerPlayerEntity serverPlayer) {
         OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
         if (player.hasScoreboardTag("showOriginsScreen")) {
+            player.clearOrigins();
             player.openOriginsScreen();
             player.removeScoreboardTag("showOriginsScreen");
         }

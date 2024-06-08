@@ -17,10 +17,6 @@ public abstract class ServerPlayerEntityMixin {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(((ServerPlayerEntity) (Object) this));
 
-    private ServerPlayerEntityMixin() {
-        super();
-    }
-
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
         if (player.getObjectiveValue("livesUntilRandomise") <= 0) {
@@ -29,20 +25,20 @@ public abstract class ServerPlayerEntityMixin {
         if (player.getObjectiveValue("sleepsUntilRandomise") <= 0) {
             player.setObjectiveValue("sleepsUntilRandomise", config.sleep.sleepsBetweenRandomises);
         }
-        if (config.lives.enableLives && !player.hasScoreboardTag("livesEnabledMessage")) {
-            player.addScoreboardTag("livesEnabledMessage");
-            player.getAndSendMessage(LIVES_ENABLED, config.lives.startingLives);
-        }
-        if (config.command.limitCommandUses && !player.hasScoreboardTag("limitUsesMessage")) {
-            player.addScoreboardTag("limitUsesMessage");
+        if (config.command.limitCommandUses && !player.hasScoreboardTag("limitCommandUsesMessage")) {
+            player.addScoreboardTag("limitCommandUsesMessage");
             player.getAndSendMessage(LIMIT_COMMAND_USES, config.command.randomiseCommandUses);
         }
-        if (config.lives.livesBetweenRandomises > 1 && !player.hasScoreboardTag("livesMessage")) {
-            player.addScoreboardTag("livesMessage");
+        if (config.lives.enableLives && !player.hasScoreboardTag("enableLivesMessage")) {
+            player.addScoreboardTag("enableLivesMessage");
+            player.getAndSendMessage(LIVES_ENABLED, config.lives.startingLives);
+        }
+        if (config.lives.livesBetweenRandomises > 1 && !player.hasScoreboardTag("livesBetweenRandomisesMessage")) {
+            player.addScoreboardTag("livesBetweenRandomisesMessage");
             player.getAndSendMessage(RANDOM_ORIGIN_AFTER_LIVES, config.lives.livesBetweenRandomises);
         }
-        if (config.sleep.sleepsBetweenRandomises > 1 && !player.hasScoreboardTag("sleepsMessage")) {
-            player.addScoreboardTag("sleepsMessage");
+        if (config.sleep.sleepsBetweenRandomises > 1 && !player.hasScoreboardTag("sleepsBetweenRandomisesMessage")) {
+            player.addScoreboardTag("sleepsBetweenRandomisesMessage");
             player.getAndSendMessage(RANDOM_ORIGIN_AFTER_SLEEPS, config.sleep.sleepsBetweenRandomises);
         }
     }
@@ -69,7 +65,6 @@ public abstract class ServerPlayerEntityMixin {
                 }
             }
         } else if (config.advanced.showOriginScreenOnDeath && player.isNotHuman()) {
-            player.clearOrigins();
             player.addScoreboardTag("showOriginsScreen");
         }
     }

@@ -96,7 +96,8 @@ public class OriginsRandomiserPlayer {
             this.dropItems();
             this.getRandomLayers().forEach(layer -> {
                 Origin newOrigin = this.getRandomOrigin(layer);
-                this.updateOrigin(layer, newOrigin);
+                ModComponents.ORIGIN.get(player).setOrigin(layer, newOrigin);
+                OriginComponent.sync(player);
                 if (layer.equals(baseLayer) && config.general.randomiserMessages) {
                     List<ServerPlayerEntity> playerList = player.getServer().getPlayerManager().getPlayerList();
                     for (ServerPlayerEntity serverPlayer : playerList) {
@@ -133,11 +134,6 @@ public class OriginsRandomiserPlayer {
         } else {
             return Stream.of(baseLayer);
         }
-    }
-
-    private void updateOrigin(OriginLayer layer, Origin origin) {
-        ModComponents.ORIGIN.get(player).setOrigin(layer, origin);
-        OriginComponent.sync(player);
     }
 
     private String formatOriginName(Origin origin) {
