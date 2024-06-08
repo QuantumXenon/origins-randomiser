@@ -114,6 +114,7 @@ public class OriginsRandomiserPlayer {
     }
 
     public void clearOrigins() {
+        this.dropItems();
         this.getRandomLayers().forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
         OriginComponent.sync(player);
     }

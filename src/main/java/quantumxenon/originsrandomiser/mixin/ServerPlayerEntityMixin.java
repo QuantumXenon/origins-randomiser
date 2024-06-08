@@ -69,7 +69,6 @@ public abstract class ServerPlayerEntityMixin {
                 }
             }
         } else if (config.advanced.showOriginScreenOnDeath && player.isNotHuman()) {
-            player.dropItems();
             player.clearOrigins();
             player.addScoreboardTag("showOriginsScreen");
         }
