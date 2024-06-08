@@ -21,14 +21,6 @@ public abstract class ServerPlayerEntityMixin {
         super();
     }
 
-    @Inject(at = @At("TAIL"), method = "onSpawn")
-    private void spawn(CallbackInfo info) {
-        if (player.hasScoreboardTag("showOriginsScreen")) {
-            player.openOriginsScreen();
-            player.removeScoreboardTag("showOriginsScreen");
-        }
-    }
-
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
         if (player.getObjectiveValue("livesUntilRandomise") <= 0) {
@@ -76,8 +68,9 @@ public abstract class ServerPlayerEntityMixin {
                     player.randomiseOrigin(Reason.DEATH);
                 }
             }
-        } else if (config.advanced.showOriginScreenOnDeath) {
+        } else if (config.advanced.showOriginScreenOnDeath && player.isNotHuman()) {
             player.dropItems();
+            player.clearOrigins();
             player.addScoreboardTag("showOriginsScreen");
         }
     }

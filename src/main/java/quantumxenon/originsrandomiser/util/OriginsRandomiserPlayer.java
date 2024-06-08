@@ -118,6 +118,12 @@ public class OriginsRandomiserPlayer {
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
     }
 
+    /* Modified from io/github/apace100/origins/content/OrbOfOriginItem */
+    public void clearOrigins() {
+        this.getRandomLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
+        OriginComponent.sync(player);
+    }
+
     private Collection<OriginLayer> getRandomLayers() {
         if (config.general.randomiseAllLayers) {
             return OriginLayers.getLayers();
