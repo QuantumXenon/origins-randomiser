@@ -33,8 +33,6 @@
 		"modmenu":{
 			"links":{
 				"modmenu.crowdin":"https://crowdin.com/project/origins-randomiser",
-				"modmenu.curseforge":"https://www.curseforge.com/minecraft/mc-mods/origins-randomiser",
-				"modmenu.modrinth":"https://modrinth.com/mod/origins-randomiser",
 				"modmenu.wiki":"https://github.com/QuantumXenon/origins-randomiser/wiki"
 			}
 		}
