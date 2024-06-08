@@ -2,10 +2,10 @@ package quantumxenon.originsrandomiser.command;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
-import quantumxenon.originsrandomiser.util.OriginsRandomiserMessages;
-import quantumxenon.originsrandomiser.util.OriginsRandomiserPlayer;
 import quantumxenon.originsrandomiser.config.OriginsRandomiserConfig;
 import quantumxenon.originsrandomiser.enums.Reason;
+import quantumxenon.originsrandomiser.util.OriginsRandomiserMessages;
+import quantumxenon.originsrandomiser.util.OriginsRandomiserPlayer;
 
 import static net.minecraft.server.command.CommandManager.literal;
 import static quantumxenon.originsrandomiser.enums.Message.*;
@@ -24,16 +24,20 @@ public class RandomiseCommand {
         OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(source.getPlayer());  // TODO: Check what happens if this is run from the console
         if (config.general.randomiseOrigins) {
             if (config.command.randomiseCommand) {
-                if (config.command.limitCommandUses) {
-                    if (player.getObjectiveValue("uses") > 0) {
-                        player.randomiseOrigin(Reason.COMMAND);
-                        player.changeObjectiveValue("uses", -1);
-                        source.sendMessage(OriginsRandomiserMessages.getMessage(USES_LEFT, player.getObjectiveValue("uses")));
+                if (player.isNotHuman()) {
+                    if (config.command.limitCommandUses) {
+                        if (player.getObjectiveValue("uses") > 0) {
+                            player.randomiseOrigin(Reason.COMMAND);
+                            player.changeObjectiveValue("uses", -1);
+                            source.sendMessage(OriginsRandomiserMessages.getMessage(USES_LEFT, player.getObjectiveValue("uses")));
+                        } else {
+                            source.sendError(OriginsRandomiserMessages.getMessage(OUT_OF_USES));
+                        }
                     } else {
-                        source.sendError(OriginsRandomiserMessages.getMessage(OUT_OF_USES));
+                        player.randomiseOrigin(Reason.COMMAND);
                     }
                 } else {
-                    player.randomiseOrigin(Reason.COMMAND);
+                    source.sendError(OriginsRandomiserMessages.getMessage(IS_HUMAN));
                 }
             } else {
                 source.sendError(OriginsRandomiserMessages.getMessage(COMMAND_DISABLED));

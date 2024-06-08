@@ -37,6 +37,7 @@
 	"text.autoconfig.origins-randomiser.option.advanced.showOriginScreenOnDeath.@Tooltip":"Toggle showing the origin selection screen after death (only works if randomiseOrigins = false)",
 
 	"origins-randomiser.message.command.disabled":"Use of the /randomise command has been disabled.",
+	"origins-randomiser.message.command.isHuman":"As a human, you are not able to use the /randomise command.",
 	"origins-randomiser.message.command.limitedUses":"Use of the /randomise command has been limited. You start with %d uses.",
 	"origins-randomiser.message.command.newLives":"%s now has %d lives.",
 	"origins-randomiser.message.command.newUses":"%s now has %d /randomise uses.",

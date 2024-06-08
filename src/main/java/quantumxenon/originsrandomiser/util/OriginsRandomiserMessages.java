@@ -10,6 +10,9 @@ public class OriginsRandomiserMessages {
             case COMMAND_DISABLED -> {
                 return Text.translatable("origins-randomiser.message.command.disabled");
             }
+            case IS_HUMAN -> {
+                return Text.translatable("origins-randomiser.message.command.isHuman");
+            }
             case RANDOMISER_DISABLED -> {
                 return Text.translatable("origins-randomiser.message.disabled");
             }
