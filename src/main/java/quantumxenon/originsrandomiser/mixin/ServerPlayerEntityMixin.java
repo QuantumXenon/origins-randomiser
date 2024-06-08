@@ -1,6 +1,7 @@
 package quantumxenon.originsrandomiser.mixin;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -9,7 +10,6 @@ import quantumxenon.originsrandomiser.config.OriginsRandomiserConfig;
 import quantumxenon.originsrandomiser.enums.Reason;
 import quantumxenon.originsrandomiser.util.OriginsRandomiserPlayer;
 
-import static net.minecraft.world.GameMode.SPECTATOR;
 import static quantumxenon.originsrandomiser.enums.Message.*;
 
 @Mixin(ServerPlayerEntity.class)
@@ -58,7 +58,7 @@ public abstract class ServerPlayerEntityMixin {
                 if (config.lives.enableLives) {
                     player.changeObjectiveValue("lives", -1);
                     if (player.getObjectiveValue("lives") <= 0) {
-                        player.setGameMode(SPECTATOR);
+                        player.setGameMode(GameMode.SPECTATOR);
                         player.getAndSendMessage(OUT_OF_LIVES);
                     } else {
                         player.getAndSendMessage(LIVES_REMAINING, player.getObjectiveValue("lives"));
