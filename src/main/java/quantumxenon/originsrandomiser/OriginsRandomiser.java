@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import quantumxenon.originsrandomiser.command.ChangeCommand;
 import quantumxenon.originsrandomiser.command.RandomiseCommand;

@@ -110,18 +110,18 @@ public class OriginsRandomiserPlayer {
         return !Objects.equals(currentOrigin, humanOrigin);
     }
 
+    /* Modified from io/github/apace100/origins/content/OrbOfOriginItem */
+    public void clearOrigins() {
+        this.getRandomLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
+        OriginComponent.sync(player);
+    }
+
     public void openOriginsScreen() {
         ServerPlayNetworking.send(player, new OpenChooseOriginScreenS2CPacket(false));
     }
 
     public void dropItems() { // TODO: Check if still needed
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
-    }
-
-    /* Modified from io/github/apace100/origins/content/OrbOfOriginItem */
-    public void clearOrigins() {
-        this.getRandomLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed).forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
-        OriginComponent.sync(player);
     }
 
     private Collection<OriginLayer> getRandomLayers() {
