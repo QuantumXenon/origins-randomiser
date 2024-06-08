@@ -6,7 +6,7 @@ license = "MIT"
 modId = "origins_randomiser"
 version = "${version}"
 displayName = "Origins Randomiser"
-description = "Highly configurable mod that assigns you a random origin every time you die."
+description = "Highly configurable mod to randomly assign you an origin on death, with many other options, such as lives."
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/origins-randomiser"
 issueTrackerURL = "https://github.com/QuantumXenon/origins-randomiser/issues"
 
@@ -16,7 +16,7 @@ logoFile = "icon.png"
 [[dependencies.origins_randomiser]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,)"
+versionRange = "[1.20.1]"
 
 [[dependencies.origins_randomiser]]
 modId = "origins"
