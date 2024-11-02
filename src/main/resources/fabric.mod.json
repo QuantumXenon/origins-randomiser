@@ -15,10 +15,10 @@
 	"icon":"assets/origins-randomiser/icon.png",
 	"entrypoints":{
 		"main":[
-			"quantumxenon.randomiser.OriginsRandomiser"
+			"quantumxenon.originsrandomiser.OriginsRandomiser"
 		],
 		"modmenu":[
-			"quantumxenon.randomiser.config.ModMenuIntegration"
+			"quantumxenon.originsrandomiser.config.ModMenuIntegration"
 		]
 	},
 	"mixins":[
