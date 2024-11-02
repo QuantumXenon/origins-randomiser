@@ -1,15 +1,18 @@
-package quantumxenon.origins_randomiser.utils;
+package quantumxenon.origins_randomiser.util;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import quantumxenon.origins_randomiser.enums.Message;
 import quantumxenon.origins_randomiser.enums.Reason;
 
-public interface MessageUtils {
-    static MutableComponent getMessage(Message message) {
+public class OriginsRandomiserMessages {
+    public static MutableComponent getMessage(Message message) {
         switch (message) {
             case COMMAND_DISABLED -> {
                 return Component.translatable("origins-randomiser.message.command.disabled");
+            }
+            case IS_HUMAN -> {
+                return Component.translatable("origins-randomiser.message.command.isHuman");
             }
             case RANDOMISER_DISABLED -> {
                 return Component.translatable("origins-randomiser.message.disabled");
@@ -33,7 +36,7 @@ public interface MessageUtils {
         return null;
     }
 
-    static MutableComponent getMessage(Message message, int value) {
+    public static MutableComponent  getMessage(Message message, int value) {
         switch (message) {
             case LIMIT_COMMAND_USES -> {
                 return Component.translatable("origins-randomiser.message.command.limitedUses", value);
@@ -63,7 +66,7 @@ public interface MessageUtils {
         return null;
     }
 
-    static MutableComponent getMessage(Message message, String name, int value) {
+    public static MutableComponent  getMessage(Message message, String name, int value) {
         switch (message) {
             case NEW_LIVES -> {
                 return Component.translatable("origins-randomiser.message.command.newLives", name, value);
@@ -75,7 +78,7 @@ public interface MessageUtils {
         return null;
     }
 
-    static MutableComponent getMessage(Reason reason, String player, String origin) {
+    public static MutableComponent  getMessage(Reason reason, String player, String origin) {
         switch (reason) {
             case DEATH -> {
                 return Component.translatable("origins-randomiser.reason.death", player, origin);

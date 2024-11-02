@@ -12,9 +12,7 @@ import quantumxenon.origins_randomiser.command.SetCommand;
 import quantumxenon.origins_randomiser.command.ToggleCommand;
 import quantumxenon.origins_randomiser.config.OriginsRandomiserConfig;
 import quantumxenon.origins_randomiser.enums.Reason;
-import quantumxenon.origins_randomiser.utils.MessageUtils;
-import quantumxenon.origins_randomiser.utils.OriginUtils;
-import quantumxenon.origins_randomiser.utils.ScoreboardUtils;
+import quantumxenon.origins_randomiser.util.OriginsRandomiserPlayer;
 
 import static net.minecraft.world.level.GameType.SPECTATOR;
 import static quantumxenon.origins_randomiser.enums.Message.*;
@@ -33,15 +31,15 @@ public class OriginsRandomiserEvents {
 
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            if (ScoreboardUtils.noScoreboardTag("firstJoin", player)) {
-                player.addTag("firstJoin");
-                ScoreboardUtils.createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises, player);
-                ScoreboardUtils.createObjective("sleepsUntilRandomise", config.other.sleepsBetweenRandomises, player);
-                ScoreboardUtils.createObjective("uses", config.command.randomiseCommandUses, player);
-                ScoreboardUtils.createObjective("lives", config.lives.startingLives, player);
-                if (config.general.randomiseOrigins && config.general.randomiseOnFirstJoin) {
-                    OriginUtils.randomOrigin(Reason.FIRST_JOIN, player);
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
+            if (!player.hasScoreboardTag("firstJoin")) {
+                player.createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
+                player.createObjective("sleepsUntilRandomise", config.sleep.sleepsBetweenRandomises);
+                player.createObjective("uses", config.command.randomiseCommandUses);
+                player.createObjective("lives", config.lives.startingLives);
+                if (config.advanced.randomiseOnFirstJoin) {
+                    player.randomiseOrigin(Reason.FIRST_JOIN);
                 }
             }
         }
@@ -49,26 +47,30 @@ public class OriginsRandomiserEvents {
 
     @SubscribeEvent
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && !event.isEndConquered()) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
             if (config.general.randomiseOrigins) {
-                if (config.other.deathRandomisesOrigin) {
-                    ScoreboardUtils.changeValue("livesUntilRandomise", -1, player);
-                    if (config.lives.livesBetweenRandomises > 1 && ScoreboardUtils.getValue("livesUntilRandomise", player) > 0) {
-                        player.sendSystemMessage(MessageUtils.getMessage(LIVES_UNTIL_NEXT_RANDOMISE, ScoreboardUtils.getValue("livesUntilRandomise", player)));
+                if (config.advanced.deathRandomisesOrigin) {
+                    player.changeObjectiveValue("livesUntilRandomise", -1);
+                    if (config.lives.livesBetweenRandomises > 1 && player.getObjectiveValue("livesUntilRandomise") > 0) {
+                        player.getAndSendMessage(LIVES_UNTIL_NEXT_RANDOMISE, player.getObjectiveValue("livesUntilRandomise"));
                     }
                     if (config.lives.enableLives) {
-                        ScoreboardUtils.changeValue("lives", -1, player);
-                        if (ScoreboardUtils.getValue("lives", player) <= 0) {
+                        player.changeObjectiveValue("lives", -1);
+                        if (player.getObjectiveValue("lives") <= 0) {
                             player.setGameMode(SPECTATOR);
-                            player.sendSystemMessage(MessageUtils.getMessage(OUT_OF_LIVES));
+                            player.getAndSendMessage(OUT_OF_LIVES);
                         } else {
-                            player.sendSystemMessage(MessageUtils.getMessage(LIVES_REMAINING, ScoreboardUtils.getValue("lives", player)));
+                            player.getAndSendMessage(LIVES_REMAINING, player.getObjectiveValue("lives"));
                         }
                     }
-                    if (ScoreboardUtils.getValue("livesUntilRandomise", player) <= 0) {
-                        OriginUtils.randomOrigin(Reason.DEATH, player);
+                    if (player.getObjectiveValue("livesUntilRandomise") <= 0) {
+                        player.randomiseOrigin(Reason.DEATH);
                     }
                 }
+            } else if (config.advanced.showOriginScreenOnDeath && player.isNotHuman()) {
+                player.clearOrigins();
+                player.openOriginsScreen();
             }
         }
     }
