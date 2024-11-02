@@ -128,7 +128,7 @@ public class OriginsRandomiserPlayer {
         ServerPlayNetworking.send(player, ModPackets.OPEN_ORIGIN_SCREEN, buffer);
     }
 
-    public void dropItems() { // TODO: Check if still needed
+    public void dropItems() {
         PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
     }
 
