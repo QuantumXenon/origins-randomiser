@@ -3,7 +3,7 @@
 	"id":"origins-randomiser",
 	"name":"Origins Randomiser",
 	"version":"${version}",
-	"description":"Highly configurable mod that assigns you a random origin every time you die.",
+	"description":"Highly configurable mod to randomly assign you an origin on death, with many other options, such as lives.",
 	"license":"MIT",
 	"authors":[
 		"TheQuantumXenon"
@@ -15,18 +15,26 @@
 	"icon":"assets/origins-randomiser/icon.png",
 	"entrypoints":{
 		"main":[
-			"quantumxenon.randomiser.OriginsRandomiser"
+			"quantumxenon.originsrandomiser.OriginsRandomiser"
 		],
 		"modmenu":[
-			"quantumxenon.randomiser.config.ModMenuIntegration"
+			"quantumxenon.originsrandomiser.config.ModMenuIntegration"
 		]
 	},
 	"mixins":[
 		"origins-randomiser.mixins.json"
 	],
 	"depends":{
-		"minecraft":"1.19.3",
-		"fabric-api":"*",
+		"minecraft":">=1.19.0 <=1.19.3",
+		"fabric":"*",
 		"origins":"*"
+	},
+	"custom":{
+		"modmenu":{
+			"links":{
+				"modmenu.crowdin":"https://crowdin.com/project/origins-randomiser",
+				"modmenu.wiki":"https://github.com/QuantumXenon/origins-randomiser/wiki"
+			}
+		}
 	}
 }
