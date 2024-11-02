@@ -1,13 +1,13 @@
 package quantumxenon.originsrandomiser.util;
 
 import io.github.apace100.apoli.component.PowerHolderComponent;
-import io.github.apace100.apoli.power.InventoryPower;
+import io.github.apace100.apoli.power.type.InventoryPowerType;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.networking.packet.s2c.OpenChooseOriginScreenS2CPacket;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
-import io.github.apace100.origins.origin.OriginLayers;
-import io.github.apace100.origins.origin.OriginRegistry;
+import io.github.apace100.origins.origin.OriginLayerManager;
+import io.github.apace100.origins.origin.OriginManager;
 import io.github.apace100.origins.registry.ModComponents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.scoreboard.ScoreAccess;
@@ -29,7 +29,7 @@ import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 
 public class OriginsRandomiserPlayer {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
-    private final OriginLayer baseLayer = OriginLayers.getLayer(new Identifier("origins:origin")); // layer = origins:origin
+    private final OriginLayer baseLayer = OriginLayerManager.get(Identifier.of("origins:origin")); // layer = origins:origin
     private final ServerPlayerEntity player;
 
     public OriginsRandomiserPlayer(ServerPlayerEntity serverPlayerEntity) {
@@ -110,7 +110,7 @@ public class OriginsRandomiserPlayer {
 
     public boolean isNotHuman() {
         Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
-        Origin humanOrigin = OriginRegistry.get(new Identifier("origins:human")); // origin = origins:human
+        Origin humanOrigin = OriginManager.get(Identifier.of("origins:human")); // origin = origins:human
         return !Objects.equals(currentOrigin, humanOrigin);
     }
 
@@ -125,24 +125,24 @@ public class OriginsRandomiserPlayer {
     }
 
     public void dropItems() {
-        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
+        PowerHolderComponent.getPowerTypes(player, InventoryPowerType.class).forEach(InventoryPowerType::dropItemsOnLost);
     }
 
     private Stream<OriginLayer> getRandomLayers() {
         if (config.general.randomiseAllLayers) {
-            return OriginLayers.getLayers().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed);
+            return OriginLayerManager.values().stream().filter(OriginLayer::isEnabled).filter(OriginLayer::isRandomAllowed);
         } else {
             return Stream.of(baseLayer);
         }
     }
 
     private String formatOriginName(Origin origin) {
-        return Text.translatable(origin.getOrCreateNameTranslationKey()).getString();
+        return origin.getName().toString();
     }
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
     private Origin getRandomOrigin(OriginLayer layer) {
-        List<Origin> randomOrigins = layer.getRandomOrigins(player).stream().map(OriginRegistry::get).toList();
+        List<Origin> randomOrigins = layer.getRandomOrigins(player).stream().map(OriginManager::get).toList();
         Origin newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
         if (!config.advanced.allowDuplicateOrigins) {
             Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
