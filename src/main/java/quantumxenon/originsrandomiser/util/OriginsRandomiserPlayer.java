@@ -43,15 +43,15 @@ public class OriginsRandomiserPlayer {
     }
 
     public void addScoreboardTag(String tag) {
-        player.addScoreboardTag(tag);
+        player.addCommandTag(tag);
     }
 
     public boolean hasScoreboardTag(String tag) {
-        return player.getScoreboardTags().contains(tag);
+        return player.getCommandTags().contains(tag);
     }
 
     public void removeScoreboardTag(String tag) {
-        player.getScoreboardTags().remove(tag);
+        player.getCommandTags().remove(tag);
     }
 
     private ScoreboardPlayerScore getObjective(String objective) {
