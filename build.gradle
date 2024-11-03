@@ -7,7 +7,7 @@ version = "${project.mod_version}+${project.minecraft_version}-forge"
 archivesBaseName = "origins-randomiser"
 
 repositories {
-    maven { url = "https://maven.ladysnake.org/releases/" }
+    maven { url = "https://cursemaven.com/" }
     maven { url = "https://maven.shedaniel.me/" }
 }
 
@@ -17,7 +17,7 @@ minecraft {
 
 dependencies {
     minecraft("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}")
-    implementation("io.github.edwinmindcraft:origins-forge:${origins_version}")
+    implementation("curse.maven:origins-474438:${origins_version}")
     implementation("me.shedaniel.cloth:cloth-config-forge:${project.cloth_version}")
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
