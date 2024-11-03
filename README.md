@@ -1,6 +1,6 @@
 <a href="https://www.curseforge.com/minecraft/mc-mods/origins-randomiser"><img src="https://www.bisecthosting.com/images/CF/Origins_Randomiser/BH_NU_HEADER.png"/><a/>
   
-Origins Randomiser is a highly configurable mod that assigns you a random origin every time you die.
+Origins Randomiser is a highly configurable mod to randomly assign you an origin on death, with many other options, such as lives.
 
 ## Config & Commands
 - More information about the config options and commands can be found on the [wiki](https://github.com/QuantumXenon/origins-randomiser/wiki).
