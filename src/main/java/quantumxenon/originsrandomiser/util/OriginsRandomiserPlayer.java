@@ -117,7 +117,6 @@ public class OriginsRandomiserPlayer {
     public void clearOrigins() {
         this.dropItems();
         this.getRandomLayers().forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
-        OriginComponent.sync(player);
     }
 
     public void openOriginsScreen() {
@@ -137,7 +136,7 @@ public class OriginsRandomiserPlayer {
     }
 
     private String formatOriginName(Origin origin) {
-        return origin.getName().toString();
+        return origin.getName().getString();
     }
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
