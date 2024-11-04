@@ -11,6 +11,7 @@ import io.github.apace100.origins.origin.OriginRegistry;
 import io.github.apace100.origins.registry.ModComponents;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -128,8 +129,15 @@ public class OriginsRandomiserPlayer {
         ServerPlayNetworking.send(player, ModPackets.OPEN_ORIGIN_SCREEN, buffer);
     }
 
-    public void dropItems() {
-        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(InventoryPower::dropItemsOnLost);
+    /* Modified from io/github/apace100/apoli/power/InventoryPower */
+    private void dropItems() {
+        PowerHolderComponent.getPowers(player, InventoryPower.class).forEach(inventory -> {
+            for (int slot = 0; slot < inventory.size(); slot++) {
+                ItemStack itemStack = inventory.getStack(slot);
+                player.dropItem(itemStack, true, false);
+                inventory.setStack(slot, ItemStack.EMPTY);
+            }
+        });
     }
 
     private Stream<OriginLayer> getRandomLayers() {
