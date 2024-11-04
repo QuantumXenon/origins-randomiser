@@ -19,13 +19,4 @@ public class OriginsRandomiserEvents {
             }
         }
     }
-
-    public static void respawn(ServerPlayerEntity serverPlayer) {
-        OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
-        if (player.hasScoreboardTag("showOriginsScreen")) {
-            player.clearOrigins();
-            player.openOriginsScreen();
-            player.removeScoreboardTag("showOriginsScreen");
-        }
-    }
 }
