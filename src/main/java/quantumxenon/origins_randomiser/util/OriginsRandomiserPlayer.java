@@ -28,7 +28,6 @@ public class OriginsRandomiserPlayer {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final OriginLayer baseLayer = OriginsAPI.getLayersRegistry().get(new ResourceLocation("origins:origin")); // layer = origins:origin
     private final Origin humanOrigin = OriginsAPI.getOriginsRegistry().get(new ResourceLocation("origins:human")); // origin = origins:human
-    private final Holder<Origin> emptyOriginHolder = OriginsAPI.getOriginsRegistry().wrapAsHolder(Origin.EMPTY);
     private final ServerPlayer player;
 
     public OriginsRandomiserPlayer(ServerPlayer serverPlayer) {
@@ -111,12 +110,11 @@ public class OriginsRandomiserPlayer {
     }
 
     public boolean isNotHuman() {
-        Origin currentOrigin = this.getCurrentOrigin(baseLayer);
-        return !(currentOrigin == humanOrigin);
+        return !(this.getCurrentOrigin(baseLayer) == humanOrigin);
     }
 
     public void clearOrigins() {
-        this.getRandomLayers().forEach(layer -> this.setOrigin(layer, emptyOriginHolder));
+        this.getRandomLayers().forEach(layer -> this.setOrigin(layer, OriginsAPI.getOriginsRegistry().wrapAsHolder(Origin.EMPTY)));
     }
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
@@ -142,13 +140,13 @@ public class OriginsRandomiserPlayer {
             if (layer == baseLayer) {
                 return OriginsAPI.getOriginsRegistry().wrapAsHolder(humanOrigin);
             } else {
-                return emptyOriginHolder;
+                return OriginsAPI.getOriginsRegistry().wrapAsHolder(this.getCurrentOrigin(layer));
             }
         } else {
             List<Holder<Origin>> randomOrigins = layer.randomOrigins(player);
             Holder<Origin> newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
             if (!config.advanced.allowDuplicateOrigins) {
-                while (newOrigin.value() == getCurrentOrigin(layer)) {
+                while (newOrigin.value() == this.getCurrentOrigin(layer)) {
                     newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
                 }
             }
