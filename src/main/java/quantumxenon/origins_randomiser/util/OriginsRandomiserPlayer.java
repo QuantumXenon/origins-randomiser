@@ -29,7 +29,6 @@ public class OriginsRandomiserPlayer {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final OriginLayer baseLayer = OriginsAPI.getLayersRegistry().get(new ResourceLocation("origins:origin")); // layer = origins:origin
     private final Origin humanOrigin = OriginsAPI.getOriginsRegistry().get(new ResourceLocation("origins:human")); // origin = origins:human
-    private final Holder<Origin> emptyOriginHolder = OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(OriginsAPI.getOriginsRegistry().getResourceKey(Origin.EMPTY).get());
     private final ServerPlayer player;
 
     public OriginsRandomiserPlayer(ServerPlayer serverPlayer) {
@@ -113,12 +112,12 @@ public class OriginsRandomiserPlayer {
     }
 
     public boolean isNotHuman() {
-        Origin currentOrigin = this.getCurrentOrigin(baseLayer);
-        return !(currentOrigin == humanOrigin);
+        return !(this.getCurrentOrigin(baseLayer) == humanOrigin);
     }
 
     public void clearOrigins() {
-        this.getRandomLayers().forEach(layer -> this.setOrigin(layer, emptyOriginHolder));
+        ResourceKey<Origin> key = OriginsAPI.getOriginsRegistry().getResourceKey(Origin.EMPTY).get();
+        this.getRandomLayers().forEach(layer -> this.setOrigin(layer, OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(key)));
     }
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
@@ -145,13 +144,14 @@ public class OriginsRandomiserPlayer {
                 ResourceKey<Origin> key = OriginsAPI.getOriginsRegistry().getResourceKey(humanOrigin).get();
                 return OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(key);
             } else {
-                return emptyOriginHolder;
+                ResourceKey<Origin> key = OriginsAPI.getOriginsRegistry().getResourceKey(this.getCurrentOrigin(layer)).get();
+                return OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(key);
             }
         } else {
             List<Holder<Origin>> randomOrigins = layer.randomOrigins(player);
             Holder<Origin> newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
             if (!config.advanced.allowDuplicateOrigins) {
-                while (newOrigin.value() == getCurrentOrigin(layer)) {
+                while (newOrigin.value() == this.getCurrentOrigin(layer)) {
                     newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
                 }
             }

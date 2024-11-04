@@ -34,6 +34,7 @@ public class OriginsRandomiserEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(serverPlayer);
             if (!player.hasScoreboardTag("firstJoin")) {
+                player.addScoreboardTag("firstJoin");
                 player.createObjective("livesUntilRandomise", config.lives.livesBetweenRandomises);
                 player.createObjective("sleepsUntilRandomise", config.sleep.sleepsBetweenRandomises);
                 player.createObjective("uses", config.command.randomiseCommandUses);
