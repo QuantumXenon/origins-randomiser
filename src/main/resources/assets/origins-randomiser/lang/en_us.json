@@ -36,7 +36,7 @@
 	"text.autoconfig.origins-randomiser.option.advanced.showOriginScreenOnDeath":"showOriginScreenOnDeath",
 	"text.autoconfig.origins-randomiser.option.advanced.showOriginScreenOnDeath.@Tooltip":"Toggle showing the origin selection screen after death (only works if randomizeOrigins = false)",
 	"text.autoconfig.origins-randomiser.option.advanced.resetToHumanOrigin":"resetToHumanOrigin",
-	"text.autoconfig.origins-randomiser.option.advanced.resetToHumanOrigin.@Tooltip":"Set a player's origin to origins:human instead of a random one whenever randomization occurs",
+	"text.autoconfig.origins-randomiser.option.advanced.resetToHumanOrigin.@Tooltip":"Set a player's origins:origin to origins:human instead of a random one whenever randomization occurs (leaves other layers untouched)",
 
 	"origins-randomiser.message.command.disabled":"Use of the /randomise command has been disabled.",
 	"origins-randomiser.message.command.isHuman":"As a human, you are not able to use the /randomise command.",
