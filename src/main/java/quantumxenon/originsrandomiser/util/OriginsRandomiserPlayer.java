@@ -109,8 +109,7 @@ public class OriginsRandomiserPlayer {
     }
 
     public boolean isNotHuman() {
-        Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
-        return !(currentOrigin == humanOrigin);
+        return !(this.getCurrentOrigin(baseLayer) == humanOrigin);
     }
 
     public void clearOrigins() {
@@ -145,18 +144,21 @@ public class OriginsRandomiserPlayer {
             if (layer == baseLayer) {
                 return humanOrigin;
             } else {
-                return Origin.EMPTY;
+                return this.getCurrentOrigin(layer);
             }
         } else {
             List<Origin> randomOrigins = layer.getRandomOrigins(player).stream().map(OriginManager::get).toList();
             Origin newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
             if (!config.advanced.allowDuplicateOrigins) {
-                Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
-                while (newOrigin == currentOrigin) {
+                while (newOrigin == this.getCurrentOrigin(layer)) {
                     newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
                 }
             }
             return newOrigin;
         }
+    }
+
+    private Origin getCurrentOrigin(OriginLayer layer) {
+        return ModComponents.ORIGIN.get(player).getOrigin(layer);
     }
 }
