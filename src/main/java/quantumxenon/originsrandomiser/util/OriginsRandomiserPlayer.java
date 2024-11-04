@@ -30,6 +30,7 @@ import static net.minecraft.scoreboard.ScoreboardCriterion.RenderType.INTEGER;
 public class OriginsRandomiserPlayer {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final OriginLayer baseLayer = OriginLayerManager.get(Identifier.of("origins:origin")); // layer = origins:origin
+    private final Origin humanOrigin = OriginManager.get(Identifier.of("origins:human")); // origin = origins:human
     private final ServerPlayerEntity player;
 
     public OriginsRandomiserPlayer(ServerPlayerEntity serverPlayerEntity) {
@@ -110,13 +111,13 @@ public class OriginsRandomiserPlayer {
 
     public boolean isNotHuman() {
         Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
-        Origin humanOrigin = OriginManager.get(Identifier.of("origins:human")); // origin = origins:human
         return !Objects.equals(currentOrigin, humanOrigin);
     }
 
     public void clearOrigins() {
         this.dropItems();
         this.getRandomLayers().forEach(layer -> ModComponents.ORIGIN.get(player).setOrigin(layer, Origin.EMPTY));
+        OriginComponent.sync(player);
     }
 
     public void openOriginsScreen() {
@@ -141,14 +142,22 @@ public class OriginsRandomiserPlayer {
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
     private Origin getRandomOrigin(OriginLayer layer) {
-        List<Origin> randomOrigins = layer.getRandomOrigins(player).stream().map(OriginManager::get).toList();
-        Origin newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
-        if (!config.advanced.allowDuplicateOrigins) {
-            Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
-            while (newOrigin.equals(currentOrigin)) {
-                newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
+        if (config.advanced.resetToHumanOrigin) {
+            if (layer == baseLayer) {
+                return humanOrigin;
+            } else {
+                return Origin.EMPTY;
             }
+        } else {
+            List<Origin> randomOrigins = layer.getRandomOrigins(player).stream().map(OriginManager::get).toList();
+            Origin newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
+            if (!config.advanced.allowDuplicateOrigins) {
+                Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(layer);
+                while (newOrigin == currentOrigin) {
+                    newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
+                }
+            }
+            return newOrigin;
         }
-        return newOrigin;
     }
 }

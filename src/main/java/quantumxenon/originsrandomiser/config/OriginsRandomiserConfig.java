@@ -65,5 +65,7 @@ public class OriginsRandomiserConfig implements ConfigData {
         public boolean deathRandomisesOrigin = true;
         @ConfigEntry.Gui.Tooltip
         public boolean showOriginScreenOnDeath = false;
+        @ConfigEntry.Gui.Tooltip
+        public boolean resetToHumanOrigin = false;
     }
 }
