@@ -20,7 +20,6 @@ import quantumxenon.originsrandomiser.enums.Message;
 import quantumxenon.originsrandomiser.enums.Reason;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -111,7 +110,7 @@ public class OriginsRandomiserPlayer {
 
     public boolean isNotHuman() {
         Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
-        return !Objects.equals(currentOrigin, humanOrigin);
+        return !(currentOrigin == humanOrigin);
     }
 
     public void clearOrigins() {
