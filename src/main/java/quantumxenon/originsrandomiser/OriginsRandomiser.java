@@ -32,6 +32,5 @@ public class OriginsRandomiser implements ModInitializer {
 
     private void registerEvents() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> OriginsRandomiserEvents.join(handler.getPlayer()));
-        ServerPlayerEvents.AFTER_RESPAWN.register((handler, sender, server) -> OriginsRandomiserEvents.respawn(handler));
     }
 }
