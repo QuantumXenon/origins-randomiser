@@ -19,7 +19,6 @@ import quantumxenon.origins_randomiser.enums.Message;
 import quantumxenon.origins_randomiser.enums.Reason;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -29,6 +28,8 @@ import static net.minecraft.world.scores.criteria.ObjectiveCriteria.RenderType.I
 public class OriginsRandomiserPlayer {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final OriginLayer baseLayer = OriginsAPI.getLayersRegistry().get(new ResourceLocation("origins:origin")); // layer = origins:origin
+    private final Origin humanOrigin = OriginsAPI.getOriginsRegistry().get(new ResourceLocation("origins:human")); // origin = origins:human
+    private final Holder<Origin> emptyOriginHolder = OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(OriginsAPI.getOriginsRegistry().getResourceKey(Origin.EMPTY).get());
     private final ServerPlayer player;
 
     public OriginsRandomiserPlayer(ServerPlayer serverPlayer) {
@@ -113,14 +114,11 @@ public class OriginsRandomiserPlayer {
 
     public boolean isNotHuman() {
         Origin currentOrigin = this.getCurrentOrigin(baseLayer);
-        Origin humanOrigin = OriginsAPI.getOriginsRegistry().get(new ResourceLocation("origins:human")); // origin = origins:human
-        return !Objects.equals(currentOrigin, humanOrigin);
+        return !(currentOrigin == humanOrigin);
     }
 
     public void clearOrigins() {
-        ResourceKey<Origin> key = OriginsAPI.getOriginsRegistry().getResourceKey(Origin.EMPTY).get();
-        Holder<Origin> emptyOrigin = OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(key);
-        this.getRandomLayers().forEach(layer -> this.setOrigin(layer, emptyOrigin));
+        this.getRandomLayers().forEach(layer -> this.setOrigin(layer, emptyOriginHolder));
     }
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
@@ -142,14 +140,23 @@ public class OriginsRandomiserPlayer {
 
     /* Modified from io/github/apace100/origins/command/OriginCommand */
     private Holder<Origin> getRandomOrigin(OriginLayer layer) {
-        List<Holder<Origin>> randomOrigins = layer.randomOrigins(player);
-        Holder<Origin> newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
-        if (!config.advanced.allowDuplicateOrigins) {
-            while (newOrigin.equals(getCurrentOrigin(layer))) {
-                newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
+        if (config.advanced.resetToHumanOrigin) {
+            if (layer == baseLayer) {
+                ResourceKey<Origin> key = OriginsAPI.getOriginsRegistry().getResourceKey(humanOrigin).get();
+                return OriginsAPI.getOriginsRegistry().getOrCreateHolderOrThrow(key);
+            } else {
+                return emptyOriginHolder;
             }
+        } else {
+            List<Holder<Origin>> randomOrigins = layer.randomOrigins(player);
+            Holder<Origin> newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
+            if (!config.advanced.allowDuplicateOrigins) {
+                while (newOrigin.value() == getCurrentOrigin(layer)) {
+                    newOrigin = randomOrigins.get(new Random().nextInt(randomOrigins.size()));
+                }
+            }
+            return newOrigin;
         }
-        return newOrigin;
     }
 
     private Origin getCurrentOrigin(OriginLayer layer) {
