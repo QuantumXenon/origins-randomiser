@@ -111,7 +111,7 @@ public class OriginsRandomiserPlayer {
 
     public boolean isNotHuman() {
         Origin currentOrigin = ModComponents.ORIGIN.get(player).getOrigin(baseLayer);
-        return !Objects.equals(currentOrigin, humanOrigin);
+        return !(currentOrigin == humanOrigin);
     }
 
     public void clearOrigins() {
