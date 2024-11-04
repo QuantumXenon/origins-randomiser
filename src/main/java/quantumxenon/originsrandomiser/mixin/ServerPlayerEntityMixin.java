@@ -17,6 +17,15 @@ public abstract class ServerPlayerEntityMixin {
     private final OriginsRandomiserConfig config = OriginsRandomiserConfig.getConfig();
     private final OriginsRandomiserPlayer player = new OriginsRandomiserPlayer(((ServerPlayerEntity) (Object) this));
 
+    @Inject(at = @At("TAIL"), method = "onSpawn")
+    private void onSpawn(CallbackInfo info) {
+        if (player.hasScoreboardTag("showOriginsScreen")) {
+            player.clearOrigins();
+            player.openOriginsScreen();
+            player.removeScoreboardTag("showOriginsScreen");
+        }
+    }
+
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
         if (player.getObjectiveValue("livesUntilRandomise") <= 0) {
